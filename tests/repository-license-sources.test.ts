@@ -55,14 +55,7 @@ async function fixture() {
   const collect = () => api.collectLicenseInventory({ root });
   async function setProof(value: typeof proof) { const bytes = JSON.stringify(value) + '\n'; file.provenance.sha256 = sha(bytes); await writeFile(join(root, file.provenance.path), bytes); await declare(); }
   async function inventory() { const value = await collect(); await writeFile(join(root, 'THIRD_PARTY_LICENSES.json'), JSON.stringify(value)); return value; }
-  async function rust() {
-    const path = 'apps/desktop-hub/src-tauri'; await mkdir(join(root, path), { recursive: true });
-    const lock = 'version = 4\n[[package]]\nname = "owned-fixture"\nversion = "1.0.0"\n';
-    await writeFile(join(root, path, 'Cargo.lock'), lock); await writeFile(join(root, path, 'Cargo.toml'), '[package]\nname = "owned-fixture"\nversion = "1.0.0"\n');
-    await writeFile(join(root, 'THIRD_PARTY_RUST_LICENSES.json'), JSON.stringify({ schemaVersion: 1, generatedFrom: path + '/Cargo.lock', lockSha256: sha(lock), metadataSha256: sha('fixture'), packages: [], licenseTexts: [],
-      coverage: { complete: true, lockedPackages: 0, missingPackages: 0, packagesWithoutText: 0, distinctTexts: 0, textBytes: 0, scope: 'Owned empty Cargo dependency fixture' } }));
-  }
-  return { root, directory, file, row, manifest, declare, setProof, collect, inventory, rust, api, validation,
+  return { root, directory, file, row, manifest, declare, setProof, collect, inventory, api, validation,
     close: () => rm(root, { recursive: true, force: true }) };
 }
 
@@ -74,7 +67,7 @@ test('versioned repository author text preserves exact Keyv bytes, provenance an
     assert.equal(file.sha256, sha(authored)); assert.equal(result.licenseTexts[0].text, authored.toString('utf8'));
     assert.equal(result.coverage.packagesWithoutText, 0);
     for (const [path, bytes] of files) assert.deepEqual(await readFile(join(f.directory, path)), bytes);
-    await f.rust(); await f.validation.auditReleaseLicenseInventories(f.root);
+    await f.validation.auditReleaseLicenseInventories(f.root);
   } finally { await f.close(); }
 });
 
@@ -137,13 +130,13 @@ test('absent optional target remains not-installed and cannot claim repository a
     const result = await f.collect(); assert.equal(result.packages[0].coverage, 'not-installed');
     assert.deepEqual(result.packages[0].licenseFiles, []); assert.equal(result.licenseTexts.length, 0);
     assert.equal(result.coverage.complete, false); assert.equal(result.coverage.missingPackages, 1);
-    await f.inventory(); await f.rust(); await f.validation.auditReleaseLicenseInventories(f.root);
+    await f.inventory(); await f.validation.auditReleaseLicenseInventories(f.root);
   } finally { await f.close(); }
 });
 
 for (const cause of ['origin', 'proof', 'body', 'undeclared-author-entry', 'claimed-missing', 'changed-installed-source', 'missing-source-proof'] as const) test(`artifact validator rejects ${cause} substitution`, async () => {
   const f = await fixture(); try {
-    const value = await f.inventory(); await f.rust(); const entry = value.packages[0].licenseFiles[0];
+    const value = await f.inventory(); const entry = value.packages[0].licenseFiles[0];
     if (cause === 'origin') delete entry.origin;
     else if (cause === 'proof') entry.provenance.document.source.commit = '0'.repeat(40);
     else if (cause === 'body') value.licenseTexts[0].text += '\n';
@@ -171,7 +164,7 @@ test('copied author-source closure retains exact manifest/body/proof and rejects
 for (const installed of [true, false]) test(`actual packaging copies versioned author proof for ${installed ? 'installed' : 'absent optional'} target into its fingerprinted web closure`, async () => {
   const f = await fixture(); try {
     if (!installed) await rm(f.directory, { recursive: true });
-    const collected = await f.inventory(); await f.rust();
+    const collected = await f.inventory();
     assert.equal(collected.packages[0].coverage, installed ? 'repository-author-texts' : 'not-installed');
     if (!installed) { assert.deepEqual(collected.packages[0].licenseFiles, []); assert.equal(collected.licenseTexts.length, 0); }
     for (const path of ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
@@ -204,18 +197,11 @@ for (const installed of [true, false]) test(`actual packaging copies versioned a
 });
 
 
-test('a v1 declaration cannot silently acquire repository origin and Rust cannot claim this JavaScript-only coverage', async () => {
+test('a v1 declaration cannot silently acquire repository author origin', async () => {
   const f = await fixture(); try {
     f.manifest.schemaVersion = 1; await f.declare(); await assert.rejects(f.collect, /versioned/i);
-    f.manifest.schemaVersion = 2; await f.declare(); await f.inventory(); await f.rust();
-    const path = join(f.root, 'THIRD_PARTY_RUST_LICENSES.json'); const value = JSON.parse(await readFile(path, 'utf8'));
-    value.packages = [{ name: 'native-fixture', version: '1.0.0', source: 'registry+https://github.com/rust-lang/crates.io-index',
-      license: 'MIT', coverage: 'repository-author-texts', licenseFiles: [{ path: 'LICENSE', sha256: sha(authored) }] }];
-    value.licenseTexts = [{ sha256: sha(authored), bytes: authored.length, text: authored.toString('utf8') }];
-    Object.assign(value.coverage, { lockedPackages: 1, distinctTexts: 1, textBytes: authored.length });
-    const lockPath = join(f.root, 'apps/desktop-hub/src-tauri/Cargo.lock'); const lock = (await readFile(lockPath, 'utf8')) + '\n[[package]]\nname = "native-fixture"\nversion = "1.0.0"\nsource = "registry+https://github.com/rust-lang/crates.io-index"\n';
-    await writeFile(lockPath, lock); value.lockSha256 = sha(lock); await writeFile(path, JSON.stringify(value));
-    await assert.rejects(f.validation.auditReleaseLicenseInventories(f.root), /Rust license inventory: Invalid package license coverage/);
+    f.manifest.schemaVersion = 2; await f.declare(); await f.inventory();
+    await f.validation.auditReleaseLicenseInventories(f.root);
   } finally { await f.close(); }
 });
 
@@ -239,7 +225,7 @@ test('absent target retains reviewed body and proof in copy closure without mint
     const selected = await f.api.collectDeclaredLicenseRepositoryFiles(f.root);
     assert.deepEqual(selected.map((entry: { path: string }) => entry.path).sort(), ['THIRD_PARTY_LICENSE_SOURCES.json', f.file.path, f.file.provenance.path].sort());
     await assert.rejects(f.api.readRepositoryAuthorLicenseSource(f.root, f.row, f.file, proof.lockedArtifact), /requires installed package/);
-    await f.rust(); await f.validation.auditReleaseLicenseInventories(f.root);
+    await f.validation.auditReleaseLicenseInventories(f.root);
   } finally { await f.close(); }
 });
 

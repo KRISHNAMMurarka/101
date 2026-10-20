@@ -13,6 +13,7 @@
 import { execFile, spawn } from "node:child_process";
 import { networkInterfaces } from "node:os";
 import { promisify } from "node:util";
+import { fileURLToPath } from "node:url";
 
 import QRCode from "qrcode";
 
@@ -107,11 +108,9 @@ ${qr}
      full link to the phone.
   5. The phone is now the controller. No app install — it runs in the browser.
 
-  The native 101 Link app takes the game's full connection link or 101L2 ticket:
-  use "Scan code" or "Enter code instead" on its first screen.
 
   Ctrl-C stops both processes.
 `);
 
-start("hub", "node", ["--experimental-strip-types", "tools/hub-server.mjs"], { ADVERTISED_HOST: lan.address });
+start("hub", process.execPath, [fileURLToPath(new URL("../../uynis-connect/cli/hub-server.mjs", import.meta.url))], { ADVERTISED_HOST: lan.address });
 start("web", "npx", ["vinext", "start"], { PORT: String(PORT), WRANGLER_LOG_PATH: ".wrangler/wrangler.log" });

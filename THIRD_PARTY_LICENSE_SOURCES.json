@@ -3,17 +3,6 @@
   "scope": "Explicit exact installed legal sources and reviewed version-bound repository author texts. Origin and proof are retained; text presence does not establish legal or redistribution approval. Missing target/native/model terms remain open.",
   "packages": [
     {
-      "name": "@react-native/debugger-frontend",
-      "version": "0.86.2",
-      "installedPath": "node_modules/@react-native/debugger-frontend",
-      "licenseFiles": [
-        {
-          "path": "dist/third-party/LICENSE",
-          "sha256": "be635b6249bf2e3a9ab088d9be654960253291042824b62dfcf5e955625dc6fe"
-        }
-      ]
-    },
-    {
       "name": "@vitejs/plugin-rsc",
       "version": "0.5.26",
       "installedPath": "node_modules/@vitejs/plugin-rsc",
@@ -21,17 +10,6 @@
         {
           "path": "dist/vendor/react-server-dom/LICENSE",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
-        }
-      ]
-    },
-    {
-      "name": "bplist-parser",
-      "version": "0.3.1",
-      "installedPath": "node_modules/bplist-parser",
-      "licenseFiles": [
-        {
-          "path": "README.md",
-          "sha256": "4a09c55c64d57abe284e09318763dcd69795ed7a201a84edf1bf8774c3b91a8e"
         }
       ]
     },
@@ -65,17 +43,6 @@
         {
           "path": "README.md",
           "sha256": "4491517f7deb68d0b2a3bb590e785e276a60f12448447a9650d0bd50161a101c"
-        }
-      ]
-    },
-    {
-      "name": "react-devtools-core",
-      "version": "6.1.5",
-      "installedPath": "node_modules/react-devtools-core",
-      "licenseFiles": [
-        {
-          "path": "dist/standalone.js.LICENSE.txt",
-          "sha256": "cad5b7b8ae8720d9fd5e621c3da10874ac88c303f93e95cf31e66828d512f3ce"
         }
       ]
     },

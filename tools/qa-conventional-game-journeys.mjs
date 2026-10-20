@@ -1,3 +1,4 @@
+import { connectSdkFiles } from './connect-sdk-provenance.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
@@ -10,7 +11,7 @@ import { startProdServer } from '../node_modules/vinext/dist/server/prod-server.
 // only reads public DOM or waits for native RAF. The source maze is a route map,
 // never a substitute for the browser's state or rendered clue observations.
 const root = resolve(import.meta.dirname, '..');
-const output = resolve(root, 'outputs/controllers/2026-10-16-conventional-game-journeys');
+const output = resolve(root, `outputs/controllers/conventional-game-journeys-${new Date().toISOString().replaceAll(':', '-')}`);
 const expectedBuild = process.argv[2];
 assert.match(expectedBuild ?? '', /^[a-f0-9]{64}$/, 'Pass the reviewed fresh dist/server/index.js SHA256');
 assert.equal(process.argv.length, 3);
@@ -20,7 +21,7 @@ const games = ['bodydodge', 'tiltdrift', 'orbitalcrew', 'shadowarena', 'spellcas
 const walk = path => readdirSync(resolve(root, path), { withFileTypes: true }).flatMap(entry => entry.isDirectory()
   ? walk(`${path}/${entry.name}`) : [`${path}/${entry.name}`]);
 const sourcePaths = [...walk('games').filter(path => !path.includes('/node_modules/') && /\.(ts|json)$/.test(path)),
-  ...walk('app/components').filter(path => /\.(tsx?|css)$/.test(path)), ...walk('packages/adapter-keyboard/src'),
+  ...walk('app/components').filter(path => /\.(tsx?|css)$/.test(path)), ...connectSdkFiles(root),
   ...walk('packages/input/src'), ...walk('packages/sdk/src'), ...walk('packages/maze/src'), ...walk('packages/core/src'),
   'app/controller/Controller.tsx', 'app/globals.css', 'tools/qa-conventional-game-journeys.mjs'];
 const sourceSha256 = Object.fromEntries(sourcePaths.map(path => [path, sha(readFileSync(resolve(root, path)))]));

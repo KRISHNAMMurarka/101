@@ -24,7 +24,6 @@ const fixtureLegalHash = digest(fixtureLegalText);
 const fixtureLock = JSON.stringify({ packages: {
   'node_modules/runtime-fixture': { version: '1.0.0', license: 'MIT' },
 } });
-const fixtureCargoLock = 'version = 4\n\n[[package]]\nname = "oneohone-hub"\nversion = "0.1.0"\n\n[[package]]\nname = "native-fixture"\nversion = "1.0.0"\nsource = "registry+https://github.com/rust-lang/crates.io-index"\n';
 // Exact collector-format records, including text provenance and honest coverage.
 const fixtureTexts = [{ sha256: fixtureLegalHash, bytes: Buffer.byteLength(fixtureLegalText), text: fixtureLegalText }];
 const fixtureCoverage = { complete: true, lockedPackages: 1, missingPackages: 0, packagesWithoutText: 0,
@@ -34,15 +33,8 @@ const fixtureLicenseInventory = JSON.stringify({ schemaVersion: 1, generatedFrom
     installedPath: 'node_modules/runtime-fixture', coverage: 'local-texts', licenseFiles: [{ path: 'LICENSE', sha256: fixtureLegalHash }] }],
   licenseTexts: fixtureTexts, coverage: { ...fixtureCoverage,
     scope: 'Exact ordinary local package legal files and locked declarations; missing optional targets, native/model terms and legal review remain separate.' } }, null, 2) + '\n';
-const fixtureRustInventory = JSON.stringify({ schemaVersion: 1, generatedFrom: 'apps/desktop-hub/src-tauri/Cargo.lock',
-  lockSha256: digest(fixtureCargoLock), metadataSha256: digest('owned offline metadata fixture'),
-  packages: [{ name: 'native-fixture', version: '1.0.0', license: 'MIT', source: 'registry+https://github.com/rust-lang/crates.io-index',
-    coverage: 'local-texts', licenseFiles: [{ path: 'LICENSE', sha256: fixtureLegalHash }] }],
-  licenseTexts: fixtureTexts, coverage: { ...fixtureCoverage,
-    scope: 'Exact ordinary local crate legal files from locked offline Cargo metadata; missing texts, other sources/assets/models and redistribution review remain separate.' } }, null, 2) + '\n';
 function metadataBytes(path: string) {
-  return path === 'THIRD_PARTY_LICENSES.json' ? fixtureLicenseInventory
-    : path === 'THIRD_PARTY_RUST_LICENSES.json' ? fixtureRustInventory : `fixture ${path}`;
+  return path === 'THIRD_PARTY_LICENSES.json' ? fixtureLicenseInventory : `fixture ${path}`;
 }
 
 function fixture(states: Record<string, string> = {}) {
@@ -52,11 +44,8 @@ function fixture(states: Record<string, string> = {}) {
     copyFileSync(resolve(import.meta.dirname, '../tools', name), join(root, 'tools', name));
   }
   writeFileSync(join(root, 'package.json'), JSON.stringify({ name: 'local-packaging-fixture', version: '0.1.0', private: true,
-    scripts: { build: 'node emit.mjs web', 'desktop:app': 'node emit.mjs hub', 'native:export': 'node emit.mjs link', 'watch:wear:build': 'node emit.mjs wear' } }));
+    scripts: { build: 'node emit.mjs web' } }));
   writeFileSync(join(root, 'package-lock.json'), fixtureLock);
-  mkdirSync(join(root, 'apps/desktop-hub/src-tauri'), { recursive: true });
-  writeFileSync(join(root, 'apps/desktop-hub/src-tauri/Cargo.lock'), fixtureCargoLock);
-  writeFileSync(join(root, 'apps/desktop-hub/src-tauri/Cargo.toml'), '[package]\nname = "oneohone-hub"\nversion = "0.1.0"\n');
   writeFileSync(join(root, 'emit.mjs'), `
     import { appendFileSync, mkdirSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
     import { dirname } from 'node:path';
@@ -65,8 +54,7 @@ function fixture(states: Record<string, string> = {}) {
     appendFileSync('invoked.log', target + '\\n');
     if (state === 'fail') { console.error('fixture toolchain unavailable'); process.exit(7); }
     if (state === 'missing') process.exit(0);
-    const paths = { web: 'dist/server/index.js', hub: 'apps/desktop-hub/src-tauri/target/release/bundle/macos/101 Hub.app/Contents/MacOS/101 Hub',
-      link: 'apps/controller-native/dist/_expo/static/js/ios/entry-test.hbc', wear: 'apps/watch-wear/app/build/outputs/apk/debug/app-debug.apk' };
+    const paths = { web: 'dist/server/index.js' };
     const path = paths[target]; mkdirSync(dirname(path), { recursive: true });
     if (state === 'empty') process.exit(0);
     if (state === 'symlink') { writeFileSync('private-fixture.txt', 'outside artifact'); symlinkSync(process.cwd() + '/private-fixture.txt', path); }
@@ -102,7 +90,7 @@ function fixture(states: Record<string, string> = {}) {
     }
   `);
   for (const path of ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_LICENSES.json',
-    'THIRD_PARTY_RUST_LICENSES.json', 'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
+    'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
     mkdirSync(resolve(root, path, '..'), { recursive: true });
     writeFileSync(join(root, path), metadataBytes(path));
   }
@@ -115,18 +103,16 @@ function fixture(states: Record<string, string> = {}) {
     close() { rmSync(root, { recursive: true, force: true }); } };
 }
 
-test('release packaging fails a missing required target while retaining successful artifacts', () => {
-  const f = fixture({ hub: 'fail' });
+test('release packaging fails the required web producer and retains prior artifacts', () => {
+  const f = fixture({ web: 'fail' });
   try {
-    const result = f.run(['--release', 'web', 'hub']);
-    assert.equal(result.status, 1, result.stdout + result.stderr);
-    const { value: manifest, path } = f.manifests()[0];
+    const result = f.run(['--release', 'web']); assert.equal(result.status, 1, result.stdout + result.stderr);
+    const { value: manifest } = f.manifests()[0];
     assert.equal(manifest.mode, 'release'); assert.equal(manifest.status, 'incomplete');
     assert.equal(manifest.releaseAccepted, false); assert.equal(manifest.packagingComplete, false);
-    assert.deepEqual(manifest.requiredTargets, ['web', 'hub']);
-    assert.deepEqual(manifest.produced.map((entry: { target: string }) => entry.target), ['web']);
-    assert.deepEqual(manifest.skipped.map((entry: { target: string }) => entry.target), ['hub']);
-    assert.ok(existsSync(resolve(path, '..', 'web/server/index.js')));
+    assert.deepEqual(manifest.requiredTargets, ['web']); assert.deepEqual(manifest.produced, []);
+    assert.deepEqual(manifest.skipped.map((entry: {target:string}) => entry.target), ['web']);
+    assert.equal(readFileSync(join(f.root, 'release/sdk-existing/keep.tgz'), 'utf8'), 'prior immutable artifact');
   } finally { f.close(); }
 });
 
@@ -146,12 +132,12 @@ test('packaging preserves prior artifacts and creates a different owned output o
 test('complete production packaging is distinct from release acceptance', () => {
   const f = fixture();
   try {
-    const result = f.run(['--release', 'hub', 'web']);
+    const result = f.run(['--release', 'web']);
     assert.equal(result.status, 0, result.stdout + result.stderr);
     const manifest = f.manifests()[0].value;
     assert.equal(manifest.status, 'complete'); assert.equal(manifest.packagingComplete, true);
     assert.equal(manifest.releaseAccepted, false);
-    assert.deepEqual(manifest.requiredTargets, ['hub', 'web']);
+    assert.deepEqual(manifest.requiredTargets, ['web']);
     assert.ok(manifest.produced.every((entry: { profile: string }) => entry.profile === 'production'));
     assert.deepEqual(manifest.skipped, []);
   } finally { f.close(); }
@@ -164,7 +150,7 @@ test('the web release artifact carries its license, model attribution and locked
     assert.equal(result.status, 0, result.stdout + result.stderr);
     const artifact = resolve(f.manifests()[0].path, '..', 'web');
     for (const path of ['LICENSE', 'THIRD_PARTY_NOTICES.md', 'THIRD_PARTY_LICENSES.json',
-      'THIRD_PARTY_RUST_LICENSES.json', 'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
+      'third_party/APACHE-2.0.txt', 'docs/vision.md']) {
       assert.equal(readFileSync(join(artifact, path), 'utf8'), metadataBytes(path));
     }
   } finally { f.close(); }
@@ -274,30 +260,24 @@ test('web packaging rejects an unexpected build output file', () => {
   } finally { f.close(); }
 });
 
-test('release mode blocks debug and intermediate targets before invoking their producer', () => {
-  const f = fixture();
-  try {
-    assert.equal(f.run(['--release', 'wear', 'link']).status, 1);
+test('default release selects only the production web application', () => {
+  const f = fixture(); try {
+    assert.equal(f.run(['--release']).status, 0);
     const manifest = f.manifests()[0].value;
-    assert.equal(manifest.status, 'incomplete'); assert.equal(manifest.releaseAccepted, false);
-    assert.deepEqual(manifest.produced, []);
-    assert.deepEqual(manifest.skipped.map((entry: { profile: string }) => entry.profile), ['debug', 'intermediate']);
-    assert.equal(existsSync(join(f.root, 'invoked.log')), false);
-    assert.equal(f.run(['--release']).status, 1);
-    assert.deepEqual(f.manifests().find(entry => entry.value.requiredTargets.length === 4)?.value.requiredTargets, ['web', 'hub', 'link', 'wear']);
+    assert.deepEqual(manifest.requiredTargets, ['web']);
+    assert.equal(manifest.releaseAccepted, false); assert.equal(manifest.packagingComplete, true);
+    assert.equal(readFileSync(join(f.root, 'invoked.log'), 'utf8'), 'web\n');
   } finally { f.close(); }
 });
 
-test('diagnostic mode reports independent build skips and debug profiles without acceptance', () => {
-  const f = fixture({ hub: 'fail' });
-  try {
-    assert.equal(f.run(['web', 'hub', 'wear']).status, 0);
+test('diagnostic mode reports a web build skip without acceptance', () => {
+  const f = fixture({web:'fail'}); try {
+    assert.equal(f.run([]).status, 0);
     const manifest = f.manifests()[0].value;
     assert.equal(manifest.mode, 'diagnostic'); assert.equal(manifest.status, 'diagnostic');
     assert.equal(manifest.packagingComplete, false); assert.equal(manifest.releaseAccepted, false);
-    assert.deepEqual(manifest.requiredTargets, []);
-    assert.deepEqual(manifest.produced.map((entry: { profile: string }) => entry.profile), ['production', 'debug']);
-    assert.deepEqual(manifest.skipped.map((entry: { target: string }) => entry.target), ['hub']);
+    assert.deepEqual(manifest.requiredTargets, []); assert.deepEqual(manifest.produced, []);
+    assert.deepEqual(manifest.skipped.map((entry:{target:string}) => entry.target), ['web']);
   } finally { f.close(); }
 });
 
@@ -326,25 +306,19 @@ test('unknown, mixed, duplicate and conflicting arguments fail before invoking o
 });
 
 
-test('web packaging rejects stale Rust lock provenance before invoking a successful producer', () => {
-  const f = fixture();
-  try {
-    const inventory = JSON.parse(fixtureRustInventory);
-    // Only a comment changes; third-party identity membership stays identical.
-    writeFileSync(join(f.root, 'apps/desktop-hub/src-tauri/Cargo.lock'), fixtureCargoLock + '# changed exact lock bytes\n');
-    writeFileSync(join(f.root, 'THIRD_PARTY_RUST_LICENSES.json'), JSON.stringify(inventory));
-    const result = f.run(['--release', 'web']);
-    assert.equal(result.status, 1, result.stdout + result.stderr);
-    const { path, value } = f.manifests()[0];
-    assert.match(value.skipped[0].reason, /Rust.*lock/i);
-    assert.deepEqual(value.produced, []);
-    assert.equal(existsSync(join(f.root, 'invoked.log')), false);
-    assert.equal(existsSync(resolve(path, '..', 'web')), false);
+test('web packaging needs no native source tree or Rust inventory', () => {
+  const f = fixture(); try {
+    assert.equal(existsSync(join(f.root, 'apps')), false);
+    assert.equal(existsSync(join(f.root, 'THIRD_PARTY_RUST_LICENSES.json')), false);
+    const result = f.run(['--release','web']); assert.equal(result.status, 0, result.stdout + result.stderr);
+    const {value, path} = f.manifests()[0];
+    assert.equal(value.packagingComplete, true);
+    assert.equal(existsSync(resolve(path,'..','web','THIRD_PARTY_RUST_LICENSES.json')), false);
   } finally { f.close(); }
 });
 
-test('web packaging rejects broken embedded license provenance for both inventories before building', () => {
-  for (const file of ['THIRD_PARTY_LICENSES.json', 'THIRD_PARTY_RUST_LICENSES.json']) {
+test('web packaging rejects broken embedded license provenance for the game dependency inventory before building', () => {
+  for (const file of ['THIRD_PARTY_LICENSES.json']) {
     for (const drift of ['lock', 'text', 'bytes', 'reference', 'package', 'coverage', 'duplicate']) {
       const f = fixture();
       try {
@@ -374,7 +348,7 @@ test('web packaging rejects broken embedded license provenance for both inventor
 test('valid inventories with missing local legal texts retain their incomplete coverage', () => {
   const f = fixture();
   try {
-    for (const file of ['THIRD_PARTY_LICENSES.json', 'THIRD_PARTY_RUST_LICENSES.json']) {
+    for (const file of ['THIRD_PARTY_LICENSES.json']) {
       const inventory = JSON.parse(metadataBytes(file));
       inventory.packages[0].coverage = 'no-local-text'; inventory.packages[0].licenseFiles = [];
       inventory.licenseTexts = [];
@@ -383,7 +357,7 @@ test('valid inventories with missing local legal texts retain their incomplete c
     }
     const result = f.run(['--release', 'web']); assert.equal(result.status, 0, result.stdout + result.stderr);
     const { path, value } = f.manifests()[0]; assert.equal(value.packagingComplete, true); assert.equal(value.releaseAccepted, false);
-    for (const file of ['THIRD_PARTY_LICENSES.json', 'THIRD_PARTY_RUST_LICENSES.json']) {
+    for (const file of ['THIRD_PARTY_LICENSES.json']) {
       const copied = JSON.parse(readFileSync(resolve(path, '..', 'web', file), 'utf8'));
       assert.equal(copied.coverage.complete, false); assert.equal(copied.coverage.packagesWithoutText, 1);
     }
@@ -391,7 +365,7 @@ test('valid inventories with missing local legal texts retain their incomplete c
 });
 
 
-test('packaging fixtures preserve the actual JavaScript and Rust collector output contract', async () => {
+test('packaging fixtures preserve the actual JavaScript collector output contract', async () => {
   const f = fixture();
   try {
     const root = realpathSync(f.root), installed = join(root, 'node_modules/runtime-fixture');
@@ -400,24 +374,6 @@ test('packaging fixtures preserve the actual JavaScript and Rust collector outpu
     writeFileSync(join(installed, 'LICENSE'), fixtureLegalText);
     const js = await import('../tools/generate-license-inventory.mjs');
     assert.deepEqual(await js.collectLicenseInventory({ root }), JSON.parse(fixtureLicenseInventory));
-    const cargoHome = join(root, 'cargo-cache'), directory = join(cargoHome, 'registry/src/owned/native-fixture-1.0.0');
-    mkdirSync(directory, { recursive: true });
-    const manifest_path = join(directory, 'Cargo.toml');
-    writeFileSync(manifest_path, '[package]\nname = "native-fixture"\nversion = "1.0.0"\n');
-    writeFileSync(join(directory, 'LICENSE'), fixtureLegalText);
-    const metadataBytes = Buffer.from(JSON.stringify({ version: 1, workspace_members: ['owned-workspace'], packages: [
-      { name: 'oneohone-hub', version: '0.1.0', id: 'owned-workspace', source: null,
-        manifest_path: join(root, 'apps/desktop-hub/src-tauri/Cargo.toml'), license: 'MIT', license_file: null },
-      { name: 'native-fixture', version: '1.0.0', id: 'owned-native', source: 'registry+https://github.com/rust-lang/crates.io-index',
-        manifest_path, license: 'MIT', license_file: null },
-    ] }));
-    const rust = await import('../tools/generate-rust-license-inventory.mjs');
-    const collect = rust.collectRustLicenseInventory as unknown as (options: {
-      root: string; cargoHome: string; metadataBytes: Buffer;
-    }) => Promise<Record<string, unknown>>;
-    const result = await collect({ root, cargoHome, metadataBytes });
-    assert.equal(result.metadataSha256, createHash('sha256').update(metadataBytes).digest('hex'));
-    assert.deepEqual({ ...result, metadataSha256: digest('owned offline metadata fixture') }, JSON.parse(fixtureRustInventory));
   } finally { f.close(); }
 });
 
@@ -584,5 +540,16 @@ test('a declared source manifest changed during the actual producer withdraws it
     assert.ok(record.value.buildInputVerification.changedInputs.some((entry: { path: string }) => entry.path === 'THIRD_PARTY_LICENSE_SOURCES.json'));
     assert.deepEqual(record.value.produced, []); assert.equal(existsSync(resolve(record.path, '..', 'web')), false);
     assert.equal(readFileSync(join(f.root, 'release/sdk-existing/keep.tgz'), 'utf8'), 'prior immutable artifact');
+  } finally { f.close(); }
+});
+
+test('101 refuses moved native targets before producing output', () => {
+  const f = fixture();
+  try {
+    for (const target of ['hub', 'link', 'wear']) {
+      assert.equal(f.run([target]).status, 1);
+      assert.equal(f.manifests().length, 0);
+      assert.equal(existsSync(join(f.root, 'invoked.log')), false);
+    }
   } finally { f.close(); }
 });

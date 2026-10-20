@@ -1,48 +1,33 @@
-# 101
+# 101 Games
 
-101 is a gaming system that lets a keyboard, phone, gamepad, camera, or supported sensor drive the same game controls. Games ask for actions such as `move`, `jump`, or `slash`; input adapters handle the device details.
+101 is a collection of games controlled with a keyboard, phone, gamepad or camera. Games receive actions such as move, jump and slash from a mapping layer. Device discovery, acquisition, permissions, connections and native agents belong to [Uynis Connect](../uynis-connect/README.md).
 
-The repository contains playable games, the browser launcher and 101 Link controller, a local session Hub, native phone/watch projects, and a shared game SDK. The shipped games run in the browser. Hosted and streamed titles can now describe their launch and input endpoints; a remote runtime and additional game screens are not implemented. See [routing decisions](docs/DEVICE-ROUTING.md).
-
-The repository now includes a game-independent embedded device SDK: `@101/device-model`,
-`@101/device-runtime` and the public `@101/connect` facade. It validates device descriptions,
-routes permitted signals, manages ownership and bounds pending work. The standalone
-[pointer and sensor examples](examples/device-pipelines/README.md) run with
-`npm run example:devices`. See [the SDK guide](docs/platform/SDK.md).
-The [master completion checklist](docs/platform/MASTER-CHECKLIST.md) tracks the full SDK,
-device qualification, 101 acceptance and publication gates.
-
-The [platform architecture](docs/superpowers/specs/2026-10-01-universal-device-platform-design.md),
-[device/protocol research](docs/platform/RESEARCH-2026-10-01.md) and
-[foundation scope](docs/superpowers/specs/2026-10-01-device-foundation-design.md)
-describe the broader migration. This first implementation uses providers in one process;
-internet routing, OS cursor control and new physical device connectors remain later stages.
+This repository owns the ten playable games, game SDK and host, rendering and physics, launcher, browser Link controller and console receiver. The approved ownership map and history-preserving move are in [BOUNDARY.md](docs/platform/BOUNDARY.md); current execution evidence is in [MOVE-STATUS.md](docs/platform/MOVE-STATUS.md). Earlier combined-platform acceptance records retain their original scope and do not certify either new product.
 
 ## Start locally
 
-Use Node.js 22.13 or later. From this directory:
+Keep the two repositories next to each other. Build the platform first:
 
 ```sh
+cd ../uynis-connect
+npm ci
+npm run build
+cd ../101
 npm ci
 npm run dev
 ```
 
-Open the local address printed by the server, choose a game, and choose how to play. Every shipped game has conventional controls. Camera setup requests permission only after a click. **Show controls** opens a controller dock on the game's own screen.
+Use Node.js 24 or later. The development dependency is `@uynis-connect/connect` at `file:../uynis-connect/sdk/connect`. It exposes the platform's compiled public package; games do not import adapter or transport implementations. Rebuild the SDK after changing it. A versioned package will replace the local link later.
 
-Developer tools live at `/studio`: input, motion, camera, pairing, controller layout, hardware, and catalog checks. The player library remains separate.
+Open the address printed by the server and choose a game. All shipped games have conventional controls. Camera setup requests permission after a click. **Show controls** opens the game's controller dock. The build copies checksummed model/runtime assets supplied by the SDK into generated `public/connect-assets/`; it does not download models at runtime.
 
-For a phone on the same network, build and run the local pairing helper:
+Games developer tools at `/studio` cover input, controller layout and the catalog. Device and connection routes redirect to the Connect console, whose default port is 3001. Set `NEXT_PUBLIC_CONNECT_CONSOLE_URL` before building to use another console origin; run `npm start` in Connect to serve it.
 
-```sh
-npm run build
-npm run phone
-```
-
-It prints the LAN address and starts the web runtime and Hub. Open that address on the phone and choose **Connect device** on the game screen. This is local testing; this repository must not be published or deployed without a separate owner instruction.
+For local phone testing, build Games and run `npm run phone`. The helper starts the game web server and the platform's Hub CLI and prints the LAN address. Pair through the game's full connection link and explicit review. Physical-phone and target-OS qualification remain separate from browser checks.
 
 ## Verify a change
 
-Read [AGENTS.md](AGENTS.md) first. Build the current source so route tests do not inspect stale output, then run all four commit gates:
+Read [AGENTS.md](AGENTS.md), build the current source, and run:
 
 ```sh
 npm run build
@@ -52,37 +37,22 @@ npm run test:unit
 node --test tests/rendered-html.test.mjs
 ```
 
-The unit runner discovers `*.test.ts` under the application, games, packages, native apps, and tests. Node's type stripping does not compile TSX; extract testable logic into ordinary TypeScript and use rendered/browser checks for components. Bug fixes require evidence that the previous code fails.
+The bounded unit runner discovers source tests under app, apps, games, packages and tests. Browser journeys use real game rendering. Software device fixtures and synthetic camera inference do not qualify physical devices. Existing release gates remain open until their own evidence is complete.
 
-The suite covers the real input bus, camera-to-game paths with fake streams, two-person tracking, keyboard-to-game behavior, controller transitions, transport version mismatches, offline cache upgrades, and compressed bundle budgets. Synthetic camera tests do not certify physical cameras, phones, or accessibility software. The current evidence and gaps are in [QA results](docs/QA-2026-09-09.md), [vision validation](docs/VISION-VALIDATION.md), and [release acceptance](docs/RELEASE-ACCEPTANCE.md).
-
-## How the code fits together
-
-```text
-Game package: manifest + semantic controls + lifecycle + controller roles
-                           ↓
-             GameHost101 / Engine101 / SessionHost
-                           ↓
-          InputBus: actions · axes · vectors · poses
-                           ↑
-       device adapters and authenticated Link transport
-```
+## Code ownership
 
 | Location | Responsibility |
 | --- | --- |
-| `games/` | Game manifests, simulation rules, directors, and role definitions |
-| `app/` | Launcher, chooser, game views, controller, and shared UI |
-| `app/studio/` | Diagnostics and development tools |
-| `packages/sdk`, `game-registry`, `game-host`, `core` | Package validation, catalog, composition, and game lifecycle |
-| `packages/device-model`, `device-runtime`, `connect` | Embedded device contracts, authorized routes, ownership and public facade |
-| `packages/input`, `adapter-*`, `hardware` | Device-independent controls and device access |
-| `packages/protocol`, `pairing`, `session`, `hub-server` | Wire formats, local pairing, identity, roles, and reconnect |
-| `packages/vision`, `motion` | Local body/hand interpretation and motion filtering |
-| `packages/render-*`, `physics`, `audio` | Rendering, simulation, and sound boundaries |
-| `apps/` | Native phone, desktop Hub, and watch projects |
-| `schemas/`, `tools/`, `tests/` | Public contracts, local tooling, and integration checks |
+| `games/` | Manifests, simulation rules, procedural content and controller roles |
+| `app/` | Launcher, chooser, game views, browser controller and presentation |
+| `packages/input` | Device observations mapped to semantic game actions and scoped input contributions |
+| `packages/game-host`, `core`, `sdk`, `game-registry` | Game lifecycle, assignments, package validation and catalog |
+| `packages/link-controller` | Game layouts, presets and application payload interpretation |
+| `packages/render-*`, `physics`, `maze`, `rhythm`, `swarm` | Game rendering and simulation |
+| `apps/console-receiver` | Game receiver using the public platform SDK |
+| `../uynis-connect` | Device SDK, adapters, transports, processors, service host, console and native agents |
 
-Games never import browser device APIs. A component mounts one host; the phone controller and on-screen dock feed that host's existing InputBus. A second game view requires a separate view/snapshot contract, described in the routing document.
+Input flows from the platform SDK through the game mapping layer into the game host. Source loss, disconnect and close retire the corresponding game contributions. Game rules never call device adapters or transports.
 
 ## Add a game
 
@@ -90,20 +60,6 @@ Games never import browser device APIs. A component mounts one host; the phone c
 npm run create:game -- my-game "My Game" 2d
 ```
 
-The launcher discovers manifests at build time. Declare inputs and optional controller roles in the package instead of adding game-id branches to shared UI. Keep game mechanics in `games/` and browser rendering in the view layer. See [game development](docs/game-development.md), [adapter development](docs/adapter-development.md), and the [external package example](examples/external-game/README.md).
+The launcher discovers manifests. Declare inputs and roles instead of adding game-ID branches to shared UI. See [game development](docs/game-development.md) and the [external game example](examples/external-game/README.md). Product chrome is monochrome; game canvases may use colour. Player instructions explain what to do, while diagnostics belong in Studio.
 
-The product chrome is monochrome and supports both color schemes. Game canvases may use color. Player instructions explain what to do; model names, raw errors, and diagnostic measurements belong in Studio.
-
-## Native targets and deeper documentation
-
-Native builds use separate toolchains and are not certified by the web gate. Their local build/test commands remain in `package.json` and their guides:
-
-- [Native phone controller](docs/native-link.md), [desktop Hub](docs/desktop-hub.md), [watch companions](docs/watches.md)
-- [Architecture](docs/architecture.md), [capabilities](docs/capability-negotiation.md), [protocol](docs/PROTOCOL.md), [pairing](docs/controller-pairing.md)
-- [Vision](docs/vision.md), [specialist hardware](docs/hardware.md), [offline controller cache](docs/offline-cache.md)
-- [Privacy and security](docs/privacy-security.md), [previous emulator evidence](docs/emulator-qa.md)
-- [Backlog disposition](docs/NEXT-101-STATUS.md), [release acceptance](docs/RELEASE-ACCEPTANCE.md)
-
-Camera images are processed on the device and are not recorded. There is no runtime model CDN. Pairing secrets are excluded from the offline cache. Face-camera capture is not offered: no face model or game integration is shipped.
-
-101-authored source uses the [MIT License](LICENSE). Dependency licenses remain in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the generated license inventories.
+Source uses the [MIT License](LICENSE). Dependency notices and licences are retained in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the generated inventories. No publication or target qualification is implied by a local build.

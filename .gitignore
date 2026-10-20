@@ -54,3 +54,13 @@ release/
 
 # Self-signed certificates for local phone acceptance testing. Private keys never leave this machine.
 .certs/
+
+# Generated from the linked device SDK; no maintained platform assets live here.
+/public/connect-assets/
+
+# Historical native build caches left after source custody moved to Connect.
+/apps/controller-native/**/build/
+/apps/watch-ios/.build/
+/apps/watch-ios/.swiftpm/
+/apps/watch-wear/.gradle/
+/apps/watch-wear/**/build/

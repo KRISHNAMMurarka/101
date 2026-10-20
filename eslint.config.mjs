@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     ".next/**",
     "dist/**",
     "out/**",
+    "outputs/**",
+    "public/connect-assets/**",
     "build/**",
     // Packaged output from `npm run package:release`, plus generated native projects. These are
     // build products, not sources; linting them reports on bundlers rather than on this codebase.

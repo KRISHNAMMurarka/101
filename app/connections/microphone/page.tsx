@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
-import MicrophoneView from './MicrophoneView';
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../../lib/connect-console";
 
-export const metadata: Metadata = { title: '101 — Check microphone levels',
-  description: 'Choose one microphone, review its use on this page, check signal levels and stop.' };
-export default function MicrophonePage() { return <MicrophoneView />; }
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/connections/microphone"));
+}

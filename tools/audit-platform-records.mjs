@@ -2,8 +2,37 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
+import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 
 const levels = ['implementation', 'contract', 'runtime', 'physical'];
+
+/** Recover named historical evidence only for the exact frozen pre-split ledger. */
+export function historicalCustodyLookup({ manifest, documents, readBlob }) {
+  const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+  const validPath = path => typeof path === 'string' && !path.startsWith('/') &&
+    !path.includes('\\') && path.split('/').every(part => part && part !== '.' && part !== '..');
+  if (manifest.schemaVersion !== 1 || !/^[a-f0-9]{40}$/.test(manifest.sourceCommit) ||
+      !manifest.documents || !manifest.files)
+    throw new Error('Invalid historical custody manifest');
+  const required = ['docs/platform/MASTER-CHECKLIST.md', 'docs/platform/support-catalog.json', 'docs/platform/task-evidence.json'];
+  if (Object.keys(manifest.documents).length !== required.length ||
+      required.some(path => !documents[path] || sha(documents[path]) !== manifest.documents[path]))
+    throw new Error('Historical ledger changed; reconcile product-owned evidence before acceptance');
+  if (JSON.parse(documents['docs/platform/support-catalog.json']).rows.some(row => row.accepted))
+    throw new Error('Historical custody cannot establish current support acceptance');
+  for (const [path, digest] of Object.entries(manifest.files))
+    if (!validPath(path) || !/^[a-f0-9]{64}$/.test(digest)) throw new Error('Invalid historical source entry');
+  const cache = new Map();
+  return path => {
+    if (!Object.hasOwn(manifest.files, path)) return false;
+    if (!cache.has(path)) {
+      try { cache.set(path, sha(readBlob(manifest.sourceCommit, path)) === manifest.files[path]); }
+      catch { cache.set(path, false); }
+    }
+    return cache.get(path);
+  };
+}
 
 /** Validate evidence relationships without promoting one evidence level into another. */
 export function auditPlatformRecords({ checklist, catalog, evidence, exists }) {
@@ -101,12 +130,19 @@ export function auditPlatformRecords({ checklist, catalog, evidence, exists }) {
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
   const root = resolve(import.meta.dirname, '..');
   const read = path => readFileSync(resolve(root, path), 'utf8');
+  const documents = Object.fromEntries(['docs/platform/MASTER-CHECKLIST.md', 'docs/platform/support-catalog.json', 'docs/platform/task-evidence.json']
+    .map(path => [path, read(path)]));
+  const inHistory = historicalCustodyLookup({
+    manifest: JSON.parse(read('docs/platform/receipts/2026-10-20-historical-custody.json')),
+    documents,
+    readBlob: (commit, path) => execFileSync('git', ['show', `${commit}:${path}`], { cwd: root, maxBuffer: 16 * 1024 * 1024, stdio: ['ignore', 'pipe', 'ignore'] }),
+  });
   const errors = auditPlatformRecords({
-    checklist: read('docs/platform/MASTER-CHECKLIST.md'),
-    catalog: JSON.parse(read('docs/platform/support-catalog.json')),
-    evidence: JSON.parse(read('docs/platform/task-evidence.json')),
-    exists: path => existsSync(resolve(root, path)),
+    checklist: documents['docs/platform/MASTER-CHECKLIST.md'],
+    catalog: JSON.parse(documents['docs/platform/support-catalog.json']),
+    evidence: JSON.parse(documents['docs/platform/task-evidence.json']),
+    exists: path => existsSync(resolve(root, path)) || inHistory(path),
   });
   if (errors.length) { console.error(errors.join('\n')); process.exitCode = 1; }
-  else console.log('Platform checklist, support levels, task evidence, IDs, links and tally agree.');
+  else console.log('Frozen pre-split ledger relationships and historical source custody agree. This does not qualify current Connect or Games support.');
 }

@@ -4,7 +4,7 @@
   "type": "module",
   "dependencies": {
     "@101/input": "0.1.0",
-    "@101/protocol": "0.1.0"
+    "@uynis-connect/connect": "0.1.0"
   },
   "exports": "./src/index.ts"
 }

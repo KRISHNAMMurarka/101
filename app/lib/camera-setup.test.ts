@@ -13,7 +13,7 @@ import {
   type SetupState,
 } from "./camera-setup.ts";
 import { cameraRequested, decodeCameraPlan, encodeCameraPlan, resolveCameraPreferences, type CameraPlan } from "./camera-plan.ts";
-import { createSimulatedPose, HandGestureClassifier, PoseClassifier } from "@101/vision";
+import { createSimulatedPose, HandGestureClassifier, PoseClassifier } from "@uynis-connect/connect";
 import { detectLocalCapabilities, localInputSources, refreshLocalCameras } from "./local-capabilities.ts";
 import { observeCanvasViewport } from "../components/camera/canvas-viewport.ts";
 
@@ -135,7 +135,7 @@ test("confirmation uses game gestures rather than a body merely being visible", 
   assert.equal(confirmsCameraGesture(neutral, false, false), false);
   const arms = classifier.process(createSimulatedPose({ x: 0, duck: false, jump: false, arms: true, punch: false }), 1_000);
   assert.equal(confirmsCameraGesture(arms, false, false), true);
-  const held = { ...arms, combat: { ...arms.combat, special: false } };
+  const held = { ...arms, upperBody: { ...arms.upperBody, armsRaisedEdge: false } };
   assert.equal(confirmsCameraGesture(held, true, false), false, "held arms must not manufacture a new rising edge");
   const step = { ...neutral, actions: { ...neutral.actions, stepLeft: true } };
   assert.equal(confirmsCameraGesture(step, false, false), false);

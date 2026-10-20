@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "result": "pass",
+  "recordedAt": "2026-10-20T12:39:50.516809+00:00",
+  "connectCommit": "65c1aa59e1f5ee6cc7aa7c1857a69b11afb51134",
+  "node": "v24.14.0",
+  "gates": [
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/build-games-verified.txt",
+      "sha256": "eee85edc5cb23bbd12446607336ca70035f7aa04cf47ece0b7e93ad3f46b19b2"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/typecheck-games-final.txt",
+      "sha256": "a34dce55b4d73ebcc12343049684df5ae2b73d454cec9f048dda54f67a166245"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/lint-games-final.txt",
+      "sha256": "92e73763c35fc53cc7ce2374c0080e6e19fc752e7df94d35179de2652279c93f"
+    },
+    {
+      "command": "npm run test:unit",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/unit-games-final.txt",
+      "sha256": "e510e58d661f39e8c9297423f0b614bbe75c1ca1b9d4cc27c8590a42f6c1e2e3"
+    },
+    {
+      "command": "node --test tests/rendered-html.test.mjs",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/rendered-games-verified.txt",
+      "sha256": "59eefaa8490fef46a4338d2b3ec96cf899f52dfe19c74dd51341ceca8e6ff117"
+    },
+    {
+      "command": "node tools/audit-platform-records.mjs",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/records-games-verified-after.txt",
+      "sha256": "00829008474b25c63620785845ca640a599a1753c2d81ff2c786dc33d350eddb"
+    },
+    {
+      "command": "npm run audit:production",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/audit-games-final.txt",
+      "sha256": "30d968751b37f4d3f807beafdc142b28e0f207309704d0f903dccdcb36ab5eaa"
+    },
+    {
+      "command": "node tools/qa-platform-cutover.mjs <fresh-server-sha256>",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/journeys-games-verified.txt",
+      "sha256": "59457ebd49be03e9e36d38cbcac71b279acef787cdd710971f912a60bcf243ad"
+    },
+    {
+      "command": "node tools/qa-console-receiver.mjs",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/console-games-verified.txt",
+      "sha256": "cf6eda2125c3ab0ad4137083385213ed052551d0a069a5291f695c3621f6c760"
+    }
+  ],
+  "unit": {
+    "tests": 459,
+    "pass": 459,
+    "fail": 0,
+    "skipped": 0
+  },
+  "rendered": {
+    "tests": 29,
+    "pass": 29,
+    "fail": 0
+  },
+  "cameraScope": "Three actual public CameraSession cases use faithful synthetic MediaPipe and capture producers; real game simulations receive mapped actions. No physical capture qualification.",
+  "browserEvidence": "2026-10-20-linked-journeys.json",
+  "resolvedFailures": [
+    {
+      "log": "outputs/migration/2026-10-20/unit-games-commit.txt",
+      "reason": "Two 5-second advisory fixture child launches timed out while both suites ran. Unchanged deadlines/fixture behavior passed focused replay and final full suite with no concurrent platform suite.",
+      "sha256": "86b39afd3dfe40f28448732a286f004ff520e45dbdf60e3593227866621af58e"
+    },
+    {
+      "log": "outputs/migration/2026-10-20/audit-games-verified.txt",
+      "reason": "Four pre-split native exceptions were stale after removing native dependencies; removed from current policy, retained authentic advisory fixture for refusal regressions. Fresh production audit reports zero entries.",
+      "sha256": "4db8146b5d1b87172e0f38144640a2ef6bff16e6147ce69136e958424f5aa232"
+    },
+    {
+      "receipt": "2026-10-20-pointer-qa-timing.json",
+      "reason": "Settled previous valid visual feedback before beginning unauthorized-input assertions; no runtime change."
+    }
+  ],
+  "scopeLimits": [
+    "68 real-device/target-OS items, four external accounts and 15 release gates remain deferred.",
+    "Private Connect checkout credential in GitHub Actions is not configured by this work.",
+    "Synthetic input/browser evidence is not target-OS or physical qualification."
+  ],
+  "postBuildChanges": "Only evidence checker, advisory policy/fixture, QA timing, workflow and documentation changed after the fresh application build; game runtime and SDK build inputs unchanged."
+}

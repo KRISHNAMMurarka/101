@@ -2,14 +2,11 @@
 
 import GameControllerOverlay from "./GameControllerOverlay";
 
-import { GamepadAdapter } from "@101/adapter-gamepad";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { PointerAdapter } from "@101/adapter-pointer";
-import { Audio101 } from "@101/audio";
+import { AudioPlayback as Audio101 } from "@uynis-connect/connect";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
-import type { HandGesture } from "@101/vision";
+import type { GameHandGesture } from "../lib/camera-projection";
 import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
@@ -30,7 +27,7 @@ interface SwarmHud { score: number; wave: number; agents: number; selected: numb
  * reach the player as their own identifiers — two fingers held up in front of Swarm Commander read
  * "TWOFINGERS", which is the code's name for a shape that commands nothing here.
  */
-const COMMAND_GESTURES: Partial<Record<HandGesture, string>> = {
+const COMMAND_GESTURES: Partial<Record<GameHandGesture, string>> = {
   point: "POINT · COMMAND TARGET",
   pinch: "PINCH · SELECT",
   openPalm: "OPEN PALM · ION PULSE",
@@ -59,8 +56,8 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
     classifier: { stableFrames: 3, gestureCooldownMs: 420 },
     // The command feed names the order that was just given, which only the diagnostics carry.
     onDiagnostics: (diagnostics) => {
-      const named = diagnostics.signals.activated.map((activated) => COMMAND_GESTURES[activated]).filter(Boolean).at(-1);
-      const shown = named ?? (diagnostics.signals.gestures.point ? COMMAND_GESTURES.point : undefined);
+      const named = diagnostics.activated.map((activated) => COMMAND_GESTURES[activated]).filter(Boolean).at(-1);
+      const shown = named ?? (diagnostics.pointing ? COMMAND_GESTURES.point : undefined);
       if (shown) setGesture(shown);
     },
   });
@@ -74,12 +71,7 @@ export default function SwarmCommanderGame({ sessionId, onConnect, onExit }: { s
       controllers: SWARM_COMMANDER_ROLES,
       game: createSwarmCommanderGame(`swarmcommander-${run}`),
     }),
-    adapters: () => {
-      const canvas = canvasRef.current;
-      return canvas
-        ? [new KeyboardAdapter(), new GamepadAdapter(), new PointerAdapter(canvas)]
-        : [new KeyboardAdapter(), new GamepadAdapter()];
-    },
+    pointerTarget: () => canvasRef.current,
     onReady: ({ context, host }) => {
       const canvas = canvasRef.current;
       if (!canvas) return;

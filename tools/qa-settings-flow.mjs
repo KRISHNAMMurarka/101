@@ -1,3 +1,4 @@
+import { verifyConnectSdkProof } from './connect-sdk-provenance.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -21,11 +22,10 @@ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const proofBytes = readFileSync(proofPath), proof = JSON.parse(proofBytes);
 assert.equal(proof.origin, application.origin); assert.match(proof.sourceTree, /^[a-f0-9]{40}$/);
 const root = realpathSync(proof.sourceRoot);
-const sourcePaths = ['app/components/AppShell.tsx', 'app/components/Icon.tsx', 'app/connections/connections.module.css', 'app/layout.tsx', 'app/globals.css', 'package.json',
+verifyConnectSdkProof(proof, root);
+const sourcePaths = ['app/components/AppShell.tsx', 'app/components/Icon.tsx', 'app/settings/settings.module.css', 'app/layout.tsx', 'app/globals.css', 'package.json',
   ...(missingRouteRed ? [] : ['app/settings/page.tsx', 'app/settings/SettingsView.tsx', 'app/settings/settings-task.ts',
-    'app/settings/settings-task.test.ts', 'app/settings/settings.module.css', 'tools/qa-settings-flow.mjs',
-    'packages/device-runtime/src/owner-data.ts', 'packages/device-runtime/src/owner-data-storage.ts',
-    'packages/device-runtime/src/settings-store.ts', 'packages/device-runtime/src/index.ts', 'packages/connect/src/index.ts'])];
+    'app/settings/settings-task.test.ts', 'app/settings/settings.module.css', 'tools/qa-settings-flow.mjs'])];
 for (const path of sourcePaths) {
   assert.match(proof.sourcePins?.[path] ?? '', /^[a-f0-9]{64}$/);
   assert.equal(hash(readFileSync(resolve(root, path))), proof.sourcePins[path], `Declared served source: ${path}`);

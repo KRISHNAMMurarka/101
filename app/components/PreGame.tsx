@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import type { InputSource } from "@101/input";
-import type { SessionRole } from "@101/session";
+import type { SessionRole } from "../../packages/game-host/src/game-session.ts";
 import type { GameManifest } from "@101/sdk";
 
 import CameraSetup from "./camera/CameraSetup";
@@ -80,7 +80,7 @@ export default function PreGame({
    * mistake as the gamepad claim that read "Ready on this device" for games that were not.
    */
   const onThisScreen = (manifest.controllers?.basic ?? manifest.inputs)
-    .filter((source: InputSource) => sources.includes(source))
+    .filter((source: InputSource) => sources.some(available => available === source))
     .map((source: InputSource) => CATALOG_INPUT_LABELS[source]);
 
   /*
@@ -238,7 +238,7 @@ function PairingBlock({ sessionId }: { sessionId: string | null }) {
       </div>
 
       <div className="session-code"><span>Room code</span><strong>{sessionId ?? "······"}</strong></div>
-      <PairingLink url={pairing?.controllerUrl} expiresAt={pairing?.ticket.expiresAt} />
+      <PairingLink url={pairing?.controllerUrl} expiresAt={pairing?.expiresAt} />
     </section>
   );
 }

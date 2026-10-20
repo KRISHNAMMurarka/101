@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { existsSync, readdirSync } from "node:fs";
 
-import type { ControllerElement } from "@101/protocol";
+import type { ControllerElement } from "@uynis-connect/connect";
 
 import { clusterWeight, describeControllerSurface, planControllerDeck } from "./index.ts";
 

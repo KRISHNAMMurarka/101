@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
-import ConnectionsView from './ConnectionsView';
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../lib/connect-console";
 
-export const metadata: Metadata = { title: '101 Connections — Connect an input',
-  description: 'Choose an input and where it can act. Both screens stay in control.' };
-export default function ConnectionsPage() { return <ConnectionsView />; }
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/connections"));
+}

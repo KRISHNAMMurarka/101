@@ -3,16 +3,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import {
-  BrowserCameraAdapter,
-  BrowserHandAdapter,
+  requestCameraSession,
+  type CameraSession,
   describeCameraFailure,
   cameraConstraints,
   listCameras,
   type HandAdapterDiagnostics,
   type PoseAdapterDiagnostics,
-} from "@101/adapter-camera";
-import { TRACKING_PROFILES, type HandGestureClassifierOptions, type PoseClassifierOptions } from "@101/vision";
+} from "@uynis-connect/connect";
+import { TRACKING_PROFILES, type HandGestureClassifierOptions, type PoseClassifierOptions } from "@uynis-connect/connect";
 import type { GameHost101 } from "@101/game-host";
+import { createSensorMapping } from "../../packages/input/src/sensor-mapping.ts";
+import { projectCameraPeople, type GameBodyObservation, type GameHandObservation } from "./camera-projection.ts";
 
 import { cameraRequested, readCameraPlan, resolveCameraPreferences, type CameraKind } from "./camera-plan.ts";
 
@@ -60,12 +62,12 @@ export type CameraInputOptions =
   | (CommonOptions & {
     kind: "body";
     classifier?: PoseClassifierOptions;
-    onDiagnostics?(diagnostics: PoseAdapterDiagnostics): void;
+    onDiagnostics?(diagnostics: GameBodyObservation): void;
   })
   | (CommonOptions & {
     kind: "hands";
     classifier?: HandGestureClassifierOptions;
-    onDiagnostics?(diagnostics: HandAdapterDiagnostics): void;
+    onDiagnostics?(diagnostics: GameHandObservation): void;
   });
 
 export interface CameraInput {
@@ -97,7 +99,7 @@ export function useCameraInput(options: CameraInputOptions): CameraInput {
   const [state, setState] = useState<CameraInputState>("off");
   const [message, setMessage] = useState("");
   const [fix, setFix] = useState("");
-  type CameraLease = { adapter: BrowserCameraAdapter | BrowserHandAdapter; host: GameHost101 };
+  type CameraLease = { session: CameraSession; retire(): void };
   const leaseRef = useRef<CameraLease | null>(null);
   const generationRef = useRef(0);
   const pendingRef = useRef(false);
@@ -111,7 +113,8 @@ export function useCameraInput(options: CameraInputOptions): CameraInput {
 
   const release = useCallback(async (lease: CameraLease) => {
     if (leaseRef.current === lease) leaseRef.current = null;
-    await lease.host.inputBus.unregister(lease.adapter);
+    lease.retire();
+    await lease.session.close();
   }, []);
 
   const enable = useCallback(async () => {
@@ -133,37 +136,47 @@ export function useCameraInput(options: CameraInputOptions): CameraInput {
       void release(lease).catch(() => {});
       fail(cause);
     };
-    const common = {
-      video: element,
-      mirror: preferences.mirror,
-      constraints: cameraConstraints(preferences.deviceId),
-      onError: failRun,
-      onCameraLost: failRun,
-    };
-    const adapter = kind === "body"
-      ? new BrowserCameraAdapter({
-        ...common,
-        maxPeople: preferences.maxPeople,
+    const mapping = createSensorMapping({
+      scopeId: `camera-${kind}-${sessionId}-${generation}`,
+      players: Array.from({ length: preferences.maxPeople ?? 1 }, (_, index) => `player-${index + 1}`),
+      emit: (frame) => runningHost.inputBus.accept(frame),
+      removeDevice: (id) => runningHost.inputBus.removeDevice(id),
+    });
+    const common = { preview: element, mirror: preferences.mirror,
+      constraints: cameraConstraints(preferences.deviceId), onError: failRun };
+    const session = kind === "body"
+      ? requestCameraSession({ ...common, kind: "body", maxPeople: preferences.maxPeople,
         quality: Object.values(TRACKING_PROFILES).find((profile) => profile.poseModel === preferences.poseModel)?.quality,
         classifier: classifierRef.current as PoseClassifierOptions | undefined,
-        onDiagnostics: (diagnostics) => {
-          if (generation === generationRef.current) (observerRef.current as ((d: PoseAdapterDiagnostics) => void) | undefined)?.(diagnostics);
-        },
-      })
-      : new BrowserHandAdapter({
-        ...common,
-        classifier: classifierRef.current as HandGestureClassifierOptions | undefined,
-        onDiagnostics: (diagnostics) => {
-          if (generation === generationRef.current) (observerRef.current as ((d: HandAdapterDiagnostics) => void) | undefined)?.(diagnostics);
-        },
-      });
-    const lease: CameraLease = { adapter, host: runningHost };
+        onObservation: (observation: PoseAdapterDiagnostics) => {
+          if (generation === generationRef.current) (observerRef.current as ((d: GameBodyObservation) => void) | undefined)?.({
+            people: projectCameraPeople(observation.people, observation.frame.timestamp),
+          });
+        } })
+      : requestCameraSession({ ...common, kind: "hands", classifier: classifierRef.current as HandGestureClassifierOptions | undefined,
+        onObservation: (observation: HandAdapterDiagnostics) => {
+          if (generation === generationRef.current) (observerRef.current as ((d: GameHandObservation) => void) | undefined)?.({
+            present: Boolean(observation.signals.hand), pointing: Boolean(observation.signals.gestures.point), activated: [...observation.signals.activated],
+          });
+        } });
+    const owner = `camera-${kind}-${sessionId}-${generation}`;
+    session.subscribe(mapping.accept);
+    session.onStatus((status) => {
+      runningHost.inputBus.setSourceAvailability(owner, kind === "body" ? "camera-pose" : "camera-hand", status === "active");
+      runningHost.refreshInputReadiness();
+      if (["denied", "lost", "closed"].includes(status)) mapping.close();
+    });
+    const lease: CameraLease = { session, retire: () => {
+      mapping.close();
+      runningHost.inputBus.setSourceAvailability(owner, kind === "body" ? "camera-pose" : "camera-hand", false);
+      runningHost.refreshInputReadiness();
+    } };
     leaseRef.current = lease;
     // Keep the preview consistent with the remembered input orientation. The shared preview CSS
     // assumes mirroring by default, so an explicitly unmirrored plan needs to override it.
     element.style.setProperty("transform", preferences.mirror ? "scaleX(-1)" : "none");
     try {
-      await runningHost.inputBus.register(adapter);
+      await session.ready;
       if (generation !== generationRef.current) { await release(lease); return; }
       pendingRef.current = false;
       setState("on");
@@ -208,8 +221,7 @@ export function useCameraInput(options: CameraInputOptions): CameraInput {
   }, [enable, host, kind, runKey, sessionId, stopCurrent, video]);
 
   const recentre = useCallback(() => {
-    const adapter = leaseRef.current?.adapter;
-    if (adapter instanceof BrowserCameraAdapter) adapter.calibrateNeutral();
+    leaseRef.current?.session.calibrate();
   }, []);
 
   return { state, message, fix, enable, recentre };

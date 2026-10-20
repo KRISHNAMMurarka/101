@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
-import FeedbackView from './FeedbackView';
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../../lib/connect-console";
 
-export const metadata: Metadata = { title: '101 — Try feedback',
-  description: 'Review page buttons and browser feedback separately, request one preset and stop.' };
-export default function FeedbackPage() { return <FeedbackView />; }
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/connections/feedback"));
+}

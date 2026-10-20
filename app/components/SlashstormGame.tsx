@@ -3,9 +3,6 @@
 import { observeCanvasViewport } from "./camera/canvas-viewport";
 import GameControllerOverlay from "./GameControllerOverlay";
 
-import { GamepadAdapter } from "@101/adapter-gamepad";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { PointerAdapter } from "@101/adapter-pointer";
 import { defineGamePackage } from "@101/sdk";
 import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
@@ -46,12 +43,7 @@ export default function SlashstormGame({ sessionId, onConnect, onExit }: { sessi
       controllers: SLASHSTORM_ROLES,
       game: createSlashstormGame(`slashstorm-${run}`),
     }),
-    adapters: () => {
-      const canvas = canvasRef.current;
-      return canvas
-        ? [new KeyboardAdapter(), new PointerAdapter(canvas), new GamepadAdapter()]
-        : [new KeyboardAdapter(), new GamepadAdapter()];
-    },
+    pointerTarget: () => canvasRef.current,
     onReady: ({ context }) => {
       const canvas = canvasRef.current;
       if (!canvas) return;

@@ -1,8 +1,8 @@
 {
-  "name": "101-platform",
+  "name": "101-games",
   "version": "0.1.0",
   "private": true,
-  "description": "A local-first gaming runtime where almost anything can become a controller.",
+  "description": "Games and game controls built on Uynis Connect.",
   "license": "MIT",
   "workspaces": [
     "apps/*",
@@ -10,11 +10,11 @@
     "games/*"
   ],
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=24"
   },
   "scripts": {
     "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
-    "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build && node tools/stamp-service-worker.mjs",
+    "build": "node tools/prepare-connect-assets.mjs && WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build && node tools/stamp-service-worker.mjs",
     "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
     "serve:secure": "node tools/serve-secure.mjs",
     "test": "npm run test:unit && npm run build && node --test tests/rendered-html.test.mjs",
@@ -26,41 +26,18 @@
     "qa:engines": "node tools/qa-browser.mjs engines",
     "typecheck": "tsc --noEmit",
     "create:game": "node --experimental-strip-types tools/create-101-game.mjs",
-    "create:device": "node --experimental-strip-types tools/create-device-project.mjs",
-    "hub": "node --experimental-strip-types tools/hub-server.mjs",
-    "native:start": "npm --workspace @101/controller-native run start",
-    "native:android": "npm --workspace @101/controller-native run android",
-    "native:ios": "npm --workspace @101/controller-native run ios",
-    "native:typecheck": "npm --workspace @101/controller-native run typecheck",
-    "native:test": "npm --workspace @101/controller-native test",
-    "native:doctor": "npm --workspace @101/controller-native run doctor",
-    "native:export": "npm --workspace @101/controller-native run export",
-    "desktop:dev": "npm --workspace @101/desktop-hub run tauri:dev",
-    "desktop:build": "npm --workspace @101/desktop-hub run tauri:build",
-    "desktop:app": "npm --workspace @101/desktop-hub run tauri:app",
-    "desktop:check": "npm --workspace @101/desktop-hub run check",
-    "desktop:test": "npm --workspace @101/desktop-hub run test",
-    "watch:ios:test": "cd apps/watch-ios && swift test",
-    "watch:ios:check": "node tools/check-watchos-build.mjs",
-    "watch:wear:test": "node tools/wear-gradle.mjs testDebugUnitTest",
-    "watch:wear:build": "node tools/wear-gradle.mjs assembleDebug",
     "schemas:sources": "node --experimental-strip-types tools/generate-input-source-schemas.mjs",
-    "license:inventory": "node tools/generate-license-inventory.mjs && node tools/generate-rust-license-inventory.mjs",
+    "license:inventory": "node tools/generate-license-inventory.mjs",
     "audit:production": "node tools/audit-production.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "package:release": "node tools/package-release.mjs",
-    "predev": "node tools/check-port.mjs",
+    "predev": "node tools/prepare-connect-assets.mjs && node tools/check-port.mjs",
     "prestart": "node tools/check-port.mjs",
-    "phone": "node tools/lan-test.mjs",
-    "vision:models": "node tools/fetch-vision-models.mjs",
-    "example:devices": "node --experimental-strip-types examples/device-pipelines/run.ts",
-    "schemas:devices": "node --experimental-strip-types tools/generate-device-schema.mjs",
-    "build:sdk": "node tools/build-sdk.mjs"
+    "phone": "node tools/lan-test.mjs"
   },
   "dependencies": {
     "@dimforge/rapier2d-compat": "0.19.3",
-    "@mediapipe/tasks-vision": "1.0.1",
-    "howler": "2.2.4",
+    "@uynis-connect/connect": "file:../uynis-connect/sdk/connect",
     "phaser": "3.90.0",
     "qrcode": "1.5.4",
     "react": "19.2.8",
@@ -87,7 +64,6 @@
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "16.4.0",
     "playwright": "1.61.1",
-    "react-native": "0.86.2",
     "react-server-dom-webpack": "19.2.8",
     "source-map-js": "file:vendor/source-map-js-1.2.2+101.1.tgz",
     "tailwindcss": "4.2.1",
@@ -104,10 +80,6 @@
     "js-yaml": "4.3.2",
     "nanoid": "3.3.18",
     "postcss": "8.5.26",
-    "plist": {
-      "@xmldom/xmldom": "0.9.12"
-    },
-    "react-native": "0.86.2",
     "shell-quote": "1.11.0",
     "source-map-js": "$source-map-js",
     "vinext": {

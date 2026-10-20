@@ -1,5 +1,6 @@
-import type { Metadata } from 'next';
-import ScreenView from './ScreenView';
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../../lib/connect-console";
 
-export const metadata: Metadata = { title: '101 — Brief screen preview', description: 'Review separate permissions for a brief local screen or window sample, choose explicitly, and stop whenever you are done.' };
-export default function ScreenPage() { return <ScreenView />; }
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/connections/screen"));
+}

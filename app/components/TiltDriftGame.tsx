@@ -2,8 +2,6 @@
 
 import GameControllerOverlay from "./GameControllerOverlay";
 
-import { GamepadAdapter } from "@101/adapter-gamepad";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
 import GameOverPanel from "./GameOverPanel";
@@ -45,7 +43,6 @@ export default function TiltDriftGame({ sessionId, onConnect, onExit }: { sessio
       controllers: TILTDRIFT_ROLES,
       game: createTiltDriftGame(`tiltdrift-${run}`),
     }),
-    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
     onReady: ({ context }) => {
       const canvas = canvasRef.current;
       if (!canvas) return;

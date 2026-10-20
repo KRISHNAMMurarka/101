@@ -1,12 +1,12 @@
 "use client";
 
 import { GameHost101, type InputReadiness } from "@101/game-host";
-import type { InputAdapter } from "@101/input";
+import { connectLocalGameInput } from "../../packages/game-host/src/local-input.ts";
 import type { GameContext, GamePackage, GameControllerRole } from "@101/sdk";
-import { LocalSession, type SessionSnapshot } from "@101/session";
+import { LocalSession, type SessionSnapshot } from "../../packages/game-host/src/game-session.ts";
 import { useEffect, useState } from "react";
 
-import { getBrowserHostTransport } from "./browser-link";
+import { getBrowserApplicationChannel } from "./browser-link";
 
 export interface ControllerHostBinding {
   host: GameHost101;
@@ -42,7 +42,8 @@ export interface UseGameHostOptions<State> {
    * a mismatch surfaces the moment a game starts rather than as a silent missing control.
    */
   build(): GamePackage<State>;
-  adapters?(): InputAdapter[];
+  /** Optional game surface for pointer input; device ownership remains in the host. */
+  pointerTarget?(): HTMLElement | null;
   /**
    * Runs once the engine is live. Attach views, draw loops and HUD timers here and return their
    * teardown; it is invoked even if the component unmounted while the launch was still in flight.
@@ -68,7 +69,7 @@ export interface UseGameHostOptions<State> {
 export function useGameHost<State>({
   sessionId,
   build,
-  adapters,
+  pointerTarget,
   onReady,
   deps = [],
 }: UseGameHostOptions<State>) {
@@ -83,6 +84,8 @@ export function useGameHost<State>({
   const current = sameRun ? snapshot : pending;
 
   useEffect(() => {
+    // Render the game shell on the server, but never open a placeholder room.
+    if (!sessionId) return;
     let disposed = false;
     let latest = pending;
     const publish = (next: Partial<GameHostSnapshot>) => {
@@ -93,26 +96,29 @@ export function useGameHost<State>({
     let teardown: (() => void) | void;
     let host: GameHost101 | undefined;
     let disconnect: Promise<void> | undefined;
+    let localInput: ReturnType<typeof connectLocalGameInput> | undefined;
     const lifetime = new AbortController();
     const reportCleanupError = (error: unknown) => console.error("Game cleanup failed", error);
     const stop = async () => {
       const current = teardown;
       teardown = undefined;
-      try { current?.(); }
+      try { localInput?.close(); current?.(); }
       finally { await (disconnect ??= host?.disconnect() ?? Promise.resolve()); }
     };
 
     void (async () => {
       try {
         host = new GameHost101({
-          transport: getBrowserHostTransport(sessionId),
+          channel: getBrowserApplicationChannel(sessionId),
           session: new LocalSession(sessionId),
-          adapters: adapters?.() ?? [],
           onSessionChange: (snapshot) => {
             if (disposed || lifetime.signal.aborted) return;
             publish({ session: snapshot, linked: snapshot.assignments.length });
           },
           onInputReadiness: (next) => { if (!lifetime.signal.aborted) publish({ readiness: next }); },
+        });
+        localInput = connectLocalGameInput({ inputBus: host.inputBus, pointerTarget: pointerTarget?.(),
+          onAvailability: () => { if (!disposed) host?.refreshInputReadiness(); },
         });
         const gamePackage = build();
         const context = await host.launch(gamePackage);

@@ -5,9 +5,9 @@ import test from "node:test";
 import { discoverUnitTests } from "../tools/unit-test-files.mjs";
 import { parseInputManifest, resolveInputManifest, type InputManifest, type InputSource } from "@101/input";
 import { ControllerInputModel } from "@101/link-controller";
-import { COMMITTED_POSE_MODELS } from "@101/vision";
-import { parseControllerLayout } from "@101/protocol";
-import type { SessionRole } from "@101/session";
+import { COMMITTED_POSE_MODELS } from "@uynis-connect/connect";
+import { parseControllerLayout } from "@uynis-connect/connect";
+import type { SessionRole } from "../packages/game-host/src/game-session.ts";
 import { parseGameManifest, type GameManifest } from "@101/sdk";
 import { BEATFORGE_ROLES } from "../games/beatforge/src/roles.ts";
 import { BODYDODGE_ROLES } from "../games/bodydodge/src/roles.ts";
@@ -273,17 +273,16 @@ test("every game runs through the SDK, and the SDK resolves its input manifest",
   }
 });
 
-test("a registered adapter is not the same claim as an available one", () => {
-  // GamepadAdapter is registered on every game start and polls happily with nothing plugged in.
-  // Counting registration as availability told games their `gamepad` requirement was satisfied on
-  // machines with no controller, which is exactly the kind of confident wrong answer that makes
-  // capability matching worthless.
-  const adapter = readFileSync(resolve(import.meta.dirname, "../packages/adapter-gamepad/src/index.ts"), "utf8");
-  assert.match(adapter, /get available\(\)/, "the gamepad adapter must report real availability");
-  assert.match(adapter, /this\.activeDeviceId !== undefined/);
-
-  const bus = readFileSync(resolve(import.meta.dirname, "../packages/input/src/index.ts"), "utf8");
-  assert.match(bus, /adapter\.available === false/, "availableSources must honour that report");
+test("a subscription is not the same claim as an available source", async () => {
+  const { InputBus } = await import("@101/input");
+  const input = new InputBus();
+  input.setSourceAvailability("gamepad-request", "gamepad", false);
+  assert.equal(input.availableSources().includes("gamepad"), false);
+  input.setSourceAvailability("gamepad-request", "gamepad", true);
+  assert.equal(input.availableSources().includes("gamepad"), true);
+  input.setSourceAvailability("gamepad-request", "gamepad", false);
+  assert.equal(input.availableSources().includes("gamepad"), false);
+  await input.destroy();
 });
 
 test("every shipped game is playable on a plain keyboard, and says so honestly", () => {
@@ -376,7 +375,7 @@ test("pairing a phone does not claim vision a phone never sends", async () => {
   // its "Enable the camera" advice, and then ignore the player — a capability check that answers
   // confidently and wrongly is worse than no check, and this is the same defect as the phantom
   // gamepad in a different costume.
-  const { capabilitySources, sessionSources } = await import("@101/session");
+  const { capabilitySources, sessionSources } = await import("../packages/game-host/src/game-session.ts");
 
   const phone = { touch: true, accelerometer: true, gyroscope: true, magnetometer: true, camera: true, microphone: false, haptics: true };
   const sources = capabilitySources(phone);
@@ -469,7 +468,7 @@ test("the documented path is the path that runs", () => {
     // per-device helper is the building block it is made from. That distinction is not cosmetic —
     // this test failed on its first run because `capabilitySources` has no caller outside its own
     // package, which is true and fine for a building block and would be damning for a promise.
-    { name: "sessionSources", definedIn: "packages/session/" },
+    { name: "sessionSources", definedIn: "packages/game-host/src/game-session" },
     { name: "useGameHost", definedIn: "app/lib/use-game-host" },
     { name: "describeSources", definedIn: "app/lib/input-readiness" },
     { name: "AudioTimeline101", definedIn: "packages/audio/" },
@@ -505,7 +504,6 @@ test("the site is monochrome; the games are not", () => {
     "app/controller/Controller.tsx",
     "app/studio/controller/ControllerLab.tsx",
     "app/components/InputLab.tsx",
-    "app/studio/vision/VisionLab.tsx",
   ];
 
   const tinted: string[] = [];
@@ -777,7 +775,7 @@ test("both renderers share one ordering rule, and it puts controls where the han
   // The rule now lives in @101/protocol and both renderers call it, so they cannot disagree by
   // construction. That also makes it directly testable: `node --experimental-strip-types` cannot
   // import a .tsx file at all, which is the real reason the controller tests were regexes.
-  const { orderControllerElements, controllerZoneRank } = await import("@101/protocol");
+  const { orderControllerElements, controllerZoneRank } = await import("@uynis-connect/connect");
 
   const element = (action: string, zone?: string, priority?: number) => ({
     type: "button" as const, action, label: action.toUpperCase(),
@@ -820,7 +818,6 @@ test("both renderers share one ordering rule, and it puts controls where the han
 
   for (const [file, callee] of [
     ["../app/controller/Controller.tsx", /planControllerDeck\(/],
-    ["../apps/controller-native/src/controls.tsx", /orderControllerElements\(/],
   ] as const) {
     const source = readFileSync(resolve(import.meta.dirname, file), "utf8");
     assert.match(source, callee, `${file} must use the shared rule`);
@@ -1032,34 +1029,16 @@ test("a game that advertises a camera actually wires one up", () => {
   assert.deepEqual(offenders, [], `a declared camera input with nothing behind it:\n${offenders.join("\n")}`);
 });
 
-test("every model the code loads by default is actually served", () => {
-  /*
-   * A model path that 404s does not fail until a player has chosen the camera and waited for a
-   * download that was never coming, which is the worst possible moment and the least legible error.
-   * public/models carries the lite pose model and the hand model; `full` and `heavy` are fetched
-   * rather than committed, so resolvePoseModel steps down to what exists — but only because its
-   * default set says what exists, and this is what keeps that set honest.
-   */
+test("the public SDK camera assets are served by the game build", () => {
   const root = resolve(import.meta.dirname, "..");
-  const served = new Set(readdirSync(resolve(root, "public/models")).map((name) => `/models/${name}`));
-
-  const offenders: string[] = [];
-  for (const file of ["packages/adapter-camera/src/index.ts", "packages/vision/src/quality.ts"]) {
-    const source = readFileSync(resolve(root, file), "utf8");
-    // Only defaults: `x ?? "/models/…"` is a path taken when the caller supplies nothing, so it has
-    // to exist. A path merely named in a profile may legitimately be fetched at runtime.
-    for (const match of source.matchAll(/\?\?\s*"(\/models\/[^"]+)"/g)) {
-      if (!served.has(match[1]!)) {
-        offenders.push(`${file}: defaults to ${match[1]}, which is not in public/models`);
-      }
-    }
+  const served = new Set(readdirSync(resolve(root, "public/connect-assets/models")).map(name => `/models/${name}`));
+  const assetManifest = JSON.parse(readFileSync(new URL(import.meta.resolve("@uynis-connect/connect/assets/manifest.json")), "utf8"));
+  assert.ok(assetManifest.files.length >= 6, "the SDK supplies models and inference runtime");
+  for (const file of assetManifest.files) {
+    assert.ok(existsSync(resolve(root, "public/connect-assets", file.path)), `${file.path} must be served`);
   }
-
-  assert.deepEqual(offenders, [], offenders.join("\n"));
-  assert.ok(COMMITTED_POSE_MODELS.size > 0, "no pose model is committed at all");
-  for (const path of COMMITTED_POSE_MODELS) {
-    assert.ok(served.has(path), `COMMITTED_POSE_MODELS names ${path}, which is not in public/models`);
-  }
+  assert.ok(COMMITTED_POSE_MODELS.size > 0);
+  for (const path of COMMITTED_POSE_MODELS) assert.ok(served.has(path), `${path} must be served`);
 });
 
 

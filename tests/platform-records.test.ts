@@ -1,6 +1,34 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { auditPlatformRecords } from '../tools/audit-platform-records.mjs';
+import { auditPlatformRecords, historicalCustodyLookup } from '../tools/audit-platform-records.mjs';
+import { createHash } from 'node:crypto';
+
+test('migration custody requires exact historical bytes and a frozen unaccepted ledger', () => {
+  const sha = (text: string) => createHash('sha256').update(text).digest('hex');
+  const documents = {
+    'docs/platform/MASTER-CHECKLIST.md': 'original checklist',
+    'docs/platform/support-catalog.json': JSON.stringify({ rows: [{ accepted: false }] }),
+    'docs/platform/task-evidence.json': 'original evidence',
+  };
+  const manifest = { schemaVersion: 1, sourceCommit: 'a'.repeat(40),
+    documents: Object.fromEntries(Object.entries(documents).map(([path, text]) => [path, sha(text)])),
+    files: { 'packages/moved/source.ts': sha('original source') } };
+  const readBlob = (commit: string, path: string) => {
+    assert.equal(commit, manifest.sourceCommit);
+    assert.equal(path, 'packages/moved/source.ts');
+    return 'original source';
+  };
+  const lookup = historicalCustodyLookup({ manifest, documents, readBlob });
+  assert.equal(lookup('packages/moved/source.ts'), true);
+  assert.equal(lookup('unknown-missing.ts'), false);
+  assert.equal(historicalCustodyLookup({ manifest, documents, readBlob: () => 'different bytes' })('packages/moved/source.ts'), false);
+  assert.equal(historicalCustodyLookup({ manifest, documents, readBlob: () => { throw new Error('missing history'); } })('packages/moved/source.ts'), false);
+  assert.throws(() => historicalCustodyLookup({ manifest, documents: { ...documents, 'docs/platform/task-evidence.json': 'changed' }, readBlob }), /ledger changed/);
+  const accepted = { ...documents, 'docs/platform/support-catalog.json': JSON.stringify({ rows: [{ accepted: true }] }) };
+  const acceptedManifest = { ...manifest, documents: { ...manifest.documents, 'docs/platform/support-catalog.json': sha(accepted['docs/platform/support-catalog.json']) } };
+  assert.throws(() => historicalCustodyLookup({ manifest: acceptedManifest, documents: accepted, readBlob }), /current support/);
+  assert.throws(() => historicalCustodyLookup({ manifest: { ...manifest, files: { '../escape': sha('source') } }, documents, readBlob }), /source entry/);
+});
 
 function fixture() {
   return {

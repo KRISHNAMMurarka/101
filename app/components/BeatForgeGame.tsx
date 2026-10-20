@@ -2,9 +2,7 @@
 
 import GameControllerOverlay from "./GameControllerOverlay";
 
-import { GamepadAdapter } from "@101/adapter-gamepad";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { Audio101, AudioTimeline101 } from "@101/audio";
+import { AudioPlayback as Audio101, AudioTimeline as AudioTimeline101 } from "@uynis-connect/connect";
 import type { GameHost101 } from "@101/game-host";
 import { cameraStatusLabel, useCameraInput } from "../lib/use-camera-input";
 import { Renderer3D101, THREE } from "@101/render-3d";
@@ -66,7 +64,6 @@ export default function BeatForgeGame({ sessionId, onConnect, onExit }: { sessio
       controllers: BEATFORGE_ROLES,
       game: createBeatForgeGame(`beatforge-${run}`),
     }),
-    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
     onReady: ({ context, host }) => {
       const canvas = canvasRef.current;
       if (!canvas) return;

@@ -1,5 +1,5 @@
 import type { InputVector } from "@101/input";
-import { orderControllerElements, type ControllerElement, type ControllerLayout } from "@101/protocol";
+import { orderControllerElements, type ControllerElement, type ControllerLayout } from "@uynis-connect/connect";
 
 export interface ControllerInputSnapshot {
   actions: Record<string, boolean | number>;

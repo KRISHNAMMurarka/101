@@ -1,11 +1,6 @@
-import type { Metadata } from "next";
-import NetworkLab from "./NetworkLab";
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../../lib/connect-console";
 
-export const metadata: Metadata = {
-  title: "101 Network Lab — Offline WebRTC pairing",
-  description: "Pair two browsers without a signaling server and measure the 101 realtime path.",
-};
-
-export default function NetworkPage() {
-  return <NetworkLab />;
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/studio/network"));
 }

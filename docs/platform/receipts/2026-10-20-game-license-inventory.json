@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "lockSha256": "f3af356c40357376dccfad1f0efb11a15672fcb42653df7978bf865e26f7c0d5",
+  "inventorySha256": "9051145ec9fc74388138b3378ee97a1219294e78c91e90a95e0e097139b7afb9",
+  "lockedPackages": 609,
+  "coverage": {
+    "complete": false,
+    "lockedPackages": 609,
+    "missingPackages": 106,
+    "packagesWithoutText": 21,
+    "distinctTexts": 245,
+    "textBytes": 587976,
+    "scope": "Exact ordinary installed legal files and explicitly reviewed version-bound repository author texts, with distinct origin; missing optional targets, native/model terms and legal review remain separate."
+  }
+}

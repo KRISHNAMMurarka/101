@@ -1,4 +1,4 @@
-import type { SessionRole } from "@101/session";
+import type { SessionRole } from "../../../packages/game-host/src/game-session.ts";
 
 export const GRAVITYSTACK_ROLES: readonly SessionRole[] = [
   {

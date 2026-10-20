@@ -1,7 +1,6 @@
-import { AuthenticatedResourcePeer, PeerDataTransport, createEphemeralWebIdentity, createReceiverInvitation,
-  encodeReceiverInvitation, decodeManualPeerCode, encodeManualPeerCode, receiverInvitationCurrent, webEndpointCrypto } from '@101/connect';
-import type { EndpointIdentity, ReceiverInvitation } from '@101/connect';
-import { createRemotePointerSurface } from '../../../examples/device-pipelines/remote-pointer.ts';
+import { createPointerResourceConnection, createEphemeralWebIdentity, createReceiverInvitation,
+  encodeReceiverInvitation, receiverInvitationCurrent, webEndpointCrypto } from '@uynis-connect/connect';
+import type { EndpointIdentity, ReceiverInvitation, PointerResourceConnection } from '@uynis-connect/connect';
 
 export const RECEIVER_APPLICATION = '101-console-pointer-surface';
 export const RECEIVER_ORIGIN = 'https://101-receiver.invalid';
@@ -17,8 +16,7 @@ export function allowedReceiverLocation(input: string): boolean {
 export function receiverAvailability(probe: { href: string; secure: boolean; rtc: boolean; crypto: boolean }): 'ready' | 'unavailable' {
   return allowedReceiverLocation(probe.href) && probe.secure && probe.rtc && probe.crypto ? 'ready' : 'unavailable';
 }
-type Surface = ReturnType<typeof createRemotePointerSurface>;
-type Session = { peer: PeerDataTransport; auth: AuthenticatedResourcePeer; surface: Surface; detach: () => void; confirmed: boolean; admitted: boolean };
+type Session = { connection: PointerResourceConnection; detach: () => void; confirmed: boolean; admitted: boolean };
 export interface ReceiverState {
   phase: 'idle' | 'preparing' | 'invitation' | 'connecting' | 'comparison' | 'connected' | 'active' | 'stopped' | 'unavailable';
   invitation: string; answer: string; comparison: string; confirmed: boolean; canAllow: boolean;
@@ -32,12 +30,14 @@ export function createConsoleReceiver(options: { now?: () => number; wallNow?: (
   const now = options.now ?? (() => performance.now()), wallNow = options.wallNow ?? Date.now;
   let state = initial(), generation = 0, session: Session | undefined, identity: EndpointIdentity | undefined;
   let invitation: ReceiverInvitation | undefined, size = { width: 1, height: 1 }, timer: ReturnType<typeof setInterval> | undefined;
+  let normalized: { x: number; y: number } | undefined, contact = false, releases = 0;
   const publish = (next: Partial<ReceiverState>) => { state = { ...state, ...next }; options.onChange?.({ ...state, position: state.position && { ...state.position } }); };
   function release() {
     generation++;
     if (timer !== undefined) clearInterval(timer); timer = undefined;
     const old = session; session = undefined; invitation = undefined; identity = undefined;
-    if (old) { old.detach(); old.surface.stop(); old.auth.stop(); void old.peer.disconnect(); }
+    if (old) { old.detach(); old.connection.close(); }
+    normalized = undefined; contact = false;
   }
   function stop(message = 'Stopped. Create a fresh invitation to continue.') {
     const releases = state.releases + (session ? 1 : 0); release();
@@ -47,16 +47,16 @@ export function createConsoleReceiver(options: { now?: () => number; wallNow?: (
     if (!invitation) return;
     if ((!session || !session.admitted) && !receiverInvitationCurrent(invitation, wallNow())) { stop('Invitation expired. Create a fresh invitation.'); return; }
     const current = session; if (!current) return;
-    current.auth.tick(); current.surface.tick();
+    current.connection.tick();
     if (session !== current) return;
-    const auth = current.auth.status(), resource = current.surface.receiver.status(), effect = current.surface.state();
+    const auth = current.connection.enrollment(), resource = current.connection.status();
     if (auth.phase === 'stopped' || resource.stopped || ['expired', 'overload', 'unavailable', 'incompatible'].includes(resource.reason)) {
       stop('Connection ended. Control is released. Create a fresh invitation to continue.'); return;
     }
-    const canAllow = auth.phase === 'active' && !!current.surface.receiver.description() && resource.clockReady && resource.active === 0;
+    const canAllow = auth.phase === 'active' && !!current.connection.description() && resource.clockReady && resource.active === 0;
     const phase = resource.active === 2 ? 'active' : auth.phase === 'active' ? 'connected' : auth.comparisonDigest ? 'comparison' : 'connecting';
     publish({ phase, comparison: auth.comparisonDigest ?? '', confirmed: current.confirmed, canAllow,
-      contact: effect.contact, position: effect.position, releases: effect.releases,
+      contact, position: normalized ? { x: normalized.x * size.width, y: normalized.y * size.height } : undefined, releases,
       message: phase === 'active' ? 'Pointer allowed for one minute. Stop releases it immediately.'
         : phase === 'connected' ? 'Connection allowed. Choose Allow pointer for one minute.'
           : phase === 'comparison' ? 'Compare every character on both screens, then allow this connection only if the codes match.'
@@ -81,36 +81,41 @@ export function createConsoleReceiver(options: { now?: () => number; wallNow?: (
       if (!identity || !invitation || session || !receiverInvitationCurrent(invitation, wallNow())) { stop('Create a fresh invitation before using an offer.'); return; }
       const revision = generation, target = invitation, key = identity;
       try {
-        const code = decodeManualPeerCode(input, 'offer', target.epoch);
-        const peer = new PeerDataTransport({ initiator: false });
-        const auth = new AuthenticatedResourcePeer({ transport: peer, identity: key, crypto: webEndpointCrypto, ...target,
-          role: 'receiver', now });
-        const surface = createRemotePointerSurface({ peer: auth, epoch: target.epoch, principalId: 'console-surface-owner',
-          applicationId: target.applicationId, sessionId: target.sessionId, clockId: `console-surface:${target.epoch}`, now, ...size });
-        const current: Session = { peer, auth, surface, detach: () => {}, confirmed: false, admitted: false };
+        const connection = createPointerResourceConnection({ identity: key, invitation: target,
+          clockDomain: `console-surface:${target.epoch}`, now,
+          onObservation(kind, observation, isCurrent) {
+            if (revision !== generation || !isCurrent()) return;
+            const value = observation.value;
+            if (kind === 'position' && value && typeof value === 'object' && 'x' in value && 'y' in value &&
+              typeof value.x === 'number' && typeof value.y === 'number') normalized = { x: value.x, y: value.y };
+            else if (kind === 'contact' && typeof value === 'boolean') contact = value;
+          },
+          onRelease() { normalized = undefined; contact = false; releases++; },
+        });
+        const current: Session = { connection, detach: () => {}, confirmed: false, admitted: false };
         session = current;
-        current.detach = auth.onStateChange(value => {
+        current.detach = connection.onStateChange(value => {
           if (session !== current) return;
           if (value === 'connected') current.admitted = true;
           if (value === 'failed' || value === 'disconnected') stop('Connection lost. Control is released. Create a fresh invitation.');
         });
         publish({ phase: 'connecting', invitation: '', message: 'Preparing an answer…' });
-        const answer = await peer.acceptOffer(code.description);
-        if (revision !== generation || session !== current) { surface.stop(); auth.stop(); await peer.disconnect(); return; }
-        publish({ answer: encodeManualPeerCode(target.epoch, answer) }); tick();
+        const answer = await connection.acceptOffer(input);
+        if (revision !== generation || session !== current) { connection.close(); return; }
+        publish({ answer }); tick();
       } catch { if (revision === generation) stop('This offer could not connect. Create a fresh invitation and transfer its complete matching offer.'); }
     },
     confirm(displayed: string) {
-      if (!session || displayed !== state.comparison || !displayed || !session.auth.confirmEnrollment(displayed)) return false;
+      if (!session || displayed !== state.comparison || !displayed || !session.connection.confirmEnrollment(displayed)) return false;
       session.confirmed = true; tick(); return true;
     },
     allow() {
-      if (!session || !state.canAllow || !session.confirmed || !session.surface.select()) return false;
+      if (!session || !state.canAllow || !session.confirmed || !session.connection.select()) return false;
       tick(); return true;
     },
     resize(width: number, height: number) {
       if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) return;
-      size = { width, height }; session?.surface.resize(width, height); tick();
+      size = { width, height }; tick();
     },
     tick,
     stop,

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { createOwnerDataController, createSettingsStore } from '@101/connect';
-import type { OwnerDataStorage } from '@101/connect';
+import { createOwnerDataController, createSettingsStore } from '@uynis-connect/connect';
+import type { OwnerDataStorage } from '@uynis-connect/connect';
 import { createSettingsStorageSession, createSettingsTask, createSettingsThemePreview, SETTINGS_OWNER, SETTINGS_LIMITS } from './settings-task.ts';
 
 // Cooperative atomic storage exercises the real public producers. Native IDB is

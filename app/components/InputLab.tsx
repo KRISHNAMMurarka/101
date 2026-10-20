@@ -1,13 +1,12 @@
 "use client";
 
-import { GamepadAdapter } from "@101/adapter-gamepad";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { PointerAdapter } from "@101/adapter-pointer";
+import { createGameApplicationLink } from "../../packages/game-host/src/game-application-channel.ts";
+import { connectLocalGameInput } from "../../packages/game-host/src/local-input.ts";
 import { Engine101 } from "@101/core";
-import { InputDiagnostics, type LatencySnapshot } from "@101/diagnostics";
+import { InputDiagnostics, type LatencySnapshot } from "@uynis-connect/connect";
 import type { InputBus, InputFrame, InputSource } from "@101/input";
-import { getBrowserHostTransport } from "@/app/lib/browser-link";
-import { LocalSession, SessionHost } from "@101/session";
+import { getBrowserApplicationChannel } from "@/app/lib/browser-link";
+import { LocalSession, SessionHost } from "../../packages/game-host/src/game-session.ts";
 import { useCallback, useEffect, useRef, useState } from "react";
 import RemotePointerPanel from "./RemotePointerPanel";
 import inputLabGame from "@/games/input-lab/src/game";
@@ -31,11 +30,9 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
 
     const engine = new Engine101(inputLabGame);
     busRef.current = engine.inputBus;
-    const keyboard = new KeyboardAdapter();
-    const pointer = new PointerAdapter(canvas);
-    const gamepad = new GamepadAdapter();
+    const localInput = connectLocalGameInput({ inputBus: engine.inputBus, pointerTarget: canvas });
     const diagnostics = new InputDiagnostics();
-    const transport = getBrowserHostTransport(sessionId);
+    const transport = createGameApplicationLink(getBrowserApplicationChannel(sessionId));
     const host = new SessionHost({
       gameId: "input-lab",
       roles: [{
@@ -135,9 +132,6 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
       drawHandle = requestAnimationFrame(draw);
     };
 
-    void engine.inputBus.register(keyboard);
-    void engine.inputBus.register(pointer);
-    void engine.inputBus.register(gamepad);
     void host.start();
     void engine.start();
     canvas.focus();
@@ -154,6 +148,7 @@ export default function InputLab({ sessionId, onConnect, onExit }: { sessionId: 
       stopSizing();
       cancelAnimationFrame(drawHandle);
       unsubscribeInput();
+      localInput.close();
       void host.stop();
       busRef.current = null;
       engine.stop();

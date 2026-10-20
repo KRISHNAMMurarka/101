@@ -5,12 +5,12 @@ import { fileURLToPath } from 'node:url';
 
 const MANIFEST = 'release/console-receiver/source-manifest.json';
 const BUNDLE = 'release/console-receiver';
-const REQUIRED_SOURCE = ['package.json', 'package-lock.json', 'examples/device-pipelines/remote-pointer.ts',
+const REQUIRED_SOURCE = ['package.json', 'package-lock.json',
   ...['index.html', 'src/main.ts', 'src/receiver.ts', 'src/style.css', 'build.mjs', 'verify-bundle.mjs', 'serve.mjs', 'README.md',
     'windows/App.xaml', 'windows/App.xaml.cs', 'windows/MainPage.xaml', 'windows/MainPage.xaml.cs',
     'windows/Receiver.csproj', 'windows/Package.appxmanifest', 'windows/build.ps1'].map(path => 'apps/console-receiver/' + path)];
 const REQUIRED_ARTIFACT = ['web/index.html', 'assets/Logo44.png', 'assets/Logo150.png', 'assets/StoreLogo.png'];
-const sourcePrefix = /^(?:package(?:-lock)?\.json$|apps\/console-receiver\/|examples\/device-pipelines\/remote-pointer\.ts$|packages\/(?:connect|device-model|device-runtime|device-web|transport-webrtc|transport-websocket|vision)\/src\/)/;
+const sourcePrefix = /^(?:package(?:-lock)?\.json$|apps\/console-receiver\/)/;
 const artifactPath = /^(?:web\/(?:index\.html|assets\/[A-Za-z0-9_-]+\.(?:js|css))|assets\/(?:Logo44|Logo150|StoreLogo)\.png)$/;
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const posix = path => path.replaceAll('\\', '/');

@@ -1,8 +1,6 @@
-import type { Metadata } from 'next';
-import SharingView from './SharingView';
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../lib/connect-console";
 
-export const metadata: Metadata = {
-  title: '101 Sharing — Choose who can use your play area',
-  description: 'Review, divide, transfer and stop sharing the controls on this page.',
-};
-export default function SharingPage() { return <SharingView />; }
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/sharing"));
+}

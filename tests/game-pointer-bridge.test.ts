@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { InputBus } from '../packages/input/src/index.ts';
-import { PointerResourceProvider, pointerSourceDescriptor } from '../packages/device-web/src/pointer-provider.ts';
-import type { Observation } from '../packages/device-runtime/src/types.ts';
-import { createGamePointerBridge, createGamePointerReceiver, INPUT_LAB_POINTER_MANIFEST, type GamePointerBridgeOptions } from '../examples/device-pipelines/game-pointer-bridge.ts';
+import { pointerSourceDescriptor } from '@uynis-connect/connect';
+import type { Observation } from '@uynis-connect/connect';
+import { createGamePointerBridge, INPUT_LAB_POINTER_MANIFEST, type GamePointerBridgeOptions } from '../examples/device-pipelines/game-pointer-bridge.ts';
 
 function observation(capability: 'position' | 'contact', value: Observation['value'], sequence = 1): Observation {
   return { value, sequence, timestamp: 90, receivedAt: 100, clockDomain: 'host', quality: 'valid',
@@ -100,48 +100,6 @@ test('position values with undeclared components cannot enter the application ma
   assert.equal(h.frames.length, 0);
 });
 
-
-type Lane = 'reliable' | 'disposable';
-type PeerState = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'failed';
-class LocalPeer {
-  state: PeerState = 'connected';
-  other?: LocalPeer;
-  data = new Set<(lane: Lane, data: string | ArrayBuffer) => void>();
-  states = new Set<(state: PeerState) => void>();
-  isOpen(lane: Lane) { return ['reliable', 'disposable'].includes(lane) && this.state === 'connected'; }
-  send(lane: Lane, data: string | ArrayBuffer | Uint8Array) {
-    if (!this.isOpen(lane)) return false;
-    const frame = typeof data === 'string' ? data : data instanceof ArrayBuffer ? data : data.slice().buffer;
-    for (const listener of [...(this.other?.data ?? [])]) listener(lane, frame);
-    return true;
-  }
-  onData(listener: (lane: Lane, data: string | ArrayBuffer) => void) { this.data.add(listener); return () => { this.data.delete(listener); }; }
-  onStateChange(listener: (state: PeerState) => void) { this.states.add(listener); return () => { this.states.delete(listener); }; }
-  disconnect() { this.state = 'disconnected'; for (const listener of [...this.states]) listener(this.state); }
-}
-
-test('actual provider and receiver negotiation supplies the application bus only after resource consent', () => {
-  let now = 100;
-  const host = new LocalPeer(), source = new LocalPeer(); host.other = source; source.other = host;
-  const bus = new InputBus(), epoch = '0123456789abcdef0123456789abcdef';
-  const receiver = createGamePointerReceiver({ authentication: 'local-diagnostic', peer: host, epoch, manifest: INPUT_LAB_POINTER_MANIFEST,
-    scope: { applicationId: 'input-lab', sessionId: 'local-session', playerId: 'player-1', roleId: 'classic', deviceId: 'remote-pointer', clockDomain: 'host' },
-    mapping: { vector: 'aim', action: 'trigger', coordinates: 'normalized-to-signed', source: 'custom' }, now: () => now,
-    emit: frame => bus.accept(frame), removeDevice: (id, player) => { bus.removeDevice(id, player); } });
-  const provider = new PointerResourceProvider({ authentication: 'local-diagnostic', peer: source, epoch, clockId: 'source', now: () => now + 1000,
-    platform: 'test-real-producer', available: () => true });
-  provider.tick(); receiver.tick();
-  assert.equal(bus.connectedDevices().length, 0); assert.equal(provider.driver(), undefined);
-  assert.equal(receiver.select(), true); provider.tick(); receiver.tick();
-  assert.equal(provider.status().ready, true);
-  now = 120; provider.driver()!.nudge(0.25, -0.25); provider.driver()!.setContact(true); receiver.tick();
-  const aim = bus.vector('aim'); assert.ok(Math.abs(aim.x - 0.5) < 1e-6); assert.ok(Math.abs(aim.y + 0.5) < 1e-6);
-  assert.equal(bus.action('trigger'), true);
-  host.disconnect(); source.disconnect(); receiver.tick();
-  assert.equal(bus.action('trigger'), false); assert.deepEqual(bus.vector('aim'), { x: 0, y: 0 });
-  assert.equal(bus.connectedDevices().length, 0); assert.equal(receiver.bridge.state().stopped, true);
-  provider.stop(); receiver.stop(); assert.equal(host.data.size, 0); assert.equal(source.data.size, 0);
-});
 
 test('retiring a remote scope retains existing local controller frames', () => {
   const h = harness(); h.bridge.approve(pointerSourceDescriptor());

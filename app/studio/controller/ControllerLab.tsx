@@ -1,8 +1,10 @@
 "use client";
 
+import { getBrowserApplicationChannel } from "../../lib/browser-link";
+import { createGameApplicationLink } from "../../../packages/game-host/src/game-application-channel.ts";
 import type { InputFrame } from "@101/input";
-import { BroadcastChannelTransport, parseControllerLayout, type ControllerLayout } from "@101/protocol";
-import { LocalSession, SessionHost, type SessionSnapshot } from "@101/session";
+import { parseControllerLayout, type ControllerLayout } from "@uynis-connect/connect";
+import { LocalSession, SessionHost, type SessionSnapshot } from "../../../packages/game-host/src/game-session.ts";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -55,7 +57,7 @@ export default function ControllerLab() {
   const hostRef = useRef<SessionHost | null>(null);
 
   useEffect(() => {
-    const transport = new BroadcastChannelTransport(SESSION);
+    const transport = createGameApplicationLink(getBrowserApplicationChannel(SESSION));
     const host = new SessionHost({
       gameId: "controller-lab",
       roles: [labRole(PRESETS.classic!)],

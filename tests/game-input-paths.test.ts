@@ -1,7 +1,6 @@
 import assert from "node:assert/strict";
 import test, { type TestContext } from "node:test";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { GamepadAdapter } from "@101/adapter-gamepad";
+import { connectLocalGameInput } from "../packages/game-host/src/local-input.ts";
 import { canTravel, shortestPath } from "@101/maze";
 import { createEchoMazeGame } from "../games/echomaze/src/game.ts";
 import { ECHO_MAZE_ROLES } from "../games/echomaze/src/roles.ts";
@@ -21,11 +20,11 @@ async function keyboardGame<State>(t: TestContext, game: GameDefinition<State>) 
   const previous = Object.getOwnPropertyDescriptor(globalThis, "window");
   const window = new EventTarget();
   Object.defineProperty(globalThis, "window", { configurable: true, value: window });
-  const input = new InputBus(); const keyboard = new KeyboardAdapter();
+  const input = new InputBus(); const local = connectLocalGameInput({ inputBus: input });
   const state = game.initialState(); const context = { state, input, assets: { load: async () => undefined } };
-  await input.register(keyboard); game.start?.(context);
+  game.start?.(context);
   t.after(async () => {
-    try { game.stop?.(context); await input.destroy(); }
+    try { local.close(); game.stop?.(context); await input.destroy(); }
     finally { if (previous) Object.defineProperty(globalThis, "window", previous); else Reflect.deleteProperty(globalThis, "window"); }
   });
   const key = (type: "keydown" | "keyup", code: string) => window.dispatchEvent(Object.assign(new Event(type, { cancelable: true }), { code }));
@@ -213,8 +212,9 @@ test("BeatForge standard gamepad trigger swings in the held stick direction", as
   const game = createBeatForgeGame("pad-beat-swing"), input = new InputBus();
   const context = { state: game.initialState(), input, assets: { load: async () => undefined } };
   const poll = () => { const callbacks = [...frames.values()]; frames.clear(); for (const callback of callbacks) callback(performance.now()); };
+  const local = connectLocalGameInput({ inputBus: input });
   try {
-    await input.register(new GamepadAdapter()); game.start?.(context);
+    game.start?.(context);
     const target = context.state.targets.find(value => (value.action === "left" || value.action === "right") && value.status === "pending");
     assert.ok(target);
     pad.axes[0] = target.action === "left" ? -1 : 1; poll(); game.update(context, 0);
@@ -224,7 +224,7 @@ test("BeatForge standard gamepad trigger swings in the held stick direction", as
     const judged = context.state.judged;
     poll(); game.update(context, 0); assert.equal(context.state.judged, judged);
   } finally {
-    try { game.stop?.(context); await input.destroy(); assert.equal(frames.size, 0); }
+    try { local.close(); game.stop?.(context); await input.destroy(); assert.equal(frames.size, 0); }
     finally { for (const [name, descriptor] of saved) { if (descriptor) Object.defineProperty(globalThis, name, descriptor); else Reflect.deleteProperty(globalThis, name); } }
   }
 });

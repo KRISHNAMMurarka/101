@@ -239,6 +239,13 @@ export class InputBus {
   private readonly listeners = new Set<InputFrameListener>();
   private readonly adapters = new Set<InputAdapter>();
   private readonly bindings = new Set<string>();
+  private readonly subscriptionSources = new Map<string, InputSource>();
+
+  /** Availability belongs to an active subscription, not merely a registered provider. */
+  setSourceAvailability(ownerId: string, source: InputSource, available: boolean) {
+    if (available) this.subscriptionSources.set(ownerId, source);
+    else this.subscriptionSources.delete(ownerId);
+  }
 
   bind(control: string) {
     this.bindings.add(control);
@@ -264,6 +271,7 @@ export class InputBus {
       if (adapter.available === false) continue;
       sources.add(adapter.source);
     }
+    for (const source of this.subscriptionSources.values()) sources.add(source);
     for (const source of extra) sources.add(source);
     return [...sources];
   }
@@ -294,6 +302,7 @@ export class InputBus {
   async destroy() {
     await Promise.all([...this.adapters].map((adapter) => adapter.stop()));
     this.adapters.clear();
+    this.subscriptionSources.clear();
     this.frames.clear();
     this.listeners.clear();
   }
@@ -412,3 +421,6 @@ function parseText(value: unknown, label: string, maxLength: number) {
   }
   return value.trim();
 }
+
+export { createDeviceMapping } from "./device-mapping.ts";
+export type { DeviceMappingOptions, LocalDeviceSnapshot } from "./device-mapping.ts";

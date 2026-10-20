@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { createSettingsTask, createSettingsThemePreview } from './settings-task';
 import type { SettingsAction, SettingsTask, SettingsTaskState, ThemeChoice } from './settings-task';
-import styles from '../connections/connections.module.css';
+import styles from './settings.module.css';
 import appearance from './settings.module.css';
 
 const initial: SettingsTaskState = Object.freeze({ active: false, pending: false, message: 'arrival', theme: 'system',

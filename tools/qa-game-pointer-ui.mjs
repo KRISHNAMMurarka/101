@@ -2,14 +2,20 @@ import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { assertControlReachability, assertReloadPersistence, assertReloadUnmountClosesStore, codeValue, compareAndEnroll, createLocalIdentity, createUiEvidence,
   exchangeOffer, exerciseEnrollmentFailures, exerciseHiddenBeforeApproval, keyboardClick, observeActualIdentityDatabases, observeActualPeers,
-  redactedDiagnostics, reviewTarget, savedKeyId, timeout } from './qa-enrollment-ui.mjs';
-const target = new URL(process.argv[2] ?? 'http://localhost:3001');
-if (!['localhost', '127.0.0.1', '[::1]'].includes(target.hostname)) throw new Error('Use a local server');
-const files = ['examples/device-pipelines/game-pointer-bridge.ts','app/components/InputLab.tsx','app/components/RemotePointerPanel.tsx','packages/device-web/src/pointer-provider.ts','packages/device-web/src/pointer-driver.ts','packages/device-web/src/binding.ts','packages/device-web/src/manual-peer.ts','packages/transport-webrtc/src/peer.ts'];
-const evidence = createUiEvidence('game-pointer-ui-chromium', target, [...files, 'tools/qa-game-pointer-ui.mjs']);
+  redactedDiagnostics, reviewTarget, savedKeyId, timeout } from './qa-game-pointer-support.mjs';
+import { resolve } from 'node:path';
+import { startProdServer } from '../node_modules/vinext/dist/server/prod-server.js';
+const root = resolve(import.meta.dirname, '..');
+const files = ['examples/device-pipelines/game-pointer-bridge.ts', 'app/components/InputLab.tsx', 'app/components/RemotePointerPanel.tsx',
+  'app/components/use-endpoint-identity.ts', 'app/lib/connection-ownership.ts', 'tools/qa-game-pointer-support.mjs', 'tools/qa-game-pointer-ui.mjs'];
+let gameServer, connectServer, evidence;
 let browser, stage = 'browser startup';
 const pages = [];
 try {
+  gameServer = await startProdServer({ port: 0, host: '127.0.0.1', outDir: resolve(root, 'dist'), silent: true });
+  connectServer = await startProdServer({ port: 0, host: '127.0.0.1', outDir: resolve(root, '../uynis-connect/apps/console/dist'), silent: true });
+  const target = new URL(`http://127.0.0.1:${gameServer.port}`), sourceTarget = new URL(`http://127.0.0.1:${connectServer.port}`);
+  evidence = createUiEvidence('game-pointer-ui-chromium', target, files);
   browser = await chromium.launch({ headless: true });
   const sourceContext = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: 'reduce' });
   const receiverContext = await browser.newContext({ viewport: { width: 1440, height: 1100 }, reducedMotion: 'reduce' });
@@ -26,7 +32,7 @@ try {
   const source = await sourceContext.newPage(), receiver = await receiverContext.newPage(), errors = [];
   pages.push(source, receiver);
   for (const page of [source,receiver]) page.on('pageerror',error=>errors.push(error.name));
-  await Promise.all([source.goto(new URL('/pointer-lab',target).href),receiver.goto(new URL('/studio/input',target).href)]);
+  await Promise.all([source.goto(new URL('/pointer-lab',sourceTarget).href),receiver.goto(new URL('/studio/input',target).href)]);
   await Promise.all([source.waitForLoadState('networkidle'),receiver.waitForLoadState('networkidle')]);
   await receiver.getByText('Remote pointer resources',{exact:true}).click();
   await keyboardClick(source, source.getByRole('button',{name:'Send pointer',exact:true}));
@@ -53,7 +59,16 @@ try {
   const rejectionChecks = await exerciseEnrollmentFailures(source, receiver, selectors, noOutput);
   stage = 'Studio visibility loss before resource approval';
   const visibilityCheck = await exerciseHiddenBeforeApproval(source, receiver, selectors, noOutput);
+  const pairingBaselines = [];
   async function pair() {
+    // Input Lab displays a 90 ms flash for an accepted press. Release neutralizes
+    // input immediately, but does not erase that feedback. Let the prior approved
+    // action finish before testing a new invitation; assertions after new input
+    // remain immediate so an unauthorized press cannot be hidden by this wait.
+    const started = performance.now(), previousFlash = await receiver.locator('.lab-page.is-triggered').count() > 0;
+    await aim(0.5, 0.5);
+    await receiver.locator('.lab-page.is-triggered').waitFor({ state: 'detached', timeout: 1000 });
+    pairingBaselines.push({ previousFlash, settledMs: Math.round(performance.now() - started) });
     stage = 'Studio invitation and independently reviewed source target';
     await keyboardClick(source, source.getByRole('button', { name: 'Send pointer', exact: true }));
     await keyboardClick(receiver, receiver.getByRole('button', { name: 'Create invitation', exact: true }));
@@ -107,10 +122,14 @@ try {
     assertReloadUnmountClosesStore(receiver, receiverDatabase, 'Back to 101', '/'),
   ]);
   assert.deepEqual(errors,[]);
-  evidence.record('passed', {scope:'Actual Studio DOM invitation and local source review, persisted endpoint keys, bilateral comparison consent and separate aim/trigger mapping permission over real browser WebRTC. Source pointer/key events feed original canvas renderer; arc instrumentation observes rendering without simulated bus frames. Native, physical and account acceptance remains separate.',browser:'chromium',version:browser.version(),
-    result:{rejectionChecks,visibilityCheck,storeCleanup,identityReloadPreserved:true,sourceOnlyEnrollmentBlocked:true,separateGamePermission:true,centered,contactBegin,diagonal,keyboardAim,released,
+  evidence.record('passed', {sourceTarget: sourceTarget.href, scope:'Actual Studio DOM invitation and local source review, persisted endpoint keys, bilateral comparison consent and separate aim/trigger mapping permission over real browser WebRTC. Source pointer/key events feed original canvas renderer; arc instrumentation observes rendering without simulated bus frames. Native, physical and account acceptance remains separate.',browser:'chromium',version:browser.version(),
+    result:{rejectionChecks,visibilityCheck,storeCleanup,pairingBaselines,identityReloadPreserved:true,sourceOnlyEnrollmentBlocked:true,separateGamePermission:true,centered,contactBegin,diagonal,keyboardAim,released,
       deletionNeutral,freshKeyReenrolled,narrowKeyboardAim,widths,narrowReachability,heldPositionDoesNotRetrigger:true,errors}});
 } catch(error) {
-  await Promise.all(pages.map((page,index)=>evidence.screenshot(page,`failed-${index}`).catch(()=>{})));
-  evidence.record('failed',{browser:'chromium',version:browser?.version(),stage,errorType:error.name,diagnostic:await redactedDiagnostics(pages)});
-} finally {await browser?.close();}
+  await Promise.all(pages.map((page,index)=>evidence?.screenshot(page,`failed-${index}`).catch(()=>{})));
+  evidence?.record('failed',{browser:'chromium',version:browser?.version(),stage,errorType:error.name,errorMessage:error.message,errorStack:error.stack,diagnostic:await redactedDiagnostics(pages)});
+  process.exitCode = 1;
+} finally {
+  await browser?.close();
+  for (const server of [gameServer, connectServer]) if (server) { server.server.closeAllConnections(); await new Promise((done, reject) => server.server.close(error => error ? reject(error) : done())); }
+}

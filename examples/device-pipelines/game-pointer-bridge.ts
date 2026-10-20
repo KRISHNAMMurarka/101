@@ -1,6 +1,6 @@
 import { INPUT_SOURCES, parseInputManifest, type InputFrame, type InputManifest, type InputSource } from '@101/input';
-import { createDeviceRuntime, parseDeviceDescriptor, parseSignalValue, pointerSourceDescriptor, RemoteResourceReceiver, schemasCompatible } from '@101/connect';
-import type { DeviceDescriptor, Observation, ResourcePeer, RouteGrant } from '@101/connect';
+import { createPointerResourceConnection, parseDeviceDescriptor, parseSignalValue, pointerSourceDescriptor, schemasCompatible } from '@uynis-connect/connect';
+import type { Observation, EndpointIdentity, ReceiverInvitation } from '@uynis-connect/connect';
 
 /** App-owned declaration of the diagnostic's existing controls, not a new game manifest. */
 export const INPUT_LAB_POINTER_MANIFEST: InputManifest = {
@@ -88,49 +88,16 @@ export function createGamePointerBridge(options: GamePointerBridgeOptions) {
   };
 }
 
-export interface GamePointerReceiverOptions extends GamePointerBridgeOptions { peer: ResourcePeer; epoch: string; authentication?: 'local-diagnostic' }
-/** Receiver/sinks are app-owned. select is called only by the resource consent control. */
+export interface GamePointerReceiverOptions extends GamePointerBridgeOptions { identity: EndpointIdentity; invitation: ReceiverInvitation }
+/** Game scope and mapping remain local; the SDK owns the authorized connection and resource sinks. */
 export function createGamePointerReceiver(options: GamePointerReceiverOptions) {
-  const bridge = createGamePointerBridge(options), scope = Object.freeze({ ...options.scope }), now = options.now;
-  const sinkDevice: DeviceDescriptor = { ...pointerSourceDescriptor('browser-application'), id: 'application-pointer-controls',
-    label: 'Application pointer controls', capabilities: pointerSourceDescriptor().capabilities.map(capability => ({
-      ...capability, kind: 'property', permissions: ['write'], ownership: { mode: 'exclusive' },
-    })) };
-  let selection: ReturnType<typeof pointerCapabilities> | undefined, grant: Readonly<RouteGrant> | undefined;
-  let closed = false;
-  const runtime = createDeviceRuntime({ now, clockDomain: scope.clockDomain, authorize(request) {
-    if (!grant || !selection || request.principalId !== 'local-input-lab-owner' || request.applicationId !== scope.applicationId ||
-      request.sessionId !== scope.sessionId || request.source.deviceId !== selection.source.id || request.sink.deviceId !== sinkDevice.id ||
-      !(['position', 'contact'] as const).some(kind => request.source.capabilityId === selection![kind].id && request.sink.capabilityId === kind)) return;
-    return grant;
-  } });
-  const sinks = new Map((['position', 'contact'] as const).map(kind => {
-    const handle = runtime.registerSink({ device: sinkDevice, capability: kind,
-      apply(observation, context) { bridge.apply(kind, observation, () => context.isCurrent()); }, release(reason) { bridge.stop(reason); } });
-    runtime.setReadiness(handle, 'available'); return [kind, handle];
-  }));
-  const receiver = new RemoteResourceReceiver({ peer: options.peer, epoch: options.epoch, runtime, now,
-    authentication: options.authentication,
-    clockId: scope.clockDomain, principalId: 'local-input-lab-owner', applicationId: scope.applicationId,
-    sessionId: scope.sessionId, onStatus: options.onStatus });
-  function stop() {
-    if (closed) return; closed = true;
-    bridge.stop(); receiver.stop(); runtime.close(); selection = undefined; grant = undefined;
-  }
+  const bridge=createGamePointerBridge(options);
+  const connection=createPointerResourceConnection({identity:options.identity,invitation:options.invitation,clockDomain:options.scope.clockDomain,now:options.now,
+    onObservation(kind,observation,isCurrent){bridge.apply(kind,observation,isCurrent);},onRelease(reason){bridge.stop(reason);} });
   return {
-    receiver, bridge,
-    select(): boolean {
-      if (closed || grant) return false;
-      try { selection = pointerCapabilities(receiver.description()); } catch { return false; }
-      if (!bridge.approve(selection.source)) return false;
-      grant = Object.freeze({ expiresAt: now() + 60000, maxHz: 60, maxAgeMs: 100 });
-      for (const kind of ['position', 'contact'] as const) {
-        if (receiver.approve({ capability: selection[kind].id, sink: sinks.get(kind)!, sinkDevice, sinkCapability: kind,
-          grant, codec: kind === 'position' ? 'normalized-pointer/1' : 'json/1' }) === undefined) { stop(); return false; }
-      }
-      return true;
-    },
-    tick() { if (closed) return; receiver.tick(); if (bridge.state().stopped || receiver.status().stopped) stop(); },
-    stop,
+    connection, receiver:connection, bridge,
+    select(){if(!bridge.approve(connection.description()))return false;if(!connection.select()){bridge.stop();return false;}return true;},
+    tick(){connection.tick();if(bridge.state().stopped)connection.close();},
+    stop(){bridge.stop();connection.close();},
   };
 }

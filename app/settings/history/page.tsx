@@ -1,8 +1,6 @@
-import type { Metadata } from 'next';
-import HistoryView from './HistoryView';
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../../lib/connect-console";
 
-export const metadata: Metadata = {
-  title: '101 — History on this browser',
-  description: 'Choose whether to keep this page’s size or position, then separately review download or removal.',
-};
-export default function HistoryPage() { return <HistoryView />; }
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/settings/history"));
+}

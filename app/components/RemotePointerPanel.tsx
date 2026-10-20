@@ -1,8 +1,7 @@
 'use client';
 
-import { AuthenticatedResourcePeer, createReceiverInvitation, decodeManualPeerCode, encodeManualPeerCode,
-  encodeReceiverInvitation, receiverInvitationCurrent, webEndpointCrypto, PeerDataTransport } from '@101/connect';
-import type { ReceiverInvitation } from '@101/connect';
+import { createReceiverInvitation, encodeReceiverInvitation, receiverInvitationCurrent, webEndpointCrypto } from '@uynis-connect/connect';
+import type { ReceiverInvitation } from '@uynis-connect/connect';
 import type { InputFrame } from '@101/input';
 import { createGamePointerReceiver, INPUT_LAB_POINTER_MANIFEST } from '@/examples/device-pipelines/game-pointer-bridge';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -11,7 +10,7 @@ import { createConnectionOwnership } from '@/app/lib/connection-ownership';
 import { copyInvitationLink } from '@/app/lib/invitation-copy';
 
 type Receiver = ReturnType<typeof createGamePointerReceiver>;
-type Connection = { peer: PeerDataTransport; auth: AuthenticatedResourcePeer; receiver: Receiver; invitation: ReceiverInvitation; confirmed: boolean; admitted: boolean; dispose: () => void };
+type Connection = { receiver: Receiver; invitation: ReceiverInvitation; confirmed: boolean; admitted: boolean; dispose: () => void };
 type Snapshot = { described: boolean; clockReady: boolean; active: number; stopped: boolean; comparison?: string; confirmed?: boolean; enrolled?: boolean };
 const EMPTY: Snapshot = { described: false, clockReady: false, active: 0, stopped: false };
 
@@ -76,40 +75,38 @@ export default function RemotePointerPanel({ sessionId, acceptFrame, removeDevic
     const target = invitation.current, key = identity.identity;
     generation.current++; connection.current.discard(); setHasCandidate(false); setSnapshot(EMPTY); setAnswer(''); setBusy(true);
     const id = generation.current;
-    let peer: PeerDataTransport | undefined;
+    let pendingReceiver: Receiver | undefined;
     try {
       if (!target || !key || !receiverInvitationCurrent(target, Date.now()) || target.applicationId !== INPUT_LAB_POINTER_MANIFEST.game || target.sessionId !== sessionId) throw new Error();
-      const code = decodeManualPeerCode(offer, 'offer', target.epoch);
-      peer = new PeerDataTransport({ initiator: false });
-      const selectedPeer = peer;
-      const auth = new AuthenticatedResourcePeer({ transport: peer, identity: key, crypto: webEndpointCrypto, ...target,
-        role: 'receiver', now: () => performance.now() });
-      const receiver = createGamePointerReceiver({ peer: auth, epoch: target.epoch, manifest: INPUT_LAB_POINTER_MANIFEST,
+      const receiver = createGamePointerReceiver({ identity: key, invitation: target, manifest: INPUT_LAB_POINTER_MANIFEST,
         scope: { applicationId: target.applicationId, sessionId: target.sessionId, playerId: 'player-1', roleId: 'classic',
-          deviceId: `remote-pointer-${code.epoch}`, clockDomain: `input-lab:${code.epoch}` },
+          deviceId: `remote-pointer-${target.epoch}`, clockDomain: `input-lab:${target.epoch}` },
         mapping: { vector: 'aim', action: 'trigger', coordinates: 'normalized-to-signed', source: 'custom' },
         emit: acceptFrame, removeDevice, now: () => performance.now() });
-      const selected: Connection = { peer, auth, receiver, invitation: target, confirmed: false, admitted: false, dispose() { clearInterval(timer); detach(); receiver.stop(); auth.stop(); void selectedPeer.disconnect(); } };
+      pendingReceiver = receiver;
+      const selected: Connection = { receiver, invitation: target, confirmed: false, admitted: false, dispose() { clearInterval(timer); detach(); receiver.stop(); } };
       const owned = () => connection.current.current() === selected || connection.current.pending() === selected;
       const retire = (reason: string) => {
         const wasSelected = connection.current.selected() === selected;
         connection.current.retire(selected); setHasOwner(!!connection.current.current()); setHasCandidate(!!connection.current.pending());
-        if (wasSelected) { setSnapshot({ ...EMPTY, stopped: true }); setMessage(reason); }
+        if (wasSelected) {
+          setSnapshot({ ...EMPTY, stopped: true });
+          setMessage(connection.current.current() ? reason : `${reason} Aim is neutral and trigger is released.`);
+        }
       };
       const refresh = () => {
         if (!owned()) return;
         if (!selected.admitted && !receiverInvitationCurrent(target, Date.now())) {
           retire('Invitation expired. Create a fresh invitation and repeat comparison.'); return;
         }
-        auth.tick();
         if (!owned()) return;
         receiver.tick();
-        const enrollment = auth.status();
+        const enrollment = receiver.connection.enrollment();
         if (!selected.admitted && !receiverInvitationCurrent(target, Date.now())) {
           retire('Invitation expired. Create a fresh invitation and repeat comparison.'); return;
         }
         const state = receiver.receiver.status(), bridge = receiver.bridge.state();
-        if (state.stopped || bridge.stopped || enrollment.phase === 'stopped' || selectedPeer.state === 'failed' || selectedPeer.state === 'disconnected') {
+        if (state.stopped || bridge.stopped || enrollment.phase === 'stopped' || receiver.connection.connectionState() === 'failed' || receiver.connection.connectionState() === 'disconnected') {
           retire('Connection ended. Use a fresh offer.'); return;
         }
         if (connection.current.selected() !== selected) return;
@@ -120,7 +117,7 @@ export default function RemotePointerPanel({ sessionId, acceptFrame, removeDevic
         else if (enrollment.phase === 'awaiting-enrollment') setMessage(next.confirmed ? 'Waiting for the source to confirm the matching code.' : 'Compare every character of the verified code on both screens, then confirm only if they match.');
         else if (enrollment.phase === 'active') setMessage('Connection verified. Review the mapping and allow aim and trigger.');
       };
-      const detach = auth.onStateChange(state => {
+      const detach = receiver.connection.onStateChange(state => {
         if (!owned()) return;
         if (state === 'failed' || state === 'disconnected') { retire('Connection lost. Use a fresh offer.'); }
         else if (state === 'connected') {
@@ -133,19 +130,19 @@ export default function RemotePointerPanel({ sessionId, acceptFrame, removeDevic
       connection.current.stage(selected); setHasCandidate(true);
       setInvitationCode('');
       setMessage('Preparing a local answer…');
-      const description = await peer.acceptOffer(code.description);
+      const description = await receiver.connection.acceptOffer(offer);
       if (generation.current !== id) return;
-      setAnswer(encodeManualPeerCode(code.epoch, description));
+      setAnswer(description);
       setMessage('Copy the answer to the source, then compare the verified connection code on both screens.');
     } catch {
-      if (generation.current === id) { connection.current.discard(); setHasCandidate(false); void peer?.disconnect(); setMessage('Could not use this offer. The current pointer is unchanged. Create a fresh invitation and use its matching complete offer.'); }
+      if (generation.current === id) { connection.current.discard(); setHasCandidate(false); pendingReceiver?.stop(); setMessage('Could not use this offer. The current pointer is unchanged. Create a fresh invitation and use its matching complete offer.'); }
     }
     finally { if (generation.current === id) setBusy(false); }
   };
   const confirm = () => {
     const selected = connection.current.selected(), displayed = snapshot.comparison;
     if (selected && !selected.admitted && !receiverInvitationCurrent(selected.invitation, Date.now())) { connection.current.discard(selected); setHasCandidate(false); setMessage('Invitation expired. Create a fresh invitation.'); return; }
-    if (!selected || !displayed || !selected.auth.confirmEnrollment(displayed)) { setMessage('The comparison expired. Create a fresh invitation.'); return; }
+    if (!selected || !displayed || !selected.receiver.connection.confirmEnrollment(displayed)) { setMessage('The comparison expired. Create a fresh invitation.'); return; }
     selected.confirmed = true; setSnapshot(previous => ({ ...previous, confirmed: true }));
     setMessage('Confirmed here. Waiting for the source to confirm.');
   };

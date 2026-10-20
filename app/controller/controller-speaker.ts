@@ -1,5 +1,5 @@
-import { Audio101, type PlayOptions, type ToneOptions } from "@101/audio";
-import type { SpeakerCueMessage } from "@101/protocol";
+import { AudioPlayback as Audio101, type PlayOptions, type ToneOptions } from "@uynis-connect/connect";
+import type { SpeakerCueMessage } from "../../packages/game-host/src/game-protocol.ts";
 
 export interface ControllerCueAudio {
   registerTone(id: string, options: ToneOptions): void;

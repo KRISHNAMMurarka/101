@@ -1,20 +1,51 @@
-name: Local application gate
+name: Games application gate
 on: [push, pull_request]
 permissions:
   contents: read
 jobs:
   gate:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 101
     steps:
       - uses: actions/checkout@v4
+        with:
+          path: 101
+          fetch-depth: 0
+      # The sibling repository is private. Its read credential is an external
+      # integration requirement; an absent credential must not produce a green gate.
+      - name: Require access to the platform dependency
+        env:
+          CONNECT_READ_TOKEN: ${{ secrets.CONNECT_READ_TOKEN }}
+        run: |
+          if [ -z "$CONNECT_READ_TOKEN" ]; then
+            echo 'Connect checkout requires the repository CONNECT_READ_TOKEN secret. External integration remains deferred until configured.'
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+        with:
+          repository: edilec-global/uynis-connect
+          ref: 65c1aa59e1f5ee6cc7aa7c1857a69b11afb51134
+          token: ${{ secrets.CONNECT_READ_TOKEN }}
+          path: uynis-connect
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
+          cache-dependency-path: |
+            101/package-lock.json
+            uynis-connect/package-lock.json
+      - run: npm ci --prefix ../uynis-connect
+      - run: npm run build:sdk --prefix ../uynis-connect
       - run: npm ci
-      # Rendered HTML tests must consume this revision's production build.
+      # Rendered HTML checks always consume this revision's production build.
       - run: npm run build
       - run: npx tsc --noEmit
       - run: npm run lint
       - run: npm run test:unit
       - run: node --test tests/rendered-html.test.mjs
+      - run: node tools/audit-platform-records.mjs
+      - run: npm run license:inventory
+      - run: git diff --exit-code THIRD_PARTY_LICENSES.json
+      - run: npm run audit:production

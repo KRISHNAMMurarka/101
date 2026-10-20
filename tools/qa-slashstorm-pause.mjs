@@ -1,3 +1,4 @@
+import { connectSdkFiles } from './connect-sdk-provenance.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -10,7 +11,7 @@ const root = resolve(import.meta.dirname, '..');
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const paths = ['games/slashstorm/src/game.ts', 'games/slashstorm/src/roles.ts', 'games/slashstorm/input.manifest.json',
   'app/components/SlashstormGame.tsx', 'app/components/GameControllerOverlay.tsx', 'app/components/game-controller-input.ts',
-  'packages/adapter-keyboard/src/index.ts', 'tools/qa-slashstorm-pause.mjs'];
+  ...connectSdkFiles(root), 'tools/qa-slashstorm-pause.mjs'];
 const sourceSha256 = Object.fromEntries(paths.map(path => [path, hash(readFileSync(resolve(root, path)))]));
 const buildSha256 = hash(readFileSync(resolve(root, 'dist/server/index.js'))), results = [];
 let app;

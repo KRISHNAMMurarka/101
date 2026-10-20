@@ -3,10 +3,8 @@
 import { observeCanvasViewport, type CanvasViewport } from "./camera/canvas-viewport";
 import GameControllerOverlay from "./GameControllerOverlay";
 
-import { GamepadAdapter } from "@101/adapter-gamepad";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { defineGamePackage } from "@101/sdk";
-import type { SessionSnapshot } from "@101/session";
+import type { SessionSnapshot } from "../../packages/game-host/src/game-session.ts";
 import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
 import { Icon } from "@/app/components/Icon";
@@ -63,7 +61,6 @@ export default function OrbitalCrewGame({ sessionId, onConnect, onExit }: { sess
       controllers: ORBITAL_CREW_ROLES,
       game: createOrbitalCrewGame(`orbitalcrew-${run}`),
     }),
-    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
     onReady: ({ context: engineContext, host }) => {
       const canvas = canvasRef.current;
       if (!canvas) return;

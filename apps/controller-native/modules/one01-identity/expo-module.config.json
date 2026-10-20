@@ -1,5 +1,0 @@
-{
-  "platforms": ["ios", "android"],
-  "ios": { "modules": ["One01IdentityModule"] },
-  "android": { "modules": ["com.oneohone.link.identity.One01IdentityModule"] }
-}

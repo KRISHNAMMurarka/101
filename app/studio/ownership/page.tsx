@@ -1,5 +1,6 @@
-import type { Metadata } from 'next';
-import OwnershipLab from './OwnershipLab';
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../../lib/connect-console";
 
-export const metadata: Metadata = { title: '101 Input ownership', description: 'Review local input requests, transfers, partition assignment and release.' };
-export default function OwnershipPage() { return <OwnershipLab />; }
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/studio/ownership"));
+}

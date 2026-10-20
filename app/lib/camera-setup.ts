@@ -1,5 +1,5 @@
-import type { CameraFailure } from "@101/adapter-camera";
-import type { HandSignals, PlacementIssue, PoseSignals } from "@101/vision";
+import type { CameraFailure } from "@uynis-connect/connect";
+import type { HandSignals, PlacementIssue, PoseSignals } from "@uynis-connect/connect";
 
 import type { CameraKind } from "./camera-plan.ts";
 
@@ -188,7 +188,7 @@ export const SETUP_COPY: Readonly<Record<SetupStep, { readonly title: string; re
 /** Placement alone is not a gesture: use the classifier that drives the actual game. */
 export function confirmsCameraGesture(signals: PoseSignals | HandSignals, previousArmsRaised: boolean, allowStep: boolean) {
   if ("gestures" in signals) return signals.gestures.openPalm;
-  return signals.combat.special || (signals.actions.armsRaised && !previousArmsRaised)
+  return signals.upperBody.armsRaisedEdge || (signals.actions.armsRaised && !previousArmsRaised)
     || (allowStep && (signals.actions.stepLeft || signals.actions.stepRight));
 }
 

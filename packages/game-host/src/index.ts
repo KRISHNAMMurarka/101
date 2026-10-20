@@ -2,13 +2,13 @@ import { Engine101 } from "@101/core";
 import {
   InputBus,
   resolveInputManifest,
-  type InputAdapter,
   type InputSource,
   type ResolvedInputManifest,
 } from "@101/input";
-import type { LinkTransport } from "@101/protocol";
+import type { ApplicationChannel } from "@uynis-connect/connect";
+import { createGameApplicationLink } from "./game-application-channel.ts";
 import type { GamePackage } from "@101/sdk";
-import { LocalSession, SessionHost, sessionSources, type SessionSnapshot } from "@101/session";
+import { LocalSession, SessionHost, sessionSources, type SessionSnapshot } from "./game-session.ts";
 
 /**
  * What the running game needs, matched against what is actually plugged in or paired.
@@ -24,8 +24,7 @@ export interface InputReadiness extends ResolvedInputManifest {
 }
 
 export interface GameHostOptions {
-  transport: LinkTransport;
-  adapters?: readonly InputAdapter[];
+  channel: ApplicationChannel;
   inputBus?: InputBus;
   /**
    * The session to host under.
@@ -47,7 +46,6 @@ export interface GameHostOptions {
 export class GameHost101 {
   readonly inputBus: InputBus;
   readonly session: SessionHost;
-  private readonly adapters: readonly InputAdapter[];
   private engine?: Engine101<unknown>;
   private connected = false;
   private connecting?: Promise<void>;
@@ -59,11 +57,10 @@ export class GameHost101 {
 
   constructor(options: GameHostOptions) {
     this.inputBus = options.inputBus ?? new InputBus();
-    this.adapters = options.adapters ?? [];
     this.session = new SessionHost({
       gameId: "launcher",
       roles: [],
-      transport: options.transport,
+      transport: createGameApplicationLink(options.channel),
       ...(options.session ? { session: options.session } : {}),
       onFrame: (frame) => this.inputBus.accept(frame),
       onDeviceReset: (deviceId) => this.inputBus.removeDevice(deviceId),
@@ -99,18 +96,12 @@ export class GameHost101 {
   }
 
   private async openConnection() {
-    await Promise.all(this.adapters.map((adapter) => this.inputBus.register(adapter)));
     // Local hardware alone answers "can this game be played on this machine?", and that answer does
     // not improve by waiting for a transport. Reporting here keeps a status bar from sitting on
     // "detecting" for the length of a LAN negotiation, which on a slow link is seconds, not a tick.
     this.refreshReadiness();
-    try {
-      await this.session.start();
-      this.connected = true;
-    } catch (error) {
-      await Promise.all(this.adapters.map((adapter) => this.inputBus.unregister(adapter)));
-      throw error;
-    }
+    await this.session.start();
+    this.connected = true;
   }
 
   launch<State>(gamePackage: GamePackage<State>) {
@@ -184,6 +175,8 @@ export class GameHost101 {
   ) {
     return this.session.sendControllerState(roleId, values, options);
   }
+
+  refreshInputReadiness() { this.refreshReadiness(); }
 
   private refreshReadiness(snapshot = this.session.session.snapshot()) {
     const active = this.active;

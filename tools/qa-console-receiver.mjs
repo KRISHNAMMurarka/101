@@ -7,13 +7,13 @@ import { build, version as viteVersion } from 'vite';
 import { chromium, webkit } from 'playwright';
 
 const root = resolve(import.meta.dirname, '..'), app = join(root, 'apps/console-receiver'), out = join(root, 'release/console-receiver');
-const evidence = join(root, 'outputs/controllers/2026-10-18-console-receiver'); mkdirSync(evidence, { recursive: true });
+const evidence = join(root, `outputs/migration/2026-10-20/journeys-console-${new Date().toISOString().replaceAll(/[:.]/g, '-')}`); mkdirSync(evidence, { recursive: false });
 const hash = bytes => createHash('sha256').update(bytes).digest('hex'), closure = new Map();
 const pin = () => ({ name: 'pin-console-receiver-source', generateBundle() {
   for (const id of this.getModuleIds()) if (id.startsWith(root + '/') && !id.includes('/node_modules/') && !id.includes('?') && statSync(id).isFile()) closure.set(relative(root, id), hash(readFileSync(id)));
 } });
 await build({ configFile: false, root: app, base: './', plugins: [pin()], build: { outDir: join(out, 'web'), emptyOutDir: true, target: 'es2022', assetsInlineLimit: 0 } });
-await build({ configFile: false, root: app, plugins: [pin()], build: { outDir: join(out, 'qa'), emptyOutDir: true, target: 'es2022',
+await build({ configFile: false, root: app, define: { 'process.env.NODE_ENV': '"production"' }, plugins: [pin()], build: { outDir: join(out, 'qa'), emptyOutDir: true, target: 'es2022',
   lib: { entry: join(app, 'qa/source.ts'), formats: ['es'], fileName: () => 'source.js' } } });
 for (const path of ['package.json', 'package-lock.json', 'apps/console-receiver/index.html', 'apps/console-receiver/build.mjs', 'apps/console-receiver/serve.mjs', 'apps/console-receiver/README.md', 'apps/console-receiver/qa/source.html', 'tools/qa-console-receiver.mjs', 'tests/console-receiver.test.ts', ...readdirSync(join(app, 'windows')).map(name => 'apps/console-receiver/windows/' + name)]) closure.set(path, hash(readFileSync(join(root, path))));
 const server = createServer((request, response) => {
@@ -29,6 +29,7 @@ const origin = `http://127.0.0.1:${server.address().port}`, receipts = [];
 try {
   for (const engine of [chromium, webkit]) {
     const browser = await engine.launch({ headless: true }), context = await browser.newContext({ viewport: { width: 1100, height: 900 } });
+    context.setDefaultTimeout(15000);
     try {
       const receiver = await context.newPage(), source = await context.newPage(), errors = [], foreign = [];
       for (const page of [receiver, source]) { page.on('pageerror', error => errors.push(error.message)); page.on('request', request => { if (!request.url().startsWith(origin + '/')) foreign.push(request.url()); });
@@ -98,6 +99,9 @@ try {
       await receiver.goto('about:blank');
       assert.deepEqual(errors, []); assert.deepEqual(foreign, []);
       receipts.push({ engine: engine.name(), version: browser.version(), status: 'pass', checks: ['inert-before-invitation', 'stale-identity-result-cancelled', 'actual-native-RTC-offer-answer', 'exact-application-session-review', 'both-owner-comparison', 'separate-resource-denial-and-grant', 'actual-owned-DOM-pointer-contact', 'keyboard-approval', 'responsive-layout', 'stop-closes-native-peers-and-clears-held-input', 'hidden-stop-and-no-auto-reconnect', 'source-disconnect-releases-held-input', 'connection-one-minute-expiry', 'invalid-offer-denied', 'cancel-clears-request', 'invitation-expiry'] });
+    } catch (error) {
+      writeFileSync(join(evidence, `failure-${engine.name()}.json`), JSON.stringify({ message: error.message, stack: error.stack, receipts }, null, 2) + '\n');
+      throw error;
     } finally { await context.close(); await browser.close(); }
   }
   const artifacts = {};

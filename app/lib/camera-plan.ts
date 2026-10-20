@@ -16,7 +16,7 @@
  * of a camera that reverses their movements, which is worse than asking them again.
  */
 
-import { COMMITTED_POSE_MODELS } from "@101/vision";
+import { COMMITTED_POSE_MODELS } from "@uynis-connect/connect";
 
 export type CameraKind = "body" | "hands";
 

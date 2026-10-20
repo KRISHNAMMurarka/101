@@ -10,7 +10,7 @@ import {
   parseControllerLayout,
   type ControllerLayout,
   type DeviceCapabilities,
-} from "@101/protocol";
+} from "@uynis-connect/connect";
 
 export type RendererKind = "2d" | "3d" | "video";
 export type GameRuntime = "local" | "hosted" | "streamed";

@@ -25,7 +25,7 @@ test('the production gate rejects a package-wide review without named advisory i
     for (const name of ['audit-production.mjs', 'production-advisory-policy.mjs']) {
       copyFileSync(new URL(`../tools/${name}`, import.meta.url), join(directory, 'tools', name));
     }
-    const { reviewed } = JSON.parse(readFileSync(new URL('../security/build-tooling-advisories.json', import.meta.url), 'utf8'));
+    const { reviewed } = JSON.parse(readFileSync(new URL('./fixtures/production-advisory-review/braces-reviewed-record.json', import.meta.url), 'utf8'));
     const record = { ...reviewed.find((value: { package: string }) => value.package === 'braces') };
     delete record.advisoryIds;
     writeFileSync(join(directory, 'security/build-tooling-advisories.json'), JSON.stringify({ reviewed: [record] }));
@@ -53,7 +53,7 @@ test('an advisory-specific review cannot accept another actual advisory on the s
     copyFileSync(new URL('../tools/audit-production.mjs', import.meta.url), join(directory, 'tools/audit-production.mjs'));
     const helper = new URL('../tools/production-advisory-policy.mjs', import.meta.url);
     if (existsSync(helper)) copyFileSync(helper, join(directory, 'tools/production-advisory-policy.mjs'));
-    const { reviewed } = JSON.parse(readFileSync(new URL('../security/build-tooling-advisories.json', import.meta.url), 'utf8'));
+    const { reviewed } = JSON.parse(readFileSync(new URL('./fixtures/production-advisory-review/braces-reviewed-record.json', import.meta.url), 'utf8'));
     const record = reviewed.find((value: { package: string }) => value.package === 'braces');
     assert.ok(record);
     writeFileSync(join(directory, 'security/build-tooling-advisories.json'), JSON.stringify({ reviewed: [record] }));

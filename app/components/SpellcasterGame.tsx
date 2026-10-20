@@ -2,9 +2,7 @@
 
 import GameControllerOverlay from "./GameControllerOverlay";
 
-import { GamepadAdapter } from "@101/adapter-gamepad";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { Audio101 } from "@101/audio";
+import { AudioPlayback as Audio101 } from "@uynis-connect/connect";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
@@ -58,9 +56,9 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
     classifier: { stableFrames: 3, gestureCooldownMs: 430 },
     // The arcane feed names the gesture that was just recognised, which only the diagnostics carry.
     onDiagnostics: (diagnostics) => {
-      const active = diagnostics.signals.activated.at(-1);
+      const active = diagnostics.activated.at(-1);
       if (active) setGesture(handGestureLabel(active));
-      else if (!diagnostics.signals.hand) setGesture("SHOW A HAND");
+      else if (!diagnostics.present) setGesture("SHOW A HAND");
     },
   });
 
@@ -73,7 +71,6 @@ export default function SpellcasterGame({ sessionId, onConnect, onExit }: { sess
       controllers: SPELLCASTER_ROLES,
       game: createSpellcasterGame(`spellcaster-${run}`),
     }),
-    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
     onReady: ({ context, host }) => {
       const canvas = canvasRef.current;
       if (!canvas) return;

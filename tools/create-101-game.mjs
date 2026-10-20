@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { mkdir, stat, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
-import { createGameScaffold } from "../packages/devkit/src/index.ts";
+import { createGameScaffold } from "../packages/sdk/src/scaffold.ts";
 
 const [id, suppliedName, suppliedRenderer] = process.argv.slice(2);
 if (!id) {

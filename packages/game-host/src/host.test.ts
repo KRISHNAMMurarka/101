@@ -1,19 +1,26 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { ControlMessage, LinkMessage, LinkTransport, RealtimeMessage } from "@101/protocol";
+import { encodeControlApplicationMessage, parseControlApplicationMessage, type ApplicationChannel, type ApplicationMessage, type ApplicationPeer, type ControlApplicationMessage } from "@uynis-connect/connect";
+import { InputBus } from "@101/input";
 import { Game101 } from "@101/sdk";
 import { GameHost101 } from "./index.ts";
 
-class MemoryTransport implements LinkTransport {
-  listener?: (message: LinkMessage) => void;
+class MemoryTransport implements ApplicationChannel {
+  listener?: (message: ApplicationMessage) => void;
   connected = false;
-  readonly reliable: ControlMessage[] = [];
-  readonly realtime: RealtimeMessage[] = [];
+  readonly reliable: ControlApplicationMessage[] = [];
+  readonly realtime: ControlApplicationMessage[] = [];
   async connect() { this.connected = true; }
-  async disconnect() { this.connected = false; }
-  sendReliable(message: ControlMessage) { this.reliable.push(message); }
-  sendRealtime(message: RealtimeMessage) { this.realtime.push(message); }
-  onMessage(callback: (message: LinkMessage) => void) { this.listener = callback; return () => { this.listener = undefined; }; }
+  async close() { this.connected = false; }
+  send(payload: string | Uint8Array, options: { delivery: 'reliable' | 'disposable'; targetDeviceId?: string }) {
+    if (typeof payload !== 'string') return false;
+    (options.delivery === 'reliable' ? this.reliable : this.realtime).push(parseControlApplicationMessage(JSON.parse(payload))); return true;
+  }
+  subscribe(callback: (message: ApplicationMessage) => void) { this.listener = callback; return () => { this.listener = undefined; }; }
+  onPeerLost(callback: (peer: ApplicationPeer) => void) { void callback; return () => {}; }
+  emit(payload: ControlApplicationMessage, delivery: 'reliable' | 'disposable' = 'reliable') {
+    this.listener?.({ payload: encodeControlApplicationMessage(payload), delivery, peer: { peerId: 'peer-phone', deviceId: 'phone', wireDeviceId: 'phone', trust: 'paired' } });
+  }
 }
 
 class DeferredConnectTransport extends MemoryTransport {
@@ -36,7 +43,7 @@ test("launches an independent package and routes controller frames through the s
   let host: GameHost101 | undefined;
   try {
     const transport = new MemoryTransport();
-    host = new GameHost101({ transport });
+    host = new GameHost101({ channel: transport });
     const gamePackage = Game101.package({
       manifest: { id: "host-test", name: "Host Test", version: "1.0.0", engine: "^1", renderer: "2d", players: { min: 1, max: 1 }, inputs: ["touch"], offline: true, procedural: false, controllers: { basic: ["touch"] } },
       input: { game: "host-test", actions: { fire: { recommended: ["touch"] } } },
@@ -44,26 +51,22 @@ test("launches an independent package and routes controller frames through the s
       game: Game101.define({ id: "host-test", initialState: () => ({ fired: false }), update(ctx) { ctx.state.fired = Boolean(ctx.input.action("fire")); } }),
     });
     const context = await host.launch(gamePackage);
-    transport.listener?.({ channel: "control", payload: {
-      type: "hello", version: 2, deviceId: "phone", device: "Phone",
-      capabilities: { touch: true, speaker: true },
-      features: { inputFormats: ["input-q1"], speakerAudio: "ready" },
-    } });
-    transport.listener?.({ channel: "realtime", payload: { deviceId: "phone", playerId: "forged", sequence: 1, timestamp: 1, source: "custom", actions: { fire: true } } });
+    transport.emit({ type: "controls.hello", deviceId: "phone", label: "Phone", capabilities: { touch: true, speaker: true }, speakerAudio: "ready" });
+    const configured = transport.reliable.find(message => message.type === "controls.configure");
+    assert.ok(configured?.type === "controls.configure");
+    transport.emit({ type: "input.snapshot", bindingId: configured.bindingId, sequence: 1, timestamp: 1, source: "custom", actions: { fire: true } }, "disposable");
     host.inputBus.bind("fire");
     assert.equal(host.inputBus.action("fire"), true);
     assert.equal(context.state.fired, false);
     transport.realtime.length = 0;
     assert.equal(host.playControllerCue("gunner", { pitch: 1.2, volume: .3 }), true);
     const privateCue = transport.realtime.at(0);
-    if (!privateCue || !("type" in privateCue) || privateCue.type !== "speaker.cue") {
+    if (!privateCue || !("type" in privateCue) || privateCue.type !== "controls.speaker") {
       assert.fail("expected one private speaker cue");
     }
     assert.equal(Number.isSafeInteger(privateCue.sequence), true);
-    assert.deepEqual({ ...privateCue, sequence: 0 }, {
-      type: "speaker.cue", deviceId: "phone", sequence: 0,
-      cue: "pulse-v1", pitch: 1.2, volume: .3,
-    });
+    assert.equal(privateCue.bindingId, configured.bindingId);
+    assert.equal(privateCue.pitch, 1.2); assert.equal(privateCue.volume, .3);
     host.stopGame();
     assert.equal(host.activeGame, undefined);
     await host.disconnect();
@@ -88,17 +91,16 @@ test("input readiness is reported from local hardware before the transport conne
 
   try {
     let transportConnected = false;
-    const transport: LinkTransport = {
+    const transport: ApplicationChannel = {
       async connect() { await new Promise((resolve) => setTimeout(resolve, 40)); transportConnected = true; },
-      async disconnect() { transportConnected = false; },
-      sendReliable() {}, sendRealtime() {},
-      onMessage() { return () => {}; },
+      async close() { transportConnected = false; },
+      send() { return true; }, subscribe() { return () => {}; }, onPeerLost() { return () => {}; },
     };
 
     const reports: { available: string[]; connected: boolean }[] = [];
+    const inputBus = new InputBus(); inputBus.setSourceAvailability("mapped-keyboard", "keyboard", true);
     const host = new GameHost101({
-      transport,
-      adapters: [{ id: "kb", source: "keyboard", start() {}, stop() {} }],
+      channel: transport, inputBus,
       onInputReadiness: (readiness) => reports.push({ available: [...readiness.available], connected: transportConnected }),
     });
 
@@ -127,13 +129,12 @@ test("input readiness is reported from local hardware before the transport conne
 test("a failed launch leaves no half-active game behind", async () => {
   // `active` is now set before connecting so the early reading has a package to resolve against.
   // If the transport then fails, the host must not be left advertising a game with no engine.
-  const transport: LinkTransport = {
+  const transport: ApplicationChannel = {
     async connect() { throw new Error("no route to host"); },
-    async disconnect() {},
-    sendReliable() {}, sendRealtime() {},
-    onMessage() { return () => {}; },
+    async close() {},
+    send() { return true; }, subscribe() { return () => {}; }, onPeerLost() { return () => {}; },
   };
-  const host = new GameHost101({ transport });
+  const host = new GameHost101({ channel: transport });
 
   await assert.rejects(() => host.launch(Game101.package({
     manifest: { id: "doomed", name: "Doomed", version: "1.0.0", engine: "^1", renderer: "2d", players: { min: 1, max: 1 }, inputs: ["keyboard"], offline: true, procedural: false, controllers: { basic: ["keyboard"] } },
@@ -151,7 +152,7 @@ test("disconnect tears down a host whose transport connection is still starting"
   globalThis.requestAnimationFrame = (() => 1) as typeof requestAnimationFrame;
   globalThis.cancelAnimationFrame = (() => undefined) as typeof cancelAnimationFrame;
   const transport = new DeferredConnectTransport();
-  const host = new GameHost101({ transport });
+  const host = new GameHost101({ channel: transport });
   const gamePackage = Game101.package({
     manifest: { id: "slow-host", name: "Slow Host", version: "1.0.0", engine: "^1", renderer: "2d", players: { min: 1, max: 1 }, inputs: ["touch"], offline: true, procedural: false, controllers: { basic: ["touch"] } },
     input: { game: "slow-host", actions: { fire: { recommended: ["touch"] } } },
@@ -166,9 +167,7 @@ test("disconnect tears down a host whose transport connection is still starting"
     await Promise.all([launch, disconnect]);
 
     transport.reliable.length = 0;
-    transport.listener?.({ channel: "control", payload: {
-      type: "hello", version: 2, deviceId: "late-phone", device: "Phone", capabilities: { touch: true },
-    } });
+    transport.emit({ type: "controls.hello", deviceId: "phone", label: "Phone", capabilities: { touch: true }, speakerAudio: "locked" });
     assert.equal(transport.listener, undefined,
       "effect cleanup must remove the SessionHost listener even when launch was still awaiting connect");
     assert.deepEqual(transport.reliable, [], "a disposed host must not answer a later hello with assign/wait");
@@ -202,11 +201,10 @@ test("disconnect waits out an asynchronous preload and leaves no frame loop behi
   let signalPreloadStarted!: () => void;
   const preloadStarted = new Promise<void>((resolve) => { signalPreloadStarted = resolve; });
   const transport = new MemoryTransport();
-  const host = new GameHost101({ transport, adapters: [{
-    id: "held-keyboard", source: "keyboard",
-    start(accept) { accept({ deviceId: "held-keyboard", playerId: "player-1", sequence: 1, timestamp: 1, source: "keyboard", actions: { fire: true } }); },
-    stop() { events.push("adapter-stopped"); },
-  }] });
+  const inputBus = new InputBus();
+  inputBus.setSourceAvailability("mapped-keyboard", "keyboard", true);
+  inputBus.accept({ deviceId: "held-keyboard", playerId: "player-1", sequence: 1, timestamp: 1, source: "keyboard", actions: { fire: true } });
+  const host = new GameHost101({ channel: transport, inputBus });
   const gamePackage = Game101.package({
     manifest: { id: "slow-preload", name: "Slow Preload", version: "1.0.0", engine: "^1", renderer: "2d", players: { min: 1, max: 1 }, inputs: ["touch"], offline: true, procedural: false, controllers: { basic: ["touch"] } },
     input: { game: "slow-preload", actions: { fire: { recommended: ["touch"] } } },
@@ -236,8 +234,7 @@ test("disconnect waits out an asynchronous preload and leaves no frame loop behi
     await new Promise<void>((resolve) => setImmediate(resolve));
     assert.equal(disconnected, false,
       "teardown cannot finish while preload can still resume and create a frame loop");
-    assert.equal(events.includes("adapter-stopped"), true,
-      "local input must retire before arbitrary preload code settles");
+    assert.deepEqual(host.inputBus.availableSources(), [], "mapped input ownership retires before preload settles");
     assert.equal(host.inputBus.action("fire"), false, "held input must clear while preload is still pending");
     assert.equal(transport.listener, undefined, "remote input must retire while preload is still pending");
 

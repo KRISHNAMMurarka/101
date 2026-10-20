@@ -1,9 +1,11 @@
 import assert from "node:assert/strict";
 import test, { type TestContext } from "node:test";
-import { BrowserCameraAdapter } from "@101/adapter-camera";
+import { registerHooks } from "node:module";
+import { requestCameraSession } from "@uynis-connect/connect";
+import { createSensorMapping } from "../packages/input/src/sensor-mapping.ts";
 import { InputBus } from "@101/input";
 import type { GameDefinition } from "@101/sdk";
-import type { PoseLandmark } from "@101/vision";
+import type { PoseLandmark } from "@uynis-connect/connect";
 import { createBodyDodgeGame } from "../games/bodydodge/src/game.ts";
 import { createShadowArenaGame } from "../games/shadowarena/src/game.ts";
 
@@ -27,6 +29,18 @@ async function cameraGame<State>(t: TestContext, game: GameDefinition<State>) {
   const cleanups: Array<() => void> = [];
   const callbacks = new Map<number, FrameRequestCallback>(); let handle = 0;
   let detections = [body(.25), body(.75)];
+  // Replace only the external inference dependency. Capture, tracking, SDK lifetime,
+  // mapping and game updates run their production implementations through the public SDK.
+  const fixtureKey = "cameraJourneyInference";
+  cleanups.push(mockGlobal(fixtureKey, () => ({ landmarks: detections.map(pose => pose.map(point => ({ x: point.x, y: point.y, z: point.z, visibility: point.visibility }))),
+    worldLandmarks: detections.map(pose => pose.map(point => ({ ...point.world!, visibility: point.visibility }))) })));
+  const moduleSource = `export const FilesetResolver = { forVisionTasks: async () => ({}) };
+    export const PoseLandmarker = { createFromOptions: async () => ({ detectForVideo: () => globalThis[${JSON.stringify(fixtureKey)}](), close() {} }) };`;
+  const hooks = registerHooks({ resolve(specifier, context, next) {
+    if (specifier === "@mediapipe/tasks-vision") return { url: `data:text/javascript,${encodeURIComponent(moduleSource)}`, shortCircuit: true };
+    return next(specifier, context);
+  } });
+  cleanups.push(() => hooks.deregister());
   const video = { readyState: 2, currentTime: 1, videoWidth: 1280, videoHeight: 720, srcObject: null, play: async () => undefined, pause: () => undefined } as unknown as HTMLVideoElement;
   cleanups.push(mockGlobal("navigator", { mediaDevices: { enumerateDevices: async () => [{ kind: "videoinput" }], getUserMedia: async () => ({ getTracks: () => [track] }) } }));
   cleanups.push(mockGlobal("HTMLMediaElement", { HAVE_CURRENT_DATA: 2 }));
@@ -34,13 +48,22 @@ async function cameraGame<State>(t: TestContext, game: GameDefinition<State>) {
   cleanups.push(mockGlobal("cancelAnimationFrame", (id: number) => callbacks.delete(id)));
   const input = new InputBus(); const state = game.initialState(); const context = { state, input, assets: { load: async () => undefined } };
   game.start?.(context);
-  const adapter = new BrowserCameraAdapter({ video, maxPeople: 2, mirror: false, classifier: { smoothing: 1, autoCalibrationFrames: 1, gestureCooldownMs: 80 }, backend: { initialize: async () => undefined, close: () => undefined, detect: () => detections } });
-  await input.register(adapter);
-  t.after(async () => { try { game.stop?.(context); await input.destroy(); } finally { cleanups.reverse().forEach((cleanup) => cleanup()); } });
+  const mapping = createSensorMapping({ scopeId: "camera-journey", players: ["player-1", "player-2"],
+    emit: frame => input.accept(frame), removeDevice: id => input.removeDevice(id) });
+  const errors: Error[] = [];
+  const camera = requestCameraSession({ kind: "body", preview: video, maxPeople: 2, mirror: false,
+    classifier: { smoothing: 1, autoCalibrationFrames: 1, gestureCooldownMs: 80 }, onError: cause => errors.push(cause) });
+  camera.subscribe(mapping.accept);
+  camera.onStatus(status => { if (["denied", "lost", "closed"].includes(status)) mapping.close(); });
+  t.after(async () => { try { game.stop?.(context); mapping.close(); await camera.close(); await input.destroy(); }
+    finally { cleanups.reverse().forEach(cleanup => cleanup()); }
+    assert.ok(errors.every(error => error.name === "CameraLostError"), errors.map(error => error.message).join(", ")); });
+  await camera.ready;
   return {
     state, input, track,
     frame(poses: PoseLandmark[][], now: number, delta = .05) {
       detections = poses;
+      assert.equal(errors.length, 0, "capture remains live before each frame");
       const [id, callback] = callbacks.entries().next().value!;
       callbacks.delete(id); video.currentTime++; callback(now);
       game.update(context, delta);

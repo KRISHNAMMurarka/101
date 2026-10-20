@@ -5,9 +5,8 @@
   "dependencies": {
     "@101/core": "0.1.0",
     "@101/input": "0.1.0",
-    "@101/protocol": "0.1.0",
     "@101/sdk": "0.1.0",
-    "@101/session": "0.1.0"
+    "@uynis-connect/connect": "0.1.0"
   },
   "exports": "./src/index.ts"
 }

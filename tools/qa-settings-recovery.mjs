@@ -1,3 +1,4 @@
+import { verifyConnectSdkProof } from './connect-sdk-provenance.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -17,11 +18,12 @@ assert.ok(['chromium', 'webkit'].includes(engine) && proofPath);
 const root = fileURLToPath(new URL('../', import.meta.url));
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const proof = JSON.parse(readFileSync(proofPath));
+verifyConnectSdkProof(proof, root);
 assert.equal(proof.origin, application.origin);
 assert.equal(proof.profile, 'settings-recovery-preserved-build/1');
 assert.match(proof.builtSourceTree, /^[a-f0-9]{40}$/);
 const sourcePaths = Object.keys(proof.sourcePins);
-for (const path of ['app/settings/page.tsx', 'app/settings/SettingsView.tsx', 'app/settings/settings-task.ts', 'packages/device-runtime/src/owner-data-storage.ts', 'packages/device-runtime/src/owner-data.ts', 'packages/device-runtime/src/settings-store.ts']) assert.ok(sourcePaths.includes(path));
+for (const path of ['app/settings/page.tsx', 'app/settings/SettingsView.tsx', 'app/settings/settings-task.ts']) assert.ok(sourcePaths.includes(path));
 const sourceBytes = execFileSync('git', ['cat-file', '--batch'], { cwd: root, input: sourcePaths.map(path => `${proof.builtSourceTree}:${path}`).join('\n') + '\n', maxBuffer: 32 * 1024 * 1024 });
 let cursor = 0;
 for (const path of sourcePaths) {

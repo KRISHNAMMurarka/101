@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 // Production dependency gate.
 //
-// `npm audit --omit=dev` cannot distinguish code that ships to a player from build tooling that
-// only ever runs on a developer machine. Both live under the native app's production dependencies
-// because that is how Expo declares itself. Deleting the gate would hide real risk; leaving it
-// permanently red would train everyone to ignore it.
+// The Games dependency closure is audited independently from the platform and
+// native build tooling. Preserve advisory-specific rejection even with no active
+// exceptions; a future finding must never inherit a package-wide approval.
 //
 // So: every root package must either be absent, or have a current review in
 // security/build-tooling-advisories.json with a dependency path, a justification and an expiry.

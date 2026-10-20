@@ -1,6 +1,7 @@
 "use client";
 
-import { BrowserMotionAdapter, isMotionSupported, requestMotionPermission } from "@101/adapter-motion";
+import { requestMotionSession, isMotionSupported, type MotionSession } from "@uynis-connect/connect";
+import { mapSensorObservation } from "../../packages/input/src/sensor-mapping.ts";
 import type { InputFrame, InputVector } from "@101/input";
 import {
   ControllerActionGesture,
@@ -16,17 +17,16 @@ import {
   type DeckCluster,
   type PlacedControl,
 } from "@101/link-controller";
-import { HttpControllerSignalingClient, SignaledLinkTransport, createPairingIntake, type PairingCandidate } from "@101/pairing";
+import { createPairingIntake, parsePairingInput, type PairingCandidate } from "@uynis-connect/connect";
+import { createBrowserGameControllerLink } from "../../packages/game-host/src/browser-controller-link.ts";
 import {
-  BroadcastChannelTransport,
   INPUT_Q1_FORMAT,
   PROTOCOL_VERSION,
-  parsePairingInput,
   type ControllerElement,
   type ControllerLayout,
   type LinkTransport,
   type StatefulLinkTransport,
-} from "@101/protocol";
+} from "../../packages/game-host/src/game-protocol.ts";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Icon } from "../components/Icon";
 import { BrowserControllerSpeaker } from "./controller-speaker";
@@ -139,7 +139,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
   const [speakerEnableFailed, setSpeakerEnableFailed] = useState(false);
   const [lastSpeakerCue, setLastSpeakerCue] = useState<number>();
   const transportRef = useRef<LinkTransport | null>(null);
-  const motionAdapterRef = useRef<BrowserMotionAdapter | null>(null);
+  const motionAdapterRef = useRef<MotionSession | null>(null);
   const motionMounted = useRef(false), motionGeneration = useRef(0), motionReserved = useRef(false);
   const speakerRef = useRef<BrowserControllerSpeaker | null>(null);
   const speakerAudioRef = useRef<"locked" | "ready">("locked");
@@ -166,7 +166,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
     motionGeneration.current++;
     const adapter = motionAdapterRef.current;
     motionAdapterRef.current = null;
-    adapter?.stop();
+    void adapter?.close();
     if (motionMounted.current) setMotionState("idle");
   }, []);
 
@@ -265,12 +265,8 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
     };
     let transport: LinkTransport;
     try {
-      transport = approvedTicket
-        ? new SignaledLinkTransport({
-            signaling: new HttpControllerSignalingClient(approvedTicket),
-            device: { deviceId, label: "101 Link browser controller", capabilities },
-          })
-        : new BroadcastChannelTransport(selectedSession);
+      transport = createBrowserGameControllerLink({ sessionId: selectedSession, deviceId,
+        label: "101 Link browser controller", capabilities, ...(approvedTicket ? { ticket: approvedTicket } : {}) });
     } catch {
       queueMicrotask(() => setReadout({ values: {}, tone: "critical", message: "That connection link could not be read. Scan or paste it again." }));
       return;
@@ -485,20 +481,17 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
       transportRef.current === transport && configurationRef.current === configuration && Boolean(layoutRef.current.motion);
     motionReserved.current = true; setMotionPending(true);
     try {
-      const permission = await requestMotionPermission();
-      if (!current()) return;
-      if (permission !== "granted") {
-        setMotionState(permission);
-        return;
-      }
-      motionAdapterRef.current?.stop();
+      if (!isMotionSupported()) { setMotionState("unsupported"); return; }
+      void motionAdapterRef.current?.close();
       let awaitingNeutralSample = true;
-      const adapter = new BrowserMotionAdapter({ deviceId, playerId: playerIdRef.current });
+      const adapter = requestMotionSession({ deviceId });
       motionAdapterRef.current = adapter;
-      adapter.start((frame) => {
+      adapter.subscribe((observation) => {
+        const frame = mapSensorObservation(observation);
+        if (!frame) return;
         if (!current() || motionAdapterRef.current !== adapter) return;
         if (awaitingNeutralSample) {
-          adapter.calibrateNeutral();
+          adapter.calibrate();
           awaitingNeutralSample = false;
           return;
         }
@@ -512,6 +505,8 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
         inputRef.current!.mergeMotion(actions, frame.axes);
         setVector(motion.action, tilt.x, tilt.y, "phone-motion");
       });
+      await adapter.ready;
+      if (!current()) { await adapter.close(); return; }
       setMotionState("active");
     } catch {
       if (!current()) return;
@@ -524,7 +519,7 @@ function ControllerVisit({ renderedRoute, routeSearch }: { renderedRoute: Contro
   };
 
   const calibrate = () => {
-    motionAdapterRef.current?.calibrateNeutral();
+    motionAdapterRef.current?.calibrate();
     haptic();
   };
 

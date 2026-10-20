@@ -1,3 +1,4 @@
+import { connectSdkFiles } from './connect-sdk-provenance.mjs';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -13,7 +14,7 @@ const root = resolve(import.meta.dirname, '..');
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const paths = ['games/echomaze/src/game.ts', 'games/echomaze/src/roles.ts', 'games/beatforge/src/game.ts',
   'games/beatforge/src/roles.ts', 'games/beatforge/input.manifest.json', 'app/components/EchoMazeGame.tsx',
-  'app/components/BeatForgeGame.tsx', 'packages/adapter-keyboard/src/index.ts', 'packages/adapter-gamepad/src/index.ts',
+  'app/components/BeatForgeGame.tsx', ...connectSdkFiles(root),
   'app/controller/Controller.tsx', 'app/components/game-controller-input.ts', 'app/components/GameControllerOverlay.tsx',
   'app/globals.css', 'tools/qa-game-control-repairs.mjs'];
 const sourceSha256 = Object.fromEntries(paths.map(path => [path, hash(readFileSync(resolve(root, path)))]));

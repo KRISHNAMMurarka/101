@@ -1,6 +1,6 @@
 'use client';
-import { createWebCryptoIdentityStore } from '@101/connect';
-import type { EndpointIdentity } from '@101/connect';
+import { createWebCryptoIdentityStore } from '@uynis-connect/connect';
+import type { EndpointIdentity } from '@uynis-connect/connect';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 type Phase = 'loading' | 'missing' | 'ready' | 'error';

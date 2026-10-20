@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
-import GamepadView from './GamepadView';
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../../lib/connect-console";
 
-export const metadata: Metadata = { title: '101 — Check a gamepad here',
-  description: 'Choose one gamepad, review its brief local use, check reported inputs and stop.' };
-export default function GamepadPage() { return <GamepadView />; }
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/connections/gamepad"));
+}

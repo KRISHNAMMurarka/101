@@ -7,6 +7,14 @@ Read this file first. For non-trivial work read
 `/Users/km/Desktop/AI-Agent-Prompt-Suite/CORE_RULES.md`, then its relevant module;
 continue with this file if that shared policy is unavailable.
 
+## Product boundary
+
+Device implementations live in `/Users/km/Dev/uynis-connect`. Games depends on its
+public `@uynis-connect/connect` package through the sibling file link. Do not add
+adapter, transport or private platform imports here. Keep assignments, semantic
+actions and game policy in this repository. See `docs/platform/BOUNDARY.md` and
+`docs/platform/MOVE-STATUS.md` for the approved split and current evidence.
+
 ## Product contract
 
 - Player surfaces: `app/` except `app/studio/**` and developer labs. Plain instructions,

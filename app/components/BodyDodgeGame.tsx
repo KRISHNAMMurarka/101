@@ -2,11 +2,9 @@
 
 import GameControllerOverlay from "./GameControllerOverlay";
 
-import { GamepadAdapter } from "@101/adapter-gamepad";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
 import type { GameHost101 } from "@101/game-host";
 import { cameraStatusLabel, useCameraInput } from "../lib/use-camera-input";
-import { playerColour, type TrackedPerson } from "@101/vision";
+import { playerColour, type GamePerson } from "../lib/camera-projection";
 import GameOverPanel from "./GameOverPanel";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
@@ -41,7 +39,7 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hostRef = useRef<GameHost101 | null>(null);
-  const peopleRef = useRef<readonly TrackedPerson[]>([]);
+  const peopleRef = useRef<readonly GamePerson[]>([]);
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<BodyHud>(INITIAL_HUD);
   const camera = useCameraInput({ kind: "body", sessionId, video: videoRef, host: hostRef, runKey: run, maxPeople: BODYDODGE_MANIFEST.players.max, onDiagnostics: (diagnostics) => { peopleRef.current = diagnostics.people; } });
@@ -55,7 +53,6 @@ export default function BodyDodgeGame({ sessionId, onConnect, onExit }: { sessio
       controllers: BODYDODGE_ROLES,
       game: createBodyDodgeGame(`bodydodge-${run}`),
     }),
-    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
     onReady: ({ context, host }) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -148,7 +145,7 @@ function createBodyView(canvas: HTMLCanvasElement) {
   resize.observe(canvas);
   const gateGroups = new Map<number, THREE.Group>();
 
-  const sync = (state: BodyDodgeState, people: readonly TrackedPerson[]) => {
+  const sync = (state: BodyDodgeState, people: readonly GamePerson[]) => {
     const tracked = new Set(people.map((person) => person.slot));
     const activeCount = state.players.filter((player) => player.active).length;
     for (const body of state.players) {

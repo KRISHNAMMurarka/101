@@ -2,9 +2,7 @@
 
 import GameControllerOverlay from "./GameControllerOverlay";
 
-import { GamepadAdapter } from "@101/adapter-gamepad";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { Audio101 } from "@101/audio";
+import { AudioPlayback as Audio101 } from "@uynis-connect/connect";
 import { canTravel, type MazeDirection } from "@101/maze";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
@@ -54,7 +52,6 @@ export default function EchoMazeGame({ sessionId, onConnect, onExit }: { session
       controllers: ECHO_MAZE_ROLES,
       game: createEchoMazeGame(`echomaze-${run}`),
     }),
-    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
     onReady: ({ context, host }) => {
       const canvas = canvasRef.current;
       if (!canvas) return;

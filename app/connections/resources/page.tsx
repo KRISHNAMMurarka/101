@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
-import ResourceTaskView from './ResourceTaskView';
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../../lib/connect-console";
 
-export const metadata: Metadata = { title: '101 — Connect page controls',
-  description: 'Choose a page input and its output. Allow both, use them, and stop when you are done.' };
-export default function ResourceTaskPage() { return <ResourceTaskView />; }
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/connections/resources"));
+}

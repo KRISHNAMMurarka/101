@@ -1,9 +1,6 @@
-import type { Metadata } from 'next';
-import InspectorLab from './InspectorLab';
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../../lib/connect-console";
 
-export const metadata: Metadata = {
-  title: '101 SDK Inspector — Local runtime diagnostics',
-  description: 'Inspect SDK resources, route authority, bounded queues and redacted errors in a local developer runtime.',
-};
-
-export default function InspectorPage() { return <InspectorLab />; }
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/studio/inspector"));
+}

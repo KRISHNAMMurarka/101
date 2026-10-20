@@ -8,24 +8,9 @@ const object = value => value !== null && typeof value === 'object' && !Array.is
 const string = (value, bound = 1024) => typeof value === 'string' && value.length > 0 && value.length <= bound;
 const localPath = value => string(value) && !value.startsWith('/') && !value.includes('\\')
   && !value.split('/').some(part => !part || part === '.' || part === '..');
-const registry = 'registry+https://github.com/rust-lang/crates.io-index';
-const rustLock = 'apps/desktop-hub/src-tauri/Cargo.lock';
 const utf8 = value => new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(value);
 // Packaging deliberately bounds serialized metadata as well as embedded text.
 const inventoryBytes = 32 * 1024 * 1024;
-
-function cargoIdentity(text) {
-  const value = {};
-  for (const line of text.split('\n')) {
-    const match = /^(name|version|source)\s*=\s*(".*")\s*$/.exec(line);
-    if (!match) continue;
-    if (Object.hasOwn(value, match[1])) throw new Error('Duplicate Cargo package identity');
-    value[match[1]] = JSON.parse(match[2]);
-  }
-  if (!string(value.name, 128) || !/^[A-Za-z0-9_-]+$/.test(value.name) || !string(value.version, 128)
-    || value.source !== undefined && !string(value.source, 1024)) throw new Error('Invalid Cargo package identity');
-  return value;
-}
 
 function validateTexts(inventory, allowRepositoryAuthors = false) {
   if (!Array.isArray(inventory.licenseTexts) || inventory.licenseTexts.length > limits.packages * limits.filesPerPackage)
@@ -119,29 +104,9 @@ async function auditJavaScript(root) {
   validateTexts(inventory, true);
 }
 
-async function auditRust(root) {
-  const { inventory, lockBytes } = await inventoryFor(root, 'THIRD_PARTY_RUST_LICENSES.json', rustLock);
-  if (!hash(inventory.metadataSha256)) throw new Error('Invalid Cargo metadata fingerprint');
-  const identity = value => JSON.stringify([value.name, value.version, value.source ?? 'workspace']);
-  const packages = utf8(lockBytes).split(/^\[\[package\]\]\s*$/m).slice(1).map(cargoIdentity);
-  const locked = new Map(packages.map(pkg => [identity(pkg), pkg]));
-  if (packages.length > limits.packages || locked.size !== packages.length) throw new Error('Invalid bounded Cargo lock identities');
-  const manifest = utf8(await readLocalLicenseBytes(join(root, 'apps/desktop-hub/src-tauri/Cargo.toml'), 131072));
-  const packageSection = manifest.split(/^\[package\]\s*$/m)[1]?.split(/^\[/m)[0];
-  if (!packageSection) throw new Error('Missing first-party Cargo package identity');
-  const firstParty = cargoIdentity(packageSection);
-  if (firstParty.source !== undefined || !locked.delete(identity(firstParty)) || [...locked.values()].some(pkg => pkg.source !== registry))
-    throw new Error('Unsupported or mismatched Cargo package source');
-  if (locked.size !== inventory.packages.length) throw new Error('License inventory does not match Cargo.lock');
-  for (const pkg of inventory.packages) {
-    if (pkg.source !== registry || !locked.delete(identity(pkg))) throw new Error('License inventory does not match Cargo.lock');
-  }
-  validateTexts(inventory);
-}
-
 /** Read-only admission of copied inventories. Text presence is not redistribution approval. */
 export async function auditReleaseLicenseInventories(root) {
-  for (const [label, audit] of [['JavaScript', auditJavaScript], ['Rust', auditRust]]) {
+  for (const [label, audit] of [['JavaScript', auditJavaScript]]) {
     try { await audit(root); }
     catch (error) { throw new Error(`${label} license inventory: ${error.message}; run npm run license:inventory`, { cause: error }); }
   }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { getBrowserHostTransport, readBrowserHubCandidates, type BrowserPairingInfo } from "../lib/browser-link";
+import { getBrowserHostConnection, readBrowserHubCandidates, type BrowserPairingInfo } from "../lib/browser-link";
 import { canonicalHubEndpoint, controllerOriginForPhone, type HubCandidate, type HubEndpointReview } from "../lib/host-endpoint-review";
 
 export function HostConnectionReview({ sessionId, onReady }: { sessionId: string; onReady: (info: BrowserPairingInfo | undefined) => void }) {
@@ -34,7 +34,7 @@ export function HostConnectionReview({ sessionId, onReady }: { sessionId: string
     const revision = ++generation.current, controller = new AbortController(); pending.current = controller;
     try {
       const endpoint = canonicalHubEndpoint(address); setAddress(endpoint); setPhase("checking");
-      const result = await getBrowserHostTransport(sessionId).reviewEndpoint(endpoint, { signal: controller.signal });
+      const result = await getBrowserHostConnection(sessionId).reviewEndpoint(endpoint, { signal: controller.signal });
       if (revision !== generation.current || controller.signal.aborted) return;
       setReview(result); setPhoneEndpoint(endpoint); setPhase("checked"); setMessage("Address checked. Choose the address to share, then connect.");
     } catch {
@@ -47,9 +47,9 @@ export function HostConnectionReview({ sessionId, onReady }: { sessionId: string
     const revision = ++generation.current, controller = new AbortController(); pending.current?.abort(); pending.current = controller;
     setPhase("connecting"); setMessage(""); ready.current(undefined);
     try {
-      const info = await getBrowserHostTransport(sessionId).preparePairing(review.endpoint, { phoneEndpoint, signal: controller.signal });
+      const info = await getBrowserHostConnection(sessionId).preparePairing(review.endpoint, { phoneEndpoint, signal: controller.signal });
       if (revision !== generation.current || controller.signal.aborted) return;
-      setPhase("ready"); setExpiresAt(info.ticket.expiresAt); setMessage("Connected. The code below uses the address you selected."); ready.current(info);
+      setPhase("ready"); setExpiresAt(info.expiresAt); setMessage("Connected. The code below uses the address you selected."); ready.current(info);
     } catch {
       if (revision !== generation.current || controller.signal.aborted) return;
       setPhase("failed"); setMessage("Couldn’t connect. Check the address again and try once more.");

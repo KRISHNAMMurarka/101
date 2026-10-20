@@ -1,6 +1,6 @@
-import type { Metadata } from 'next';
-import AudioView from './AudioView';
+import { redirect } from "next/navigation";
+import { connectConsoleUrl } from "../../lib/connect-console";
 
-export const metadata: Metadata = { title: '101 — Try sound here' };
-
-export default function AudioPage() { return <AudioView />; }
+export default function DeviceConsoleRedirect() {
+  redirect(connectConsoleUrl("/connections/audio"));
+}

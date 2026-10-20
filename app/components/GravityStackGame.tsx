@@ -2,8 +2,6 @@
 
 import GameControllerOverlay from "./GameControllerOverlay";
 
-import { GamepadAdapter } from "@101/adapter-gamepad";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
 import { defineGamePackage } from "@101/sdk";
 import GameOverPanel from "./GameOverPanel";
 import FullscreenButton from "@/app/components/FullscreenButton";
@@ -65,7 +63,6 @@ export default function GravityStackGame({ sessionId, onConnect, onExit }: { ses
       controllers: GRAVITYSTACK_ROLES,
       game: createGravityStackGame(`gravitystack-${run}`),
     }),
-    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
     onReady: async ({ context, host, signal }) => {
       const stage = stageRef.current;
       if (!stage) return;

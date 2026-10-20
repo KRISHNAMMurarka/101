@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "allowImportingTsExtensions": true,
     "skipLibCheck": true,
@@ -13,48 +17,50 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "types": ["vite/client"],
+    "types": [
+      "vite/client"
+    ],
     "incremental": true,
     "paths": {
-      "@/*": ["./*"],
-      "@101/core": ["./packages/core/src/index.ts"],
-      "@101/sdk": ["./packages/sdk/src/index.ts"],
-      "@101/game-registry": ["./packages/game-registry/src/index.ts"],
-      "@101/game-host": ["./packages/game-host/src/index.ts"],
-      "@101/devkit": ["./packages/devkit/src/index.ts"],
-      "@101/input": ["./packages/input/src/index.ts"],
-      "@101/protocol": ["./packages/protocol/src/index.ts"],
-      "@101/pairing": ["./packages/pairing/src/index.ts"],
-      "@101/hub-server": ["./packages/hub-server/src/index.ts"],
-      "@101/session": ["./packages/session/src/index.ts"],
-      "@101/motion": ["./packages/motion/src/index.ts"],
-      "@101/vision": ["./packages/vision/src/index.ts"],
-      "@101/replay": ["./packages/replay/src/index.ts"],
-      "@101/diagnostics": ["./packages/diagnostics/src/index.ts"],
-      "@101/adapter-keyboard": ["./packages/adapter-keyboard/src/index.ts"],
-      "@101/adapter-pointer": ["./packages/adapter-pointer/src/index.ts"],
-      "@101/adapter-gamepad": ["./packages/adapter-gamepad/src/index.ts"],
-      "@101/adapter-motion": ["./packages/adapter-motion/src/index.ts"],
-      "@101/adapter-camera": ["./packages/adapter-camera/src/index.ts"],
-      "@101/hardware": ["./packages/hardware/src/index.ts"],
-      "@101/adapter-hid": ["./packages/adapter-hid/src/index.ts"],
-      "@101/adapter-bluetooth": ["./packages/adapter-bluetooth/src/index.ts"],
-      "@101/adapter-serial": ["./packages/adapter-serial/src/index.ts"],
-      "@101/adapter-watch": ["./packages/adapter-watch/src/index.ts"],
-      "@101/link-controller": ["./packages/link-controller/src/index.ts"],
-      "@101/render-2d": ["./packages/render-2d/src/index.ts"],
-      "@101/render-3d": ["./packages/render-3d/src/index.ts"],
-      "@101/audio": ["./packages/audio/src/index.ts"],
-      "@101/physics": ["./packages/physics/src/index.ts"],
-      "@101/rhythm": ["./packages/rhythm/src/index.ts"],
-      "@101/maze": ["./packages/maze/src/index.ts"],
-      "@101/swarm": ["./packages/swarm/src/index.ts"],
-      "@101/device-model": ["./packages/device-model/src/index.ts"],
-      "@101/device-runtime": ["./packages/device-runtime/src/index.ts"],
-      "@101/connect": ["./packages/connect/src/index.ts"],
-      "@101/transport-webrtc": ["./packages/transport-webrtc/src/index.ts"],
-      "@101/transport-websocket": ["./packages/transport-websocket/src/index.ts"],
-      "@101/device-web": ["./packages/device-web/src/index.ts"]
+      "@/*": [
+        "./*"
+      ],
+      "@101/core": [
+        "./packages/core/src/index.ts"
+      ],
+      "@101/sdk": [
+        "./packages/sdk/src/index.ts"
+      ],
+      "@101/game-registry": [
+        "./packages/game-registry/src/index.ts"
+      ],
+      "@101/game-host": [
+        "./packages/game-host/src/index.ts"
+      ],
+      "@101/input": [
+        "./packages/input/src/index.ts"
+      ],
+      "@101/link-controller": [
+        "./packages/link-controller/src/index.ts"
+      ],
+      "@101/render-2d": [
+        "./packages/render-2d/src/index.ts"
+      ],
+      "@101/render-3d": [
+        "./packages/render-3d/src/index.ts"
+      ],
+      "@101/physics": [
+        "./packages/physics/src/index.ts"
+      ],
+      "@101/rhythm": [
+        "./packages/rhythm/src/index.ts"
+      ],
+      "@101/maze": [
+        "./packages/maze/src/index.ts"
+      ],
+      "@101/swarm": [
+        "./packages/swarm/src/index.ts"
+      ]
     }
   },
   "include": [
@@ -65,5 +71,10 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules", "apps/controller-native", "release"]
+  "exclude": [
+    "node_modules",
+    "apps/controller-native",
+    "release",
+    "outputs"
+  ]
 }

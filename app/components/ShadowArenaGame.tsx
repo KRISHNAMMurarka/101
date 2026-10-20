@@ -2,9 +2,7 @@
 
 import GameControllerOverlay from "./GameControllerOverlay";
 
-import { GamepadAdapter } from "@101/adapter-gamepad";
-import { KeyboardAdapter } from "@101/adapter-keyboard";
-import { Audio101 } from "@101/audio";
+import { AudioPlayback as Audio101 } from "@uynis-connect/connect";
 import type { GameHost101 } from "@101/game-host";
 import { Renderer3D101, THREE } from "@101/render-3d";
 import { defineGamePackage } from "@101/sdk";
@@ -15,7 +13,7 @@ import { cameraStatusLabel, useCameraInput } from "@/app/lib/use-camera-input";
 import { useGameHost } from "@/app/lib/use-game-host";
 import SHADOWARENA_INPUT from "@/games/shadowarena/input.manifest.json";
 import SHADOWARENA_MANIFEST from "@/games/shadowarena/manifest.json";
-import { playerColour, type PoseLandmark, type TrackedPerson } from "@101/vision";
+import { playerColour, type AvatarJoint, type GamePerson } from "../lib/camera-projection";
 import GameOverPanel from "./GameOverPanel";
 import { useEffect, useRef, useState } from "react";
 import { createShadowArenaGame, type ShadowArenaState, type ShadowEnemy } from "@/games/shadowarena/src/game";
@@ -32,7 +30,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const hostRef = useRef<GameHost101 | null>(null);
-  const peopleRef = useRef<readonly TrackedPerson[]>([]);
+  const peopleRef = useRef<readonly GamePerson[]>([]);
   const audioEnabledRef = useRef(false);
   const [run, setRun] = useState(1);
   const [hud, setHud] = useState<ShadowHud>(INITIAL_HUD);
@@ -46,7 +44,7 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
     maxPeople: SHADOWARENA_MANIFEST.players.max,
     classifier: { autoCalibrationFrames: 18, gestureCooldownMs: 300 },
     // The fighter on screen is drawn from this pose, so the silhouette moves as the player does.
-    onDiagnostics: (diagnostics) => { peopleRef.current = diagnostics.people.filter((person) => person.lastSeen === diagnostics.frame.timestamp); },
+    onDiagnostics: (diagnostics) => { peopleRef.current = diagnostics.people; },
   });
 
   useEffect(() => { audioEnabledRef.current = audioEnabled; }, [audioEnabled]);
@@ -60,7 +58,6 @@ export default function ShadowArenaGame({ sessionId, onConnect, onExit }: { sess
       controllers: SHADOW_ARENA_ROLES,
       game: createShadowArenaGame(`shadowarena-${run}`),
     }),
-    adapters: () => [new KeyboardAdapter(), new GamepadAdapter()],
     onReady: ({ context, host }) => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -163,7 +160,7 @@ function createShadowView(canvas: HTMLCanvasElement) {
   const enemies = new Map<string, ReturnType<typeof createFighter>>();
   const effects = new Map<number, THREE.Mesh>();
 
-  const sync = (state: ShadowArenaState, people: readonly TrackedPerson[]) => {
+  const sync = (state: ShadowArenaState, people: readonly GamePerson[]) => {
     for (const body of state.players) {
       let fighter = players.get(body.slot);
       if (!fighter) { fighter = createFighter(0x08090a, playerColour(body.slot), body.slot); players.set(body.slot, fighter); view.scene.add(fighter.group); }
@@ -172,7 +169,7 @@ function createShadowView(canvas: HTMLCanvasElement) {
       fighter.group.position.set(body.playerX, body.playerY, (body.slot - 1) * .35);
       if (fighter.number) fighter.number.position.x = state.players.filter((player) => player.active).length > 1 ? (body.slot === 1 ? -.35 : .35) : 0;
       fighter.group.rotation.y = body.facing < 0 ? Math.PI : 0;
-      const pose = people.find((person) => person.slot === body.slot)?.landmarks;
+      const pose = people.find((person) => person.slot === body.slot)?.avatar;
       if (pose && pose.length >= 29) applyPose(fighter, pose);
       else animateFighter(fighter, state.elapsed, body.lastAction);
     }
@@ -222,12 +219,11 @@ function animateFighter(fighter: ReturnType<typeof createFighter>, time: number,
   if (action === "LOW") { fighter.group.position.y -= .32; }
 }
 
-function applyPose(fighter: ReturnType<typeof createFighter>, pose: readonly PoseLandmark[]) {
-  const hipX = (pose[23]!.x + pose[24]!.x) / 2;
-  const map = (index: number) => ({ x: (pose[index]!.x - hipX) * 3.2, y: (1 - pose[index]!.y) * 3 });
+function applyPose(fighter: ReturnType<typeof createFighter>, pose: readonly AvatarJoint[]) {
+  const map = (index: number) => pose[index]!;
   const shoulderL = map(11); const shoulderR = map(12); const wristL = map(15); const wristR = map(16); const hipL = map(23); const hipR = map(24); const ankleL = map(27); const ankleR = map(28);
   placeLimb(fighter.leftArm, shoulderL, wristL); placeLimb(fighter.rightArm, shoulderR, wristR); placeLimb(fighter.leftLeg, hipL, ankleL); placeLimb(fighter.rightLeg, hipR, ankleR);
-  fighter.head.position.set((pose[0]!.x - hipX) * 3.2, (1 - pose[0]!.y) * 3, 0);
+  fighter.head.position.set(pose[0]!.x, pose[0]!.y, 0);
 }
 
 function placeLimb(mesh: THREE.Mesh, from: { x: number; y: number }, to: { x: number; y: number }) { mesh.position.set((from.x + to.x) / 2, (from.y + to.y) / 2, 0); mesh.rotation.z = Math.atan2(to.y - from.y, to.x - from.x) - Math.PI / 2; }

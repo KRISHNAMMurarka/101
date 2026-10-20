@@ -4,8 +4,8 @@
 // mode every selected target is required and must have a production profile.
 // Successful packaging does not establish signing, installation or release acceptance.
 //
-//   node tools/package-release.mjs                    # diagnostic, all targets
-//   node tools/package-release.mjs --release web hub  # required production targets
+//   node tools/package-release.mjs                    # diagnostic, web application
+//   node tools/package-release.mjs --release web      # required web production target
 
 import { execFile } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -22,7 +22,7 @@ import * as zlib from "node:zlib";
 const run = promisify(execFile);
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const WEB_METADATA = [
-  "LICENSE", "THIRD_PARTY_NOTICES.md", "THIRD_PARTY_LICENSES.json", "THIRD_PARTY_RUST_LICENSES.json",
+  "LICENSE", "THIRD_PARTY_NOTICES.md", "THIRD_PARTY_LICENSES.json",
   "third_party/APACHE-2.0.txt", "docs/vision.md",
 ];
 const WEB_GENERATED_FILES = new Set([
@@ -44,41 +44,14 @@ const TARGETS = [
   {
     name: "web",
     profile: "production",
-    description: "Standalone browser build of the launcher, all ten games and the Labs",
+    description: "Standalone browser build of the launcher, manifest-defined games and their player surfaces",
     async build() {
       await auditReleaseLicenseInventories(ROOT);
       await npm("build");
       return collect("dist", "web", WEB_METADATA, await collectDeclaredLicenseRepositoryFiles(ROOT));
     },
   },
-  {
-    name: "hub",
-    profile: "production",
-    description: "Native 101 Hub desktop bundle for this platform",
-    async build() {
-      await npm("desktop:app");
-      // Tauri writes per-platform bundles; take whichever this OS produced.
-      return collect("apps/desktop-hub/src-tauri/target/release/bundle", "desktop-hub");
-    },
-  },
-  {
-    name: "link",
-    profile: "intermediate",
-    description: "JavaScript bundles for native 101 Link (iOS and Android)",
-    async build() {
-      await npm("native:export");
-      return collect("apps/controller-native/dist", "link-native");
-    },
-  },
-  {
-    name: "wear",
-    profile: "debug",
-    description: "Wear OS watch companion APK",
-    async build() {
-      await npm("watch:wear:build");
-      return collect("apps/watch-wear/app/build/outputs/apk/debug/app-debug.apk", "watch-wear/101-link-wear-debug.apk");
-    },
-  },
+
 ];
 
 const args = process.argv.slice(2);
@@ -166,10 +139,6 @@ console.log(mode === "release"
   : "\nDiagnostic report only; no release acceptance.");
 if (mode === "release" && (skipped.length || !inputsStable)) process.exitCode = 1;
 
-// iOS and watchOS deliberately have no target here. Both need a provisioning profile tied to a
-// registered Apple Developer account, so a repository cannot produce an installable build for
-// someone else. See docs/native-link.md and docs/watches.md for the signing steps.
-console.log("\nApple installables are not built here: they require your own signing identity.");
 
 async function npm(script) {
   await run("npm", ["run", script], { cwd: ROOT, maxBuffer: 64 * 1024 * 1024 });
@@ -278,7 +247,7 @@ async function sourceProvenance() {
     gitRoot = (await run("git", ["rev-parse", "--show-toplevel"], { cwd: ROOT })).stdout.trim();
   } catch { /* A fixture or source archive may have no Git history. */ }
   let scope = "declared-packaging-files-only";
-  let paths = ["package.json", "package-lock.json", "apps/desktop-hub/src-tauri/Cargo.lock", DECLARED_LICENSE_SOURCES_PATH, ...WEB_METADATA,
+  let paths = ["package.json", "package-lock.json", DECLARED_LICENSE_SOURCES_PATH, ...WEB_METADATA,
     "tools/package-release.mjs", "tools/license-inventory-validation.mjs", "tools/generate-license-inventory.mjs", "tools/web-artifact-validation.mjs"];
   if (gitRoot && resolve(gitRoot) === resolve(ROOT)) {
     revision = (await run("git", ["rev-parse", "HEAD"], { cwd: ROOT })).stdout.trim();

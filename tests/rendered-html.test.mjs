@@ -24,53 +24,9 @@ async function render(path = "/") {
   );
 }
 
-test('local audio preview arrives silently and offers separate review, stop and skip', async () => {
-  const response = await render('/connections/audio');
-  assert.equal(response.status, 200);
-  const html = await response.text();
-  const main = html.match(/<main\b[\s\S]*?<\/main>/)?.[0] ?? '';
-  assert.match(html, /<title>101 — Try sound here<\/title>/);
-  assert.match(main, /data-audio-phase="idle"/);
-  assert.match(main, /<h1>Try sound here<\/h1>/);
-  assert.match(main, /No sound plays on arrival/);
-  assert.match(main, /Review tone source/);
-  assert.match(main, /Review private connection/);
-  assert.match(main, /Review browser sound/);
-  assert.match(main, /<button[^>]*disabled[^>]*>Start tone<\/button>/);
-  assert.match(main, /Sound volume/);
-  assert.match(main, /Mute/);
-  assert.match(main, /Stop/);
-  assert.match(main, /Skip and return to Connections/);
-  assert.match(main, /up to ten seconds/);
-  assert.match(main, /current sound destination/);
-  assert.doesNotMatch(main, /<audio[^>]*(?:autoplay|\ssrc=)/i);
-  assert.doesNotMatch(main, /confidence|architecture|software percentage/i);
-});
 
-test('local gamepad preview arrives without input and offers review, recovery and skip', async () => {
-  const response = await render('/connections/gamepad');
-  assert.equal(response.status, 200);
-  const html = await response.text();
-  const main = html.match(/<main\b[\s\S]*?<\/main>/)?.[0] ?? '';
-  assert.match(html, /<title>101 — Check a gamepad here<\/title>/);
-  assert.match(main, /data-gamepad-phase="idle"/);
-  assert.match(main, /<h1>Check a gamepad here<\/h1>/);
-  assert.match(main, /Nothing reads input on arrival/);
-  assert.match(main, /role="status"/);
-  assert.match(main, /<button\b[^>]*\bdisabled=""[^>]*>Find gamepads<\/button>/);
-  assert.match(main, /<button\b[^>]*\bdisabled=""[^>]*>Stop gamepad access<\/button>/);
-  assert.match(main, /<button\b[^>]*\bdisabled=""[^>]*>Review local use<\/button>/);
-  assert.match(main, /press one of its buttons with this page in focus/);
-  assert.match(main, /href="#gamepad-readings"/);
-  assert.match(main, /id="gamepad-readings"/);
-  assert.match(main, /Skip and return to Connections/);
-  assert.match(main, /The first report can show a button already held/);
-  assert.match(main, /Button values belong to the last pressed or released report/);
-  assert.doesNotMatch(main, /Value at last change|Button values arrive with pressed or released changes/);
-  assert.doesNotMatch(main, /<meter\b|Allowed:|Start local preview/);
-  const connections = await (await render('/connections')).text();
-  assert.match(connections, /href="\/connections\/gamepad"/);
-});
+
+
 
 test("server-renders the player library, and nothing built for developers", async () => {
   const response = await render();
@@ -254,37 +210,11 @@ test("serves Swarm Commander with scalable simulation and asymmetric specialist 
   assert.match(html, /navigator can tilt the shared direction while a tactician sets targets and formations/i);
 });
 
-test("server-renders the local Motion Lab and permission explanation", async () => {
-  const response = await render("/studio/motion");
-  const html = await response.text();
-  assert.equal(response.status, 200);
-  assert.match(html, /101 Motion Lab/);
-  assert.match(html, /Enable device motion/);
-  assert.match(html, /Permission is requested only by the button/);
-  assert.match(html, /Use keyboard simulation/);
-});
 
-test("server-renders the local Vision Lab and simulated fallback", async () => {
-  const response = await render("/studio/vision");
-  const html = await response.text();
-  assert.equal(response.status, 200);
-  assert.match(html, /101 Vision Lab/);
-  assert.match(html, /Enable local/);
-  assert.match(html, /HANDS · 21 LANDMARKS/);
-  assert.match(html, /Use keyboard simulation/);
-  assert.match(html, /never uploaded or recorded/);
-  assert.match(html, /MEDIAPIPE/);
-});
 
-test("server-renders the offline WebRTC Network Lab", async () => {
-  const response = await render("/studio/network");
-  const html = await response.text();
-  assert.equal(response.status, 200);
-  assert.match(html, /101 Network Lab/);
-  assert.match(html, /Connect two browsers/);
-  assert.match(html, /No signaling server/);
-  assert.match(html, /STRICT LOCAL/);
-});
+
+
+
 
 test("server-renders the dynamic Controller Lab", async () => {
   const response = await render("/studio/controller");
@@ -296,27 +226,9 @@ test("server-renders the dynamic Controller Lab", async () => {
   assert.match(html, /LATEST NORMALIZED FRAME/);
 });
 
-test('server-renders independent SDK inspection controls and recovery', async () => {
-  const response = await render('/studio/inspector');
-  const html = await response.text();
-  assert.equal(response.status, 200);
-  assert.match(html, /Inspect the route/);
-  for (const label of ['Allow grant', 'Deny grant', 'Revoke grant', 'Reset runtime', 'Close runtime',
-    'Current resource graph', 'Bounded queue and sink evidence', 'Probe unsupported version', 'Redacted trace']) assert.ok(html.includes(label));
-  assert.match(html, /sample values, device labels and identity fields are excluded/);
-});
 
-test("server-renders optional specialist hardware with honest capability state", async () => {
-  const response = await render("/studio/hardware");
-  const html = await response.text();
-  assert.equal(response.status, 200);
-  assert.match(html, /101 Hardware Lab/);
-  assert.match(html, /Wire bytes into/);
-  assert.match(html, /WebHID/);
-  assert.match(html, /Web Bluetooth/);
-  assert.match(html, /Web Serial/);
-  assert.match(html, /FALLBACK GUARANTEE/);
-});
+
+
 
 test("serves the controller surface and product metadata", async () => {
   const response = await render("/controller?session=TEST01");
@@ -352,11 +264,11 @@ test("serves the controller surface and product metadata", async () => {
   assert.match(manifest, /"display": "standalone"/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   await access(new URL("public/og.png", root));
-  await access(new URL("public/models/pose_landmarker_lite.task", root));
-  await access(new URL("public/models/hand_landmarker.task", root));
-  await access(new URL("public/mediapipe/wasm/vision_wasm_internal.wasm", root));
-  await access(new URL("dist/client/models/pose_landmarker_lite.task", root));
-  await access(new URL("dist/client/models/hand_landmarker.task", root));
+  await access(new URL("public/connect-assets/models/pose_landmarker_lite.task", root));
+  await access(new URL("public/connect-assets/models/hand_landmarker.task", root));
+  await access(new URL("public/connect-assets/mediapipe/wasm/vision_wasm_internal.wasm", root));
+  await access(new URL("dist/client/connect-assets/models/pose_landmarker_lite.task", root));
+  await access(new URL("dist/client/connect-assets/models/hand_landmarker.task", root));
   await assert.rejects(access(new URL("app/_sites-preview/SkeletonPreview.tsx", root)));
 });
 
@@ -370,7 +282,7 @@ test("serves the controller surface and product metadata", async () => {
  * the moment someone renders a route outside the shell.
  */
 test("every route ships the navigation shell, and the controller deliberately does not", async () => {
-  const shellRoutes = ["/", "/devices", "/connections", "/games/slashstorm", "/games/echomaze"];
+  const shellRoutes = ["/", "/settings", "/games/slashstorm", "/games/echomaze"];
 
   for (const path of shellRoutes) {
     const html = await (await render(path)).text();
@@ -401,7 +313,7 @@ test("the player surface and the studio do not leak into each other", async () =
   assert.doesNotMatch(player, /href="\/studio\/[a-z]/, "the player home must not link to a developer tool");
   assert.doesNotMatch(player, /Frame age|Dropped|inference|quaternion|GATT|baud/i, "developer telemetry must not reach a player surface");
 
-  for (const path of ["/studio", "/studio/input", "/studio/network"]) {
+  for (const path of ["/studio", "/studio/input", "/studio/controller"]) {
     const html = await (await render(path)).text();
     assert.doesNotMatch(html, /class="tabbar"/, `${path} renders the player's phone tab bar`);
     assert.doesNotMatch(html, /class="rail"/, `${path} renders the player's rail`);
@@ -411,19 +323,7 @@ test("the player surface and the studio do not leak into each other", async () =
   }
 });
 
-test("Devices answers what is connected and how to add something", async () => {
-  const html = await (await render("/devices")).text();
-  assert.match(html, /What is connected/);
-  assert.match(html, /Add a device/);
-  /*
-   * The "Screen and sound" card is deliberately gone. It was a visible, honestly locked row — which
-   * is the right pattern — but its explanation was written in developer terms ("the renderer to move
-   * inside each game package"), which is not a sentence a player can do anything with. The
-   * constraint belongs in docs/architecture.md, and the card returns when output routing ships with
-   * a picker that works.
-   */
-  assert.doesNotMatch(html, /renderer to move inside|game package/i, "a player surface must not explain unbuilt internals");
-});
+
 
 /**
  * A player who mistypes a URL, or follows a link to a game that has been retired, previously landed
@@ -637,31 +537,17 @@ test("each route carries exactly one title, and the controller keeps its own man
   assert.equal(manifests[0], "/link.webmanifest", `the controller must install as itself, not the site: ${manifests.join(" | ")}`);
 });
 
-test('renders explicit local pointer consent and keeps typed game mapping in Studio', async () => {
-  const independent = await (await render('/pointer-lab')).text();
-  assert.match(independent, /Pointer lab/);
-  assert.match(independent, /Allow pointer for one minute/);
-  assert.match(independent, /Loading local identity/);
-  assert.match(independent, /Create invitation/);
-  assert.match(independent, /Both owners compare the verified connection code before any resources are shared/);
-  assert.match(independent, /<button[^>]*disabled=""[^>]*>Allow pointer for one minute<\/button>/);
-  assert.match(independent, /Application pointer surface/);
+test('Games Studio retains game input and delegates device tools', async () => {
   const studio = await (await render('/studio')).text();
-  assert.match(studio, /href="\/pointer-lab"/);
   assert.match(studio, /href="\/studio\/input"/);
+  assert.doesNotMatch(studio, /href="\/pointer-lab"/);
 });
 
 
-test("read-only sharing is reachable and arrives without display or control authority", async () => {
-  const sharing = await render("/sharing");
-  assert.equal(sharing.status, 200);
-  assert.match(await sharing.text(), /href="\/sharing\/watch"/);
-  const response = await render("/sharing/watch");
-  assert.equal(response.status, 200);
-  const html = await response.text();
-  assert.match(html, /Share a read-only page view/);
-  assert.match(html, /Start watch setup/);
-  assert.match(html, /data-testid="watch-display"[^>]*data-held="false"/);
-  assert.doesNotMatch(html, /data-testid="watch-display"[^>]*data-x=/);
-  assert.doesNotMatch(html, /rawPending|RTCPeerConnection|confidence percentage|protocol epoch/);
+test("moved device surfaces lead to the Connect console", async () => {
+  for (const path of ["/devices", "/connections", "/connections/audio", "/connections/gamepad", "/connections/camera", "/connections/screen", "/sharing", "/sharing/watch", "/settings/history", "/settings/processors", "/pointer-lab", "/studio/motion", "/studio/vision", "/studio/network", "/studio/inspector", "/studio/hardware", "/studio/ownership"]) {
+    const response = await render(path);
+    assert.equal(response.status, 307, `${path} must redirect`);
+    assert.equal(response.headers.get("location"), `http://localhost:3001${path}`);
+  }
 });

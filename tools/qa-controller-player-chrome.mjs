@@ -1,3 +1,5 @@
+import { verifyConnectSdkProof } from './connect-sdk-provenance.mjs';
+import { build } from 'vite';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
@@ -27,13 +29,26 @@ assert.match(proof.sourceTree, /^[a-f0-9]{40}$/);
 const sourceRoot = realpathSync(proof.sourceRoot), hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const required = ['app/controller/Controller.tsx', 'app/controller/page.tsx', 'app/controller/controller-route.ts',
   'app/controller/controller-surface-state.ts', 'app/controller/controller-copy.ts', 'app/globals.css',
-  'packages/session/src/index.ts', 'packages/protocol/src/index.ts', 'packages/input/src/index.ts',
+  'packages/game-host/src/game-session.ts', 'packages/game-host/src/game-protocol.ts', 'packages/game-host/src/game-application-channel.ts', 'packages/input/src/index.ts',
   'games/spellcaster/src/roles.ts', 'games/echomaze/src/roles.ts'];
 for (const path of required) {
   assert.match(proof.sourcePins?.[path] ?? '', /^[a-f0-9]{64}$/);
   assert.equal(hash(readFileSync(resolve(sourceRoot, path))), proof.sourcePins[path], `Current declared served source: ${path}`);
   assert.equal(hash(execFileSync('git', ['cat-file', 'blob', `${proof.sourceTree}:${path}`], { cwd: sourceRoot, maxBuffer: 2 * 1024 * 1024 })), proof.sourcePins[path], `Immutable declared served source: ${path}`);
 }
+verifyConnectSdkProof(proof, sourceRoot);
+const fixtureId = 'controller-chrome-fixture';
+const fixtureSource = [
+  `export { createBrowserApplicationChannel } from '@uynis-connect/connect';`,
+  `export { SessionHost } from ${JSON.stringify(resolve(sourceRoot, 'packages/game-host/src/game-session.ts'))};`,
+  `export { createGameApplicationLink } from ${JSON.stringify(resolve(sourceRoot, 'packages/game-host/src/game-application-channel.ts'))};`,
+  `export { parseControlMessage } from ${JSON.stringify(resolve(sourceRoot, 'packages/game-host/src/game-protocol.ts'))};`,
+  `export { SPELLCASTER_ROLES } from ${JSON.stringify(resolve(sourceRoot, 'games/spellcaster/src/roles.ts'))};`,
+].join('\n');
+const built = await build({ configFile: false, root: sourceRoot, logLevel: 'error', define: { 'process.env.NODE_ENV': '"production"' },
+  plugins: [{ name: 'owned-controller-fixture', resolveId: id => id === fixtureId ? id : undefined, load: id => id === fixtureId ? fixtureSource : undefined }],
+  build: { write: false, minify: false, lib: { entry: fixtureId, name: 'ControllerFixture', formats: ['iife'] } } });
+const fixtureBundle = (Array.isArray(built) ? built[0] : built).output.find(part => part.type === 'chunk').code;
 const ownQaHash = hash(readFileSync(new URL(import.meta.url))), results = [];
 let browser, context;
 try {
@@ -51,11 +66,11 @@ try {
     await hostPage.route(fixtureUrl, route => route.fulfill({ status: 200, contentType: 'text/html',
       body: '<!doctype html><html lang="en"><meta charset="utf-8"><title>Owned SessionHost fixture</title><body></body></html>' }));
     await hostPage.goto(fixtureUrl);
+    await hostPage.addScriptTag({ content: fixtureBundle });
     await hostPage.evaluate(async room => {
-      const { SessionHost } = await import('/packages/session/src/index.ts');
-      const { BroadcastChannelTransport, parseControlMessage } = await import('/packages/protocol/src/index.ts');
-      const { SPELLCASTER_ROLES } = await import('/games/spellcaster/src/roles.ts');
-      const port = new BroadcastChannelTransport(room), configurations = [], frames = [];
+      const { SessionHost, createBrowserApplicationChannel, createGameApplicationLink, parseControlMessage, SPELLCASTER_ROLES } = window.ControllerFixture;
+      const channel = createBrowserApplicationChannel({ sessionId: room, applicationId: 'connect.controls.v1' });
+      const port = createGameApplicationLink(channel), configurations = [], frames = [];
       const nativeSend = port.sendReliable.bind(port);
       port.sendReliable = message => {
         const parsed = parseControlMessage(message);
@@ -129,7 +144,7 @@ try {
     }
   }
   process.stdout.write(`${JSON.stringify({ status: 'pass', profile: 'controller-player-chrome/1', sourceTree: proof.sourceTree,
-    servedProof: { path: resolve(proofPath), sha256: hash(proofBytes) }, sourcePins: proof.sourcePins, qaSha256: ownQaHash,
+    servedProof: { path: resolve(proofPath), sha256: hash(proofBytes) }, sourcePins: proof.sourcePins, sdkPackagePins: proof.sdkPackagePins, fixtureSha256: hash(fixtureBundle), qaSha256: ownQaHash,
     producer: 'real SessionHost and parsed real game roles over owned native same-origin BroadcastChannel',
     sourceOnly: true, results, cleanup: { browserContexts: 0, browserProcesses: 0, ownedHostPorts: 0 },
     unqualified: ['phone', 'physical motion', 'native permission enforcement', 'authenticated endpoint', 'resource authority', 'whole U05'] })}\n`);

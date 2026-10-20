@@ -1,5 +1,5 @@
-import { createIndexedDbOwnerDataStorage, createOwnerDataController, createSettingsStore } from '@101/connect';
-import type { OwnerDataController, OwnerDataPorts, OwnerDataScope, OwnerDataStorage, SettingsDocument, SettingsResult, SettingsStore } from '@101/connect';
+import { createIndexedDbOwnerDataStorage, createOwnerDataController, createSettingsStore } from '@uynis-connect/connect';
+import type { OwnerDataController, OwnerDataPorts, OwnerDataScope, OwnerDataStorage, SettingsDocument, SettingsResult, SettingsStore } from '@uynis-connect/connect';
 
 export const SETTINGS_OWNER = 'app-player-settings:this-browser';
 export const SETTINGS_DATABASE = 'app-player-settings-managed-v1';

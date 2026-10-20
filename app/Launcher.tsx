@@ -588,7 +588,7 @@ function PairingPanel({ sessionId, returnFocusTo, onClose, onOpenController }: {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {pairing && qrCode ? <img className="pairing-qr" src={qrCode} alt={`Code for room ${sessionId}`} /> : <div className="pairing-qr pending"><span>{pairing ? "Preparing code…" : "Choose an address"}</span></div>}
         <div className="session-code"><span>Room code</span><strong>{sessionId}</strong></div>
-        <PairingLink url={pairing?.controllerUrl} expiresAt={pairing?.ticket.expiresAt} />
+        <PairingLink url={pairing?.controllerUrl} expiresAt={pairing?.expiresAt} />
         <a className="primary-button full-button" href={pairing?.controllerUrl ?? controllerUrl} target="_blank" rel="noreferrer" onClick={onOpenController}>{pairing ? "Open controller" : "Open controller on this screen"} ↗</a>
       </section>
     </dialog>

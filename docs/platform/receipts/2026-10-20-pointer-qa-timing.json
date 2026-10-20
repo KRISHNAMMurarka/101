@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-10-20T12:33:05.673543+00:00",
+  "classification": "QA sequencing race, no runtime change",
+  "originalFailure": "outputs/migration/2026-10-20/journeys-game-pointer-ui-chromium-2026-10-20T12-30-34-523Z/failed.json",
+  "cause": "InputLab.tsx retains visual flash90ms after legitimate trigger; neutral input and closed peers were already observed. The next pairing phase asserted against that previous visual feedback.",
+  "change": "Only tools/qa-game-pointer-ui.mjs. Before each new pair, wait at most1000ms for previous visualflash to detach and retain immediate noOutput assertions after new invitation/enrollment actions.",
+  "changedFileSha256": "eaafadc47edec3cd117d2226b43a35f8faca8c418667b64e8a227e42d173281f",
+  "passedReport": "/Users/km/Dev/101/outputs/migration/2026-10-20/journeys-game-pointer-ui-chromium-2026-10-20T12-32-34-828Z/passed.json",
+  "pairingBaselines": [
+    {
+      "previousFlash": false,
+      "settledMs": 4
+    },
+    {
+      "previousFlash": true,
+      "settledMs": 25
+    },
+    {
+      "previousFlash": true,
+      "settledMs": 76
+    }
+  ],
+  "sourcePinsUnchanged": true,
+  "buildPinsUnchanged": true,
+  "errors": [],
+  "lint": "pass",
+  "cleanup": "Owned browsers and both ephemeral servers closed through awaited finally; command exit0."
+}

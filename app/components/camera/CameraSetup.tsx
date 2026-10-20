@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 
 import {
-  BrowserCameraAdapter,
-  BrowserHandAdapter,
+  requestCameraSession,
+  type CameraSession,
   CAMERA_FAILURE_COPY,
   describeCameraFailure,
   cameraConstraints,
@@ -13,7 +13,7 @@ import {
   sampleVideoLuma,
   type HandAdapterDiagnostics,
   type PoseAdapterDiagnostics,
-} from "@101/adapter-camera";
+} from "@uynis-connect/connect";
 import {
   PLACEMENT_COPY,
   PLACEMENT_LIMITS,
@@ -28,7 +28,7 @@ import {
   readBodyPlacement,
   readHandPlacement,
   type PlacementReading,
-} from "@101/vision";
+} from "@uynis-connect/connect";
 
 import { CameraPlacementFigure } from "./CameraPlacementFigure";
 import { Icon } from "../Icon";
@@ -72,7 +72,7 @@ export default function CameraSetup({
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const adapterRef = useRef<BrowserCameraAdapter | BrowserHandAdapter | null>(null);
+  const adapterRef = useRef<CameraSession | null>(null);
   const gateRef = useRef(new PlacementGate());
   const gatePassedRef = useRef(false);
   const lastFrameRef = useRef(0);
@@ -148,7 +148,7 @@ export default function CameraSetup({
         gatePassedRef.current = true;
         dispatch({ type: "placement-held" });
       }
-      const raised = "combat" in diagnostics.signals && diagnostics.signals.actions.armsRaised;
+      const raised = "upperBody" in diagnostics.signals && diagnostics.signals.actions.armsRaised;
       if (current.step === "confirm" && !current.failure && next.issues.length === 0
         && confirmsCameraGesture(diagnostics.signals, armsRaisedRef.current, current.confirmForMs >= CONFIRM_ALTERNATIVE_MS)) {
         dispatch({ type: "gesture" });
@@ -162,12 +162,12 @@ export default function CameraSetup({
       dispatch({ type: "camera-failed", failure: describeCameraFailure(cause).failure });
       clearCameraPlan(sessionId);
     };
-    const common = { video, mirror: true, constraints: cameraConstraints(deviceId, camerasRef.current), onError: fail, onCameraLost: fail };
+    const common = { preview: video, mirror: true, constraints: cameraConstraints(deviceId, camerasRef.current), onError: fail };
     const adapter = kind === "body"
-      ? new BrowserCameraAdapter({ ...common, maxPeople: people, onDiagnostics })
-      : new BrowserHandAdapter({ ...common, onDiagnostics });
+      ? requestCameraSession({ ...common, kind: "body", maxPeople: people, onObservation: onDiagnostics })
+      : requestCameraSession({ ...common, kind: "hands", onObservation: onDiagnostics });
     adapterRef.current = adapter;
-    adapter.start(() => {}).then(async () => {
+    adapter.ready.then(async () => {
       if (cancelled) return;
       const devices = await listCameras();
       if (cancelled) return;
@@ -175,13 +175,13 @@ export default function CameraSetup({
       const selected = (video.srcObject as MediaStream | null)?.getVideoTracks()[0]?.getSettings().deviceId;
       completedPlanRef.current = {
         ...(selected ? { deviceId: selected } : {}),
-        ...(adapter instanceof BrowserCameraAdapter ? { poseModel: adapter.trackingProfile.poseModel } : {}),
+        ...(adapter.poseModel ? { poseModel: adapter.poseModel } : {}),
       };
       setCameraReady(true);
     }).catch(fail);
     return () => {
       cancelled = true;
-      void adapter.stop();
+      void adapter.close();
       if (adapterRef.current === adapter) adapterRef.current = null;
     };
   }, [deviceId, kind, needsLegs, people, redraw, sessionId, state.attempt]);
@@ -207,7 +207,7 @@ export default function CameraSetup({
   };
   const chooseAnotherWay = () => {
     clearCameraPlan(sessionId);
-    void adapterRef.current?.stop();
+    void adapterRef.current?.close();
     onCancel();
   };
 
