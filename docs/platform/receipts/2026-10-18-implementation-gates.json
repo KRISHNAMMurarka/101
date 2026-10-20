@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "initialFullGateResult": {
+    "schemaVersion": 1,
+    "tree": "05f85cebf8b4860e5e6c907c855db65fdddd6d6d",
+    "sourceEvidenceCommit": "0e58f0d829637522f31c6dffafa7b046dd0fa751",
+    "head": "0ae72107ed9921b36ff30ab369408d7904d3f55e",
+    "status": "fail",
+    "environment": {
+      "node": "24.14.0",
+      "platform": "darwin"
+    },
+    "gates": [
+      {
+        "name": "types",
+        "command": [
+          "node",
+          "node_modules/typescript/bin/tsc",
+          "--noEmit"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "timedOut": false,
+        "seconds": 2.952,
+        "log": "types.log",
+        "candidateDrift": []
+      },
+      {
+        "name": "lint",
+        "command": [
+          "npm",
+          "run",
+          "lint"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "timedOut": false,
+        "seconds": 22.485,
+        "log": "lint.log",
+        "candidateDrift": []
+      },
+      {
+        "name": "unit",
+        "command": [
+          "npm",
+          "run",
+          "test:unit"
+        ],
+        "exitCode": 1,
+        "signal": null,
+        "timedOut": false,
+        "seconds": 640.26,
+        "log": "unit.log",
+        "candidateDrift": []
+      },
+      {
+        "name": "build",
+        "command": [
+          "npm",
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "timedOut": false,
+        "seconds": 16.293,
+        "log": "build.log",
+        "candidateDrift": []
+      },
+      {
+        "name": "rendered",
+        "command": [
+          "node",
+          "--test",
+          "tests/rendered-html.test.mjs"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "timedOut": false,
+        "seconds": 2.378,
+        "log": "rendered.log",
+        "candidateDrift": []
+      }
+    ]
+  },
+  "initialUnitSummary": {
+    "tests": 3521,
+    "passed": 3519,
+    "failed": 2,
+    "skipped": 0
+  },
+  "sdkSelectorRepair": {
+    "tree": "50639575fb5ff3546aaae9c74c5ebe0edc525937",
+    "commit": "7dd11f1e88cccef4352dc647ad039d8ce3b549ab",
+    "ref": "refs/codex/evidence/2026-10-18-implementation/sdk-selector-repair",
+    "originalIndexUnchanged": true,
+    "indexSha256": "ac615e5e7801473c97e04eb450d43d41ea054cce86f31e44adc2388a862e44be",
+    "sourceSha256": "f13718064953e53fffec8f03f32b1c5451404b1d139aa7ad31c9b933d3d9a437",
+    "command": [
+      "env",
+      "SDK_TEST_SOURCE_TREE=50639575fb5ff3546aaae9c74c5ebe0edc525937",
+      "node",
+      "--test",
+      "tests/sdk-distribution.test.ts"
+    ],
+    "exitCode": 0,
+    "tests": 1,
+    "passed": 1,
+    "log": "sdk-selector-green.log",
+    "typesExitCode": 0,
+    "typesLog": "types-after-selector.log",
+    "scopedLintExitCode": 0,
+    "lintLog": "selector-lint.log",
+    "review": "outputs/controllers/2026-10-18-implementation-review/review-sdk-selector.json"
+  },
+  "unresolvedNativeFailure": {
+    "message": "Cross-host current effect deadline",
+    "startup": {
+      "parentClock": "parent-performance",
+      "childClock": "runtime-host-performance",
+      "clockScope": "Child loader-body-enter excludes its static builtin imports; module-body-enter excludes host static ESM imports. Child and parent times are separate clocks; parent receipt includes delivery and scheduling.",
+      "hosts": [
+        {
+          "spawnEnteredAt": 9805.271167,
+          "spawnReturnedAt": 9805.760042,
+          "pid": 97671,
+          "spawnAt": 9805.839334,
+          "closeAt": 12308.328459,
+          "exitCode": null,
+          "signalCode": "SIGTERM",
+          "stderrBytes": 0,
+          "milestones": []
+        }
+      ],
+      "cleanup": {
+        "processes": 0,
+        "callbacks": 0,
+        "sockets": 0,
+        "timers": 0,
+        "fixturesRemoved": true
+      }
+    }
+  },
+  "nativeFailureReason": "Existing loader-failure fixture did not enter any JavaScript milestone before unchanged2500ms deadline; expected loader error was not reached. SIGTERM and actual close joined; stderr0, all owned resources0/removed. Cause remains unproven.",
+  "fullUnitRerun": false,
+  "reason": "Do not blindly rerun unchanged native startup failure. SDK selector alone was corrected/rechecked; original full-gate failure remains retained and blocks ordinary commit.",
+  "productSourceChangedAfterFullGates": false,
+  "currentWebkitSharing": "outputs/controllers/2026-10-18-sharing-transfer/lane-receipt.json",
+  "sourceRecovery": "gate-input and sdk-selector-repair reachable local evidence refs; ordinary HEAD/index preserved."
+}

@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "result": "pass-selected-local-receiver",
+  "tasks": [
+    "N11"
+  ],
+  "implementation": "apps/console-receiver/README.md",
+  "originalBrowserReceipt": {
+    "path": "outputs/controllers/2026-10-18-console-receiver/receipt.json",
+    "sha256": "3b01ffed1c4533c9c11cfb79fc9e803e176ae899ba47b4d33ee81d88c7596c54",
+    "preservedUnchanged": true
+  },
+  "browserMethods": {
+    "expiry": "Playwright clock fastForward; no natural-time expiry wait",
+    "visibility": "document.hidden shadow plus synthetic visibilitychange event; event-handler proof, no native OS or Xbox suspension"
+  },
+  "runtimeScope": "Actual local desktop browser WebRTC, cryptography and application-only pointer effects. No Windows UWP compilation, Xbox runtime, console controller navigation, LAN or physical qualification.",
+  "browsers": [
+    {
+      "engine": "chromium",
+      "version": "149.0.7827.55",
+      "status": "pass",
+      "checks": 16
+    },
+    {
+      "engine": "webkit",
+      "version": "26.5",
+      "status": "pass",
+      "checks": 16
+    }
+  ],
+  "behavior": [
+    "actual local native WebRTC and endpoint cryptography",
+    "exact application/session review and bilateral code comparison",
+    "separate resource denial/one-minute permission",
+    "actual authored DOM movement and held contact",
+    "Stop, source-disconnect, reconnect, keyboard and narrow layout",
+    "expiry/visibility handler paths under the documented controlled methods"
+  ],
+  "nativeProvenance": {
+    "schemaVersion": 1,
+    "status": "pass",
+    "originalBrowserReceipt": {
+      "path": "outputs/controllers/2026-10-18-console-receiver/receipt.json",
+      "sha256": "3b01ffed1c4533c9c11cfb79fc9e803e176ae899ba47b4d33ee81d88c7596c54",
+      "preservedUnchanged": true
+    },
+    "browserMethods": {
+      "expiry": "Playwright clock fastForward; no natural-time expiry wait",
+      "visibility": "document.hidden shadow plus synthetic visibilitychange event; event-handler proof, no native OS or Xbox suspension"
+    },
+    "changedOriginalPins": [
+      "apps/console-receiver/build.mjs",
+      "apps/console-receiver/README.md",
+      "apps/console-receiver/windows/build.ps1",
+      "apps/console-receiver/windows/Receiver.csproj",
+      "tools/qa-console-receiver.mjs"
+    ],
+    "browserInputPinsUnchanged": true,
+    "browserArtifactHashesUnchanged": true,
+    "browserRerun": false,
+    "bundleVerification": {
+      "schemaVersion": 1,
+      "status": "verified",
+      "manifest": {
+        "path": "release/console-receiver/source-manifest.json",
+        "sha256": "baec56f874b645eb2c9f9f756e9de640900b3a688de4b2287893d0a93ab2e35f"
+      },
+      "sourceSetSha256": "6a534086c3a0a8aa1049f4cac19c9b4a531cb06593ab6bd67f913f94341d6f95",
+      "artifactSetSha256": "9b702465b2a7a3ec5a5dd15b4d141f39dd5c72ccfce731f3ffea0263cf06f3fe",
+      "sourceFiles": 139,
+      "artifacts": 6
+    },
+    "focusedTests": {
+      "passed": 8,
+      "verifierRegressions": 6,
+      "firstRedLog": "outputs/controllers/2026-10-18-console-receiver/bundle-verifier-first-red.log",
+      "passLog": "outputs/controllers/2026-10-18-console-receiver/bundle-verifier-checks.log"
+    },
+    "nativeBuild": {
+      "compiled": false,
+      "scriptExecuted": false,
+      "reason": "No Windows UWP toolchain or PowerShell is available on this Darwin host.",
+      "invocationIsolation": "GUID-specific obj/bin/packages plus before/after verified manifest/source/artifact pins; no persistent package search"
+    },
+    "changedSourceSha256": {
+      "apps/console-receiver/build.mjs": "b8e2b8aa7ab4e5eb8002d4fe5b9fb9607c3527db61f51cd3a332a4734388d4b8",
+      "apps/console-receiver/README.md": "7bbafe59ed19a10635d6546cea2ed0c45883b92c223ac5faa0ac7e795bdcab3e",
+      "apps/console-receiver/windows/build.ps1": "b5a3220a953e4ffd204a0028e4abd3b3bfd4473e31c919037414bfbc862bd398",
+      "apps/console-receiver/windows/Receiver.csproj": "8d16a47e7986a7bb06aa1ed59b8d0d161ed9cc39d8f4b6c633cf85a9f803f5e1",
+      "tools/qa-console-receiver.mjs": "194cc3b8e880beb2e1e3a6354f828890cbccc72609abea74aab5be4793cac857",
+      "apps/console-receiver/verify-bundle.mjs": "7bd3525784e6f4779f1b3f116c9f54d07ffd7fc584a58615c6f49c970b6aa8f8",
+      "tests/console-receiver-bundle.test.ts": "ab693dd4c228bd5af30753a803d6dad531368406fa92132f7bbfc714d59c2fe5"
+    }
+  },
+  "independentReview": "outputs/controllers/2026-10-18-implementation-review/review-console.json",
+  "wholeCandidateGates": "docs/platform/receipts/2026-10-18-implementation-gates.json; full unit gate remains failed for native startup; SDK candidate-selection follow-up passed; no ordinary commit.",
+  "acceptedSupport": false,
+  "limitations": [
+    "Windows build script, UWP compilation, installation and Xbox runtime/physical navigation are unexecuted and unqualified.",
+    "Fixed authored application surface only; no shell, other-game input, protected media, account or general native resource authority.",
+    "Desktop RTC is direct; LAN/console network path qualification and native lifecycle require the actual target.",
+    "In-flight crypto cancellation and persisted-page restore have only bounded code/test coverage; no natural-time expiry or native OS visibility claim."
+  ],
+  "nativeProvenanceReview": "outputs/controllers/2026-10-18-implementation-review/review-console-native.json"
+}

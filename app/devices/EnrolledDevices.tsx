@@ -182,7 +182,7 @@ export default function EnrolledDevices({ sessionId }: { sessionId: string }) {
       {!current.resources.length && <p>No inputs have been described yet. Wait briefly, or check the connector and reconnect. An empty description is not proof that a device has no inputs.</p>}
       {!!current.resources.length && <ul className="devices-flow-resources">
         {current.resources.map(resource => {
-          const table = Object.hasOwn(current.readings, resource.id) ? current.readings[resource.id] : undefined, label = resource.reading?.label ?? resource.semantic;
+          const table = Object.hasOwn(current.readings, resource.id) ? current.readings[resource.id] : undefined, label = resource.label;
           const rawValue = Object.hasOwn(current.values, resource.id) ? current.values[resource.id] : undefined;
           const valueText = rawValue === undefined ? undefined : resource.primitive ? formatEnrolledPrimitiveValue(resource, rawValue) : JSON.stringify(rawValue);
           return <li key={resource.id}>

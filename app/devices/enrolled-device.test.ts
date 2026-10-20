@@ -66,6 +66,21 @@ test('primitive preview wording follows validated type, unit and vector componen
   assert.equal(formatEnrolledPrimitiveValue(resources[2]!, { x: 0.5, z: 0.25 }), undefined);
 });
 
+test('resource labels use declared types and stable ordinals while preserving connector identity', () => {
+  const capabilities = [
+    { ...descriptor.capabilities[0], id: 'switch-a', semantic: 'vendor:opaque-switch', value: { type: 'boolean' } },
+    { ...descriptor.capabilities[0], id: 'number-a', semantic: 'vendor:opaque-value-a', value: { type: 'scalar', unit: 'Cel', min: -100, max: 100 } },
+    { ...descriptor.capabilities[0], id: 'vector-a', semantic: 'vendor:opaque-vector',
+      value: { type: 'vector', unit: 'm', frame: 'screen', components: ['x', 'y'], min: -10, max: 10 } },
+    { ...descriptor.capabilities[0], id: 'number-b', semantic: 'vendor:opaque-value-b', value: { type: 'scalar', unit: '1', min: 0, max: 1 } },
+    descriptor.capabilities[1],
+  ];
+  const rows = inspectEnrolledResources({ ...descriptor, capabilities });
+  assert.deepEqual(rows.map(row => row.label), ['On/off input', 'Number input 1', 'Multi-value input', 'Number input 2', 'Action']);
+  assert.deepEqual(rows.map(row => [row.id, row.semantic]), capabilities.map(row => [row.id, row.semantic]));
+  assert.deepEqual(rows.map(row => row.previewable), [true, true, true, true, false]);
+});
+
 test('cancelled identity setup remains reserved and close waits for its actual settlement', async () => {
   let resolve!: (identity: Awaited<ReturnType<typeof createEphemeralWebIdentity>>) => void;
   const identity = await createEphemeralWebIdentity();

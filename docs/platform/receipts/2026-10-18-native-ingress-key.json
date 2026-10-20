@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "tasks": [
+    "D09",
+    "S04"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "actual selected-interface native-discovery ingress wrong expected-key refusal; fresh correct-key authentication and distinct resource grants; joined cleanup",
+  "sourceHead": "0ae72107ed9921b36ff30ab369408d7904d3f55e",
+  "environment": "Node24.14.0; macOS26.5.2(25F84); operator-selected en0/index14; actual DNS-SD/nativeTLS1.3/WSS/P256; same-Mac self-browse",
+  "originalPreparedHarnessSha256": "bb44e2b2b5422f507bbda85e6383f3e16bac8bcbe1c91b1c3abc89c9ddbfe9a2",
+  "executedCorrectedHarnessSha256": "1984115c57571379523d3e7999726dd65ef1efc5a2fdb6f5b726dbebbdf76487",
+  "sourceRecovery": "outputs/controllers/2026-10-18-d09-key-ingress/declared-source-recovery.json",
+  "declaredSourcePinsBeforeAndAfter": 132,
+  "checks": [
+    "actual Apple DNS-SD selected-interface row issued for operator-selected en0/index 14; service target/port are not invitation endpoint inputs",
+    "manual/link/QR-decoded invitation text reviews are inert; explicit owner mapping does not derive endpoint or key from DNS-SD",
+    "actual controller-issued native row plus wrong genuine saved expected key reaches valid TLS1.3/WSS and refuses endpoint authentication with no selected caller peer, source, resource authorizer call or effect",
+    "new immutable correct saved-key mapping generation2 requires its own review and connection approval, with same still-current native observation and actual authenticated endpoint",
+    "source owner consent and receiver runtime grant are separate; denied receiver grant has no effect; explicit grant delivers actual Node RSS"
+  ],
+  "originalAttempt": {
+    "status": "failed",
+    "result": "outputs/controllers/2026-10-18-d09-key-ingress/result.json",
+    "finding": "Target assertions completed, but cleanup snapshot invoked nonexistent DeviceRuntime.status twice. Redundant harness Stop after actual provider stdin end also retained as ERR_STREAM_WRITE_AFTER_END. This attempt is not accepted."
+  },
+  "regression": {
+    "old": "outputs/controllers/2026-10-18-d09-key-ingress/cleanup-old-red.txt",
+    "oldFailed": 2,
+    "corrected": "outputs/controllers/2026-10-18-d09-key-ingress/cleanup-corrected-green.txt",
+    "correctedPassed": 2,
+    "usesActual": "Actual /bin/cat child stdin and actual public SDK runtime/sink; extracted exact harness cleanup bodies. No mocks or production source changes."
+  },
+  "correctedAttempt": {
+    "status": "pass",
+    "exitCode": 0,
+    "result": "outputs/controllers/2026-10-18-d09-key-ingress/corrected/result.json",
+    "wrongKeyScopeAuthenticated": false,
+    "freshCorrectKeyScopeAuthenticated": true,
+    "actualSinkValues": 1,
+    "resourceSampleScope": "After connection authentication; separate source-owner consent and receiver grant; not proof the original discovery observation remains live at sample time."
+  },
+  "cleanup": {
+    "childrenJoined": true,
+    "sessionJoins": true,
+    "clientSocketJoins": true,
+    "rawNativeReservations": 0,
+    "ownedTcpSocketsRemaining": 0,
+    "previouslyRegisteredSinksRefuseReadinessAfterClose": true,
+    "errors": [],
+    "custody": "outputs/controllers/2026-10-18-d09-key-ingress/custody-before-cleanup.json",
+    "final": "outputs/controllers/2026-10-18-d09-key-ingress/cleanup-final.json"
+  },
+  "independentSourceReview": "outputs/controllers/2026-10-18-d09-key-ingress/cleanup-independent-review.json",
+  "limits": [
+    "Actual selected-interface same-machine self-browse; no remote/on-wire/LAN reachability or physical interoperability claim.",
+    "Saved owner mapping is separate configuration. Authentication comes from expected-key WSS/P256, never DNS-SD target/TXT/port.",
+    "No incumbent exists in this two-attempt lane; no incumbent-preservation claim.",
+    "No production source, timeout, retry, prewarm, OS policy or installed dependency change.",
+    "No current whole-candidate gate or wholeD09/S04 acceptance; original failed attempt and historical startup failures retained."
+  ]
+}

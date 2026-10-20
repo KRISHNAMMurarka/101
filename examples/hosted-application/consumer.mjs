@@ -31,19 +31,23 @@ export async function runHostedApplicationExample() {
   const checks = [], owners = [], observations = [], phases = [], grants = [], scopes = [], providers = [];
   const record = name => checks.push(name);
   let launchAllowed = false;
-  function make(providerId) {
-    const owner = new AbortController(), allowed = new Set(['pause', 'stage', 'resume']), approvals = new Map(); owners.push(owner);
-    const provider = createHostedApplication({ ownerId: 'native-owner', providerId, applicationId: 'raster-app', sessionId: 'owned-hosted-session', signal: owner.signal,
+  function make(providerId, scope = {}) {
+    const owner = new AbortController(), allowed = new Set(['pause', 'stage', 'resume']), approvals = new Map(), approvalRecords = new Map(); owners.push(owner);
+    const identity = { ownerId: 'native-owner', providerId, applicationId: 'raster-app', sessionId: 'owned-hosted-session', ...scope };
+    const approvalControl = { replay: undefined, copy: false };
+    const provider = createHostedApplication({ ...identity, signal: owner.signal,
       authorize(request) {
         assert.ok(Object.isFrozen(request)); assert.equal(request.codeSha256, HOSTED_APPLICATION_SOURCE_SHA256);
-        assert.equal(request.providerId, providerId); assert.equal(request.applicationId, 'raster-app'); assert.equal(request.sessionId, 'owned-hosted-session');
+        for (const [field, value] of Object.entries(identity)) assert.equal(request[field], value);
         assert.equal(request.profile, HOSTED_APPLICATION_PROFILE); scopes.push({ action: request.action, resource: request.resourceId, operation: request.operation, epoch: request.epoch });
         if (request.action === 'launch' ? !launchAllowed : !allowed.has(request.action)) return;
+        if (approvalControl.replay) return approvalControl.replay;
         const grant = new AbortController(); grants.push(grant); approvals.set(request.action, grant);
-        return { request, signal: grant.signal, expiresAt: performance.now() + 9000 };
+        const record = { request: approvalControl.copy ? Object.freeze({ ...request }) : request, signal: grant.signal, expiresAt: performance.now() + 9000 };
+        approvalRecords.set(request.action, record); return record;
       }, onChild(observation) { observations.push({ ...observation, providerId }); },
       onRetire() { for (const phase of phases) if (phase.provider === provider) phase.stop(); } });
-    providers.push(provider); return { provider, owner, allowed, approvals };
+    providers.push(provider); return { provider, owner, allowed, approvals, approvalRecords, approvalControl };
   }
   const source = make('source-host'), target = make('target-host');
   const definition = hostedApplicationRequirements('source-host'), parsed = parseWorkloadRequirements(definition.workload, definition.context);
@@ -125,12 +129,25 @@ export async function runHostedApplicationExample() {
   try {
     assert.equal(source.provider.status().nativeChildren, 0); assert.deepEqual(await source.provider.start({ purpose: 'denied-launch', version: 1 }), { ok: false, reason: 'denied' }); assert.equal(observations.length, 0);
     record('inert-construction-and-declined-launch-no-child-no-provider');
-    launchAllowed = true; const started = await source.provider.start({ purpose: 'explicit-reviewed-launch', version: 1 }); assert.ok(started.ok); await source.provider.handoffHost().resume(handoff.authority());
+    assert.deepEqual(await source.provider.start({ purpose: 'launch', version: 1, program: '/unselected-program' }), { ok: false, reason: 'invalid' });
+    assert.equal(source.provider.status().starts, 0);
+    launchAllowed = true; source.approvalControl.copy = true;
+    assert.deepEqual(await source.provider.start({ purpose: 'copied-launch', version: 1 }), { ok: false, reason: 'denied' }); assert.equal(source.provider.status().starts, 0);
+    source.approvalControl.copy = false;
+    record('N16-unselected-program-and-copied-owner-approval-denied-before-child');
+    const started = await source.provider.start({ purpose: 'explicit-reviewed-launch', version: 1 }); assert.ok(started.ok); await source.provider.handoffHost().resume(handoff.authority());
     assert.notEqual(observations[0].pid, process.pid); assert.equal(observations[0].codeSha256, HOSTED_APPLICATION_SOURCE_SHA256);
     record('fixed-hash-owned-independently-executing-native-application');
     await unauthorized(observations[0].socketPath); await unauthorized(observations[0].socketPath, 2); assert.equal(source.provider.status().inputs, 0);
     record('real-native-wrong-capability-and-version-deny-before-engine-input-render');
     const sourceEpoch = started.value, first = phaseFor(source, sourceEpoch);
+    const beforeInvalid = source.provider.status().operations, beforeApproval = scopes.length;
+    const delivery = { signal: source.owner.signal, isCurrent: () => true };
+    assert.deepEqual(await source.provider.input(sourceEpoch, { x: 1, y: 1, path: '/unselected-file' }, { purpose: 'input', signal: source.owner.signal, context: delivery }), { ok: false, reason: 'invalid' });
+    assert.deepEqual(await source.provider.input(sourceEpoch, { x: 1, y: 1 }, { purpose: 'input', signal: source.owner.signal, context: delivery, destination: 'foreign-output' }), { ok: false, reason: 'invalid' });
+    assert.deepEqual(await source.provider.frame(sourceEpoch, { purpose: 'frame', signal: source.owner.signal, path: '/unselected-file' }), { ok: false, reason: 'invalid' });
+    assert.equal(scopes.length, beforeApproval); assert.equal(source.provider.status().operations, beforeInvalid);
+    record('N16-path-and-destination-injection-refused-before-approval-or-native-dispatch');
     assert.equal((await first.command(3, 2)).ok, false); assert.equal(source.provider.status().inputs, 0);
     record('SDK-source-sink-route-grants-separate-from-native-launch');
     assert.ok(first.approveInput().ok); assert.equal((await first.command(3, 2)).ok, false); assert.equal(source.provider.status().inputs, 0);
@@ -139,6 +156,15 @@ export async function runHostedApplicationExample() {
     assert.equal((await source.provider.frame(sourceEpoch, { purpose: 'declined-frame', signal: source.owner.signal })).ok, false);
     source.allowed.add('frame'); const frame = await source.provider.frame(sourceEpoch, { purpose: 'approved-frame', signal: source.owner.signal }); assert.ok(frame.ok); verifyRaster(frame.value.pixels, 3, 2);
     record('separate-sensitive-frame-approval-actual-child-rendered-RGBA64');
+    source.approvalControl.replay = source.approvalRecords.get('launch'); const beforeReplay = source.provider.status().operations;
+    assert.deepEqual(await source.provider.input(sourceEpoch, { x: 0, y: 0 }, { purpose: 'different-purpose', signal: source.owner.signal, context: delivery }), { ok: false, reason: 'denied' });
+    assert.deepEqual(await source.provider.frame(sourceEpoch, { purpose: 'different-purpose', signal: source.owner.signal }), { ok: false, reason: 'denied' });
+    source.approvalControl.replay = undefined;
+    const cancelledBeforeDispatch = new AbortController(); cancelledBeforeDispatch.abort();
+    assert.deepEqual(await source.provider.input(sourceEpoch, { x: 0, y: 0 }, { purpose: 'input', signal: cancelledBeforeDispatch.signal, context: delivery }), { ok: false, reason: 'cancelled' });
+    assert.deepEqual(await source.provider.frame(sourceEpoch, { purpose: 'frame', signal: cancelledBeforeDispatch.signal }), { ok: false, reason: 'cancelled' });
+    assert.equal(source.provider.status().operations, beforeReplay);
+    record('N16-cross-action-purpose-replay-and-pre-aborted-input-frame-have-no-native-effect');
     assert.equal(first.denyOutput().ok, false); assert.equal(first.denyForeign().ok, false); assert.equal(first.stats().copies, 0); assert.equal(first.stats().foreignCopies, 0);
     assert.ok(first.approveOutput().ok); assert.equal(first.views.tick(), true); verifyRaster(first.display, 3, 2); assert.equal(first.stats().copies, 1);
     assert.deepEqual(first.stats().lastObservation.value.sourceTime, frame.value.sourceTime); assert.equal(first.stats().lastObservation.value.receiptClockId, frame.value.receiptClockId); assert.notEqual(first.stats().lastObservation.clockDomain, frame.value.sourceTime.clockId);
@@ -171,6 +197,29 @@ export async function runHostedApplicationExample() {
     assert.equal(third.display.every(byte => byte === 0), true); assert.equal(target.provider.status().nativePending, 0);
     record('actual-native-connect-then-cancel-issued-input-is-uncertain-no-late-delivery');
     record('native-stop-epoch-replacement-requires-fresh-exact-approval');
+    const savedLaunch = source.approvalRecords.get('launch'); source.approvalControl.replay = savedLaunch;
+    assert.deepEqual(await source.provider.start({ purpose: 'explicit-reviewed-launch', version: 1 }), { ok: false, reason: 'denied' });
+    assert.equal(source.provider.status().starts, 1); source.approvalControl.replay = undefined;
+    for (const variant of [{ providerId: 'different-provider' }, { ownerId: 'different-owner' }, { applicationId: 'different-app' }, { sessionId: 'different-session' }]) {
+      const other = make('source-host', variant); other.approvalControl.replay = savedLaunch;
+      assert.deepEqual(await other.provider.start({ purpose: 'explicit-reviewed-launch', version: 1 }), { ok: false, reason: 'denied' });
+      assert.equal(other.provider.status().starts, 0); await other.provider.close(); assert.equal(other.provider.status().cleanupVerified, true);
+    }
+    record('N16-cached-grant-cannot-cross-owner-provider-application-session-or-native-epoch');
+    const sensitive = await target.provider.start({ purpose: 'sensitive-revoke', version: 1 }); assert.ok(sensitive.ok); await target.provider.handoffHost().resume(handoff.authority());
+    const approved = await target.provider.frame(sensitive.value, { purpose: 'sensitive-view', signal: target.owner.signal }); assert.ok(approved.ok);
+    const fourth = phaseFor(target, sensitive.value); assert.ok(fourth.approveOutput().ok); assert.equal(fourth.views.tick(), true); verifyRaster(fourth.display, 0, 0);
+    target.approvals.get('frame').abort(); target.allowed.delete('frame'); const copiesBeforeRevoke = fourth.stats().copies;
+    assert.equal(target.provider.currentFrame(sensitive.value), undefined);
+    assert.deepEqual(await target.provider.frame(sensitive.value, { purpose: 'refused-sensitive-view', signal: target.owner.signal }), { ok: false, reason: 'denied' });
+    assert.equal(fourth.views.tick(), false); assert.equal(fourth.stats().copies, copiesBeforeRevoke); assert.equal(fourth.display.every(byte => byte === 0), true);
+    await target.provider.stop(); assert.equal(target.provider.status().cleanupVerified, true);
+    record('N16-frame-owner-revoke-refuses-new-read-stops-projection-and-clears-consumer-display');
+    const revokeLaunch = await source.provider.start({ purpose: 'launch-revoke', version: 1 }); assert.ok(revokeLaunch.ok);
+    source.approvals.get('launch').abort(); await until(() => source.provider.status().phase === 'idle');
+    assert.equal(source.provider.status().cleanupVerified, true);
+    assert.deepEqual(await source.provider.frame(revokeLaunch.value, { purpose: 'old-epoch', signal: source.owner.signal }), { ok: false, reason: 'denied' });
+    record('N16-launch-owner-revoke-joins-actual-child-and-old-epoch-is-unavailable');
     for (const phase of phases) phase.stop(); for (const provider of providers) await provider.close();
     for (const provider of providers) assert.equal(provider.status().cleanupVerified, true);
     for (const observation of observations) assert.equal(existsSync(observation.socketPath.slice(0, -2)), false);

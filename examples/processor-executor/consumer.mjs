@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createAssetReference, processorExtensionManifestSha256, processorExtensionSigningBytes, validateProcessorGraph } from '@101/device-model';
 import { createDeviceRuntime, createProcessorInstallation } from '@101/device-runtime';
-import { createNodeProcessorExecutor } from '@101/device-runtime/node';
+import { createNodeProcessorHost } from '@101/device-runtime/node';
 
 /** Host-supplied reviewed bytes/factory are fixed by the caller, never selected by a release. */
 export async function runProcessorExecutorExample({ source, manifest, factory }) {
@@ -39,6 +39,7 @@ export async function runProcessorExecutorExample({ source, manifest, factory })
   assert.deepEqual(plan.requiredOperations.map(value => value.operation), ['subscribe', 'invoke']);
   const phases = [];
   for (const phase of ['stop-pending', 'revoke-queued']) {
+    const host = createNodeProcessorHost(), scope = host.createScope();
     const documents = new Map(), effects = [], approvals = [];
     let now = Date.now(), current = true, fenced = false, inputRoute, outputRoute, executor, live, runtime, output, operation = 0, apply;
     const retire = () => {
@@ -66,7 +67,7 @@ export async function runProcessorExecutorExample({ source, manifest, factory })
       take(await installation.install(release, source));
       live = take(await installation.activateReviewed({ packageId: release.packageId, version: release.version,
         codeSha256: manifest.codeSha256, trusted: { manifest, source, factory }, fixture, configuration, retireOwned: retire }));
-      executor = await createNodeProcessorExecutor({ release, source, publisherKey: keys.publicKey, minimumSequence: 1,
+      executor = await scope.create({ release, source, publisherKey: keys.publicKey, minimumSequence: 1,
         entrypoint: 'createTemperatureBand', configuration, approval: { expiresAt: Date.now() + 60_000, isCurrent: () => live.isCurrent() } });
       runtime = createDeviceRuntime({ now: () => now, authorize(permission) {
         approvals.push(permission);
@@ -119,9 +120,40 @@ export async function runProcessorExecutorExample({ source, manifest, factory })
       assert.equal(live.isCurrent(), false);
       phases.push({ phase, effects, freshApprovedRoutes: approvals.filter(value => value.principalId === 'owner').length,
         staleEffectFenced: true, actualWorkerExited: true });
-    } finally { retire(); await executor?.close(); installation.close(); runtime?.close(); }
+    } finally { retire(); await executor?.close(); await host.close(); installation.close(); runtime?.close(); }
   }
+  const host = createNodeProcessorHost(), hot = host.createScope(), control = host.createScope();
+  const expensiveManifest = { ...manifest, budgets: { ...manifest.budgets, maxComputeMs: 100 } };
+  const expensiveUnsigned = { ...unsigned, manifest: expensiveManifest, manifestSha256: await processorExtensionManifestSha256(expensiveManifest) };
+  const expensiveRelease = { ...expensiveUnsigned, signature: Buffer.from(await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' },
+    keys.privateKey, processorExtensionSigningBytes(expensiveUnsigned))).toString('hex') };
+  const options = { source, publisherKey: keys.publicKey, minimumSequence: 1, entrypoint: 'createTemperatureBand', configuration,
+    approval: { expiresAt: Date.now() + 60_000, isCurrent: () => true } };
+  const effects = [], runtime = createDeviceRuntime({ authorize: permission => permission.principalId === 'control-owner' &&
+    permission.applicationId === 'scope-contention' && permission.sessionId === 'control-session' ? { expiresAt: performance.now() + 60_000, maxAgeMs: 500 } : undefined });
+  let contention;
+  try {
+    const exhausted = await hot.create({ ...options, release: expensiveRelease });
+    assert.deepEqual(await exhausted.process({ temperature: 31 }), { ok: false, reason: 'budget' });
+    await exhausted.close();
+    await assert.rejects(hot.create({ ...options, release: expensiveRelease }), /processor-budget/);
+    const independent = await control.create({ ...options, release });
+    const result = await independent.process({ temperature: 31 });
+    assert.deepEqual(result, { ok: true, frame: { switch: true } });
+    const output = runtime.registerSource({ device: derived, capability: 'output' });
+    const target = runtime.registerSink({ device: sink, capability: 'switch',
+      apply(observation, context) { if (context.isCurrent()) effects.push(observation.value); }, release() {} });
+    assert.equal(runtime.setReadiness(output, 'available').ok, true); assert.equal(runtime.setReadiness(target, 'available').ok, true);
+    const route = runtime.route({ from: output, to: target, principalId: 'control-owner', applicationId: 'scope-contention', sessionId: 'control-session' });
+    assert.equal(route.start().ok, true);
+    const publication = runtime.publish(output, result.frame.switch, { operationId: '1', deadline: performance.now() + 500 });
+    assert.equal(publication.ok, true, JSON.stringify(publication));
+    runtime.flush(); assert.deepEqual(effects, [true]);
+    await host.close(); assert.equal(host.status().reservedExecutors, 0);
+    contention = { exhaustedScopeRefused: true, closeDidNotRefund: true, independentControlEffects: effects,
+      actualWorkersExited: true, aggregateGuestMemoryBytesAfterClose: host.status().guestMemoryBytes };
+  } finally { runtime.close(); await host.close(); }
   return { status: 'pass', profile: release.profile, sourceSha256: reference.sha256, declaredGuestMemoryBytes: manifest.budgets.maxMemoryBytes,
-    phases, excludedMemory: ['source-parser-AST', 'host-dictionaries', 'Worker-V8-heap', 'RSS'],
+    phases, contention, excludedMemory: ['source-parser-AST', 'host-dictionaries', 'Worker-V8-heap', 'RSS'],
     scope: 'selected signed pure threshold guest language; no generic JavaScript sandbox or physical effect' };
 }

@@ -1,0 +1,270 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "tasks": [
+    "B06",
+    "U12"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "classification": "current persistent-domain inventory and actual default Settings browser-storage quota/queued-close cells",
+  "productionChanges": false,
+  "sourceSha256": {
+    "tools/qa-persistent-store-faults.mjs": "face43890444bb8a420bd42567db3b453708dcb61ea3d7c8032c5cfb1a3e8aa2"
+  },
+  "inventory": {
+    "path": "outputs/controllers/2026-10-18-persistent-store-faults/inventory.json",
+    "sha256": "5d255f16be09f985efc6ee7f6dcda2956d241de6f152cd289ec9baf053306634",
+    "primaryDomains": 6,
+    "associatedGroups": 3,
+    "rule": "Each existing receipt is exact-byte joined; matching/differing/not-directly-pinned current producer comparisons remain explicit, not a new execution claim."
+  },
+  "native": [
+    {
+      "engine": "chromium",
+      "checks": 23,
+      "receipt": {
+        "path": "chromium/receipt.json",
+        "sha256": "6382b8178d1158e87be35d81c31e0f089bf0bd1599bc5e4db2c7d4e201821f75"
+      },
+      "genuineQuota": {
+        "keys": 190,
+        "totalCharacters": 5234176,
+        "genuineQuotaRefusals": 3
+      },
+      "incumbentBytes": 2651,
+      "incumbentSha256": "7f408d0e7f1008b5e774960ec5fb3d757f58a584bc13092be2dbf65a75c634dc",
+      "actualQueuedReturn": {
+        "before": {
+          "reads": 11,
+          "writeAttempts": 2,
+          "writes": 1,
+          "quotaRefusals": 1,
+          "lockIssued": 2,
+          "lockPending": 0,
+          "lockGranted": 2,
+          "lockReturned": 2,
+          "lockRejected": 1
+        },
+        "immediate": {
+          "reads": 12,
+          "writeAttempts": 2,
+          "writes": 1,
+          "quotaRefusals": 1,
+          "lockIssued": 3,
+          "lockPending": 1,
+          "lockGranted": 2,
+          "lockReturned": 2,
+          "lockRejected": 1
+        },
+        "joined": {
+          "reads": 12,
+          "writeAttempts": 2,
+          "writes": 1,
+          "quotaRefusals": 1,
+          "lockIssued": 3,
+          "lockPending": 0,
+          "lockGranted": 2,
+          "lockReturned": 3,
+          "lockRejected": 2
+        }
+      },
+      "cleanup": {
+        "phase": "native-queued-close",
+        "errors": [],
+        "taskStates": [
+          {
+            "phase": "closed",
+            "reason": "closed",
+            "installed": [],
+            "publisherRevoked": false,
+            "indicator": null,
+            "effectCount": 0,
+            "releaseCount": 0,
+            "rawPending": 0,
+            "registrations": 0,
+            "routes": 0,
+            "documentBytes": 0,
+            "timerArmed": false,
+            "flushArmed": false,
+            "attemptsRemaining": 29,
+            "cleanupFailures": 0,
+            "closurePending": false,
+            "inputAllowed": false,
+            "outputAllowed": false,
+            "storageMode": "browser",
+            "storagePending": 0
+          },
+          {
+            "phase": "closed",
+            "reason": "closed",
+            "installed": [],
+            "publisherRevoked": false,
+            "indicator": null,
+            "effectCount": 0,
+            "releaseCount": 0,
+            "rawPending": 0,
+            "registrations": 0,
+            "routes": 0,
+            "documentBytes": 0,
+            "timerArmed": false,
+            "flushArmed": false,
+            "attemptsRemaining": 30,
+            "cleanupFailures": 0,
+            "closurePending": false,
+            "inputAllowed": false,
+            "outputAllowed": false,
+            "storageMode": "browser",
+            "storagePending": 0
+          }
+        ],
+        "ownedStorageEmpty": true,
+        "pagesClosed": true,
+        "childClosed": true,
+        "childExit": {
+          "code": 0,
+          "signal": null
+        },
+        "contextPages": 0,
+        "loopbackClosed": true,
+        "ownedSockets": 0,
+        "requests": 127
+      }
+    },
+    {
+      "engine": "webkit",
+      "checks": 23,
+      "receipt": {
+        "path": "webkit/receipt.json",
+        "sha256": "b02fdc0180d4e31dfbf583c8fa509f1d37f9fd6d039bf51a689b6c84a51fcad2"
+      },
+      "genuineQuota": {
+        "keys": 190,
+        "totalCharacters": 5234176,
+        "genuineQuotaRefusals": 3
+      },
+      "incumbentBytes": 2651,
+      "incumbentSha256": "7f408d0e7f1008b5e774960ec5fb3d757f58a584bc13092be2dbf65a75c634dc",
+      "actualQueuedReturn": {
+        "before": {
+          "reads": 11,
+          "writeAttempts": 2,
+          "writes": 1,
+          "quotaRefusals": 1,
+          "lockIssued": 2,
+          "lockPending": 0,
+          "lockGranted": 2,
+          "lockReturned": 2,
+          "lockRejected": 1
+        },
+        "immediate": {
+          "reads": 12,
+          "writeAttempts": 2,
+          "writes": 1,
+          "quotaRefusals": 1,
+          "lockIssued": 3,
+          "lockPending": 1,
+          "lockGranted": 2,
+          "lockReturned": 2,
+          "lockRejected": 1
+        },
+        "joined": {
+          "reads": 12,
+          "writeAttempts": 2,
+          "writes": 1,
+          "quotaRefusals": 1,
+          "lockIssued": 3,
+          "lockPending": 0,
+          "lockGranted": 2,
+          "lockReturned": 3,
+          "lockRejected": 2
+        }
+      },
+      "cleanup": {
+        "phase": "native-queued-close",
+        "errors": [],
+        "taskStates": [
+          {
+            "phase": "closed",
+            "reason": "closed",
+            "installed": [],
+            "publisherRevoked": false,
+            "indicator": null,
+            "effectCount": 0,
+            "releaseCount": 0,
+            "rawPending": 0,
+            "registrations": 0,
+            "routes": 0,
+            "documentBytes": 0,
+            "timerArmed": false,
+            "flushArmed": false,
+            "attemptsRemaining": 29,
+            "cleanupFailures": 0,
+            "closurePending": false,
+            "inputAllowed": false,
+            "outputAllowed": false,
+            "storageMode": "browser",
+            "storagePending": 0
+          },
+          {
+            "phase": "closed",
+            "reason": "closed",
+            "installed": [],
+            "publisherRevoked": false,
+            "indicator": null,
+            "effectCount": 0,
+            "releaseCount": 0,
+            "rawPending": 0,
+            "registrations": 0,
+            "routes": 0,
+            "documentBytes": 0,
+            "timerArmed": false,
+            "flushArmed": false,
+            "attemptsRemaining": 30,
+            "cleanupFailures": 0,
+            "closurePending": false,
+            "inputAllowed": false,
+            "outputAllowed": false,
+            "storageMode": "browser",
+            "storagePending": 0
+          }
+        ],
+        "ownedStorageEmpty": true,
+        "pagesClosed": true,
+        "childClosed": true,
+        "childExit": {
+          "code": 0,
+          "signal": null
+        },
+        "contextPages": 0,
+        "loopbackClosed": true,
+        "ownedSockets": 0,
+        "requests": 127
+      }
+    }
+  ],
+  "sourceClosure": {
+    "modules": 125,
+    "sameCurrentSourceInBothEngines": true,
+    "qualification": "Actual source Settings task/default native browser storage; not a built UI or installed distribution."
+  },
+  "assertions": 46,
+  "focusedExistingUnits": 35,
+  "scope": "Both Chromium149.0.7827.55/WebKit26.5 fill actual owned localStorage quota, refuse signed v2 update, preserve exact2651byte signed incumbent v1, and create no RAM-only install/grants. An independent native WebLock holder queues the real signed update; Stop fences approval, close retains issued request until actual native rejection settles after abort, without entering granted callback or writing. Fresh owner opens incumbent intact.",
+  "errorNameLimit": "Observer counts actual native rejection but discards rejection reason: no observed error.name===AbortError claim.",
+  "verification": "outputs/controllers/2026-10-18-persistent-store-faults/seal.json",
+  "review": {
+    "path": "outputs/controllers/2026-10-18-firefox-sync-diagnosis/reviewer/final-review.json",
+    "sha256": "c92bad3a7c89d4756bf87e75738ca24b1b2f1ba597fb3c59db71d65e338b0046"
+  },
+  "cleanup": "Both owned native browser children exit0/null; pages/context/storage/server/sockets and task raw/storage/routes/registrations/timers0. Exact source/raw/dependency custody sealed.",
+  "limits": [
+    "WholeB06/U12 remain open; this is the named browser saved-processor store and selected faults only.",
+    "No implicit account/cloud backup/credential-restore service is introduced or required.",
+    "No built Settings UI/restart/migration/OS-keystore/general-other-store/physical or forensic-erasure qualification.",
+    "Historical store evidence stays historical unless exact current input checks explicitly support reuse; no blanket current freshness claim."
+  ],
+  "custodyRef": "refs/codex/evidence/2026-10-18-firefox-and-storage/final"
+}

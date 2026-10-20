@@ -18,9 +18,11 @@ export function findMqttBrokerBinary() {
   const probes = [];
   let binary;
   for (const path of [process.env.MOSQUITTO_BIN, '/opt/homebrew/opt/mosquitto/sbin/mosquitto', '/usr/sbin/mosquitto', '/usr/bin/mosquitto', 'mosquitto'].filter(Boolean)) {
-    const executable = brokerExecutablePath(path), started = performance.now();
+    const executable = brokerExecutablePath(path), startedAtUnixMs = Date.now(), started = performance.now();
     const result = spawnSync(executable, ['-h'], { encoding: 'utf8', timeout: 2000 });
-    probes.push({ path, executablePath: executable, timeoutMs: 2000, elapsedMs: performance.now() - started,
+    const elapsedMs = performance.now() - started, endedAtUnixMs = Date.now();
+    probes.push({ path, executablePath: executable, timeoutMs: 2000, elapsedMs,
+      startedAtUnixMs, endedAtUnixMs, parentPid: process.pid,
       pid: result.pid, status: result.status, signal: result.signal,
       error: result.error ? { code: result.error.code, message: result.error.message.slice(0, 512) } : null,
       stdout: result.stdout?.slice(-8192) ?? '', stderr: result.stderr?.slice(-8192) ?? '' });

@@ -150,7 +150,7 @@ try {
   assert.equal(await sourcePage.evaluate(value => globalThis.__ownedDeviceLanguageFixture.current.confirm(value), sourceDigest), true);
   await page.getByRole('button', { name: 'The complete codes match', exact: true }).click();
   await page.getByRole('button', { name: 'Use this device', exact: true }).click();
-  for (const name of ['app:pointer-contact/1', 'example:level', 'app:pointer-position/1'])
+  for (const name of ['On/off input', 'Number input', 'Multi-value input'])
     await page.getByRole('heading', { name, exact: true }).waitFor();
   assert.equal((await sourcePage.evaluate(() => globalThis.__ownedDeviceLanguageFixture.current.metrics())).active, 0,
     'pairing and resource description grant no preview access');
@@ -160,28 +160,28 @@ try {
   assert.equal((await sourcePage.evaluate(() => globalThis.__ownedDeviceLanguageFixture.current.metrics())).active, 0,
     'source publishing approval alone does not create receiver resource slots');
   report.checks.push('source-publication-owner-approval-alone-grants-no-receiver-preview');
-  for (const name of ['Preview app:pointer-contact/1', 'Preview example:level', 'Preview app:pointer-position/1'])
+  for (const name of ['Preview On/off input', 'Preview Number input', 'Preview Multi-value input'])
     await page.getByRole('checkbox', { name, exact: true }).check();
   await page.getByRole('button', { name: 'Approve selected input preview', exact: true }).click();
-  const outputFor = semantic => page.getByRole('status', { name: `Preview value ${semantic}`, exact: true });
+  const outputFor = label => page.getByRole('status', { name: `Preview value ${label}`, exact: true });
   await page.waitForFunction(() => {
-    const labels = ['app:pointer-contact/1', 'example:level', 'app:pointer-position/1'];
+    const labels = ['On/off input', 'Number input', 'Multi-value input'];
     return labels.every(label => document.querySelector(`[aria-label="Preview value ${label}"]`)?.textContent);
   });
-  await page.waitForFunction(() => ['false', 'Off'].includes(document.querySelector('[aria-label="Preview value app:pointer-contact/1"]')?.textContent ?? ''));
-  report.observed.switchOff = await outputFor('app:pointer-contact/1').textContent();
+  await page.waitForFunction(() => ['false', 'Off'].includes(document.querySelector('[aria-label="Preview value On/off input"]')?.textContent ?? ''));
+  report.observed.switchOff = await outputFor('On/off input').textContent();
   await sourcePage.getByRole('button', { name: 'Set software switch on', exact: true }).click();
-  await page.waitForFunction(() => ['true', 'On'].includes(document.querySelector('[aria-label="Preview value app:pointer-contact/1"]')?.textContent ?? ''));
-  report.observed.switchOn = await outputFor('app:pointer-contact/1').textContent();
-  report.observed.scalar = await outputFor('example:level').textContent();
-  report.observed.vector = await outputFor('app:pointer-position/1').textContent();
+  await page.waitForFunction(() => ['true', 'On'].includes(document.querySelector('[aria-label="Preview value On/off input"]')?.textContent ?? ''));
+  report.observed.switchOn = await outputFor('On/off input').textContent();
+  report.observed.scalar = await outputFor('Number input').textContent();
+  report.observed.vector = await outputFor('Multi-value input').textContent();
   report.observed.switchSchemaUnit = await page.getByText('Reported actions: Live updates', { exact: false }).count() > 0;
   report.observed.publisher = await sourcePage.evaluate(() => globalThis.__ownedDeviceLanguageFixture.current.metrics());
   assert.ok(report.observed.publisher.active === 3 && report.observed.publisher.sent > 0 && report.observed.publisher.binds === 3,
     'three explicit preview grants and actual software publications');
   report.checks.push('separate-three-resource-preview-approval', 'actual-published-switch-scalar-vector-values', 'publisher-authority-and-current-routes');
 
-  // These fail on the old built UI: it shows booleans and vectors as JSON, with scalar unit detached.
+  // Readable resource labels retain the existing switch, number and component value wording.
   assert.equal(report.observed.switchOff, 'Off', 'false switch values should read Off');
   assert.equal(report.observed.switchOn, 'On', 'switch values should read On or Off');
   assert.equal(report.observed.scalar, '21.5 Cel', 'scalar values should include their declared unit');

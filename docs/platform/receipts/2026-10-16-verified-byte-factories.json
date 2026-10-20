@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "S13",
+    "E10",
+    "Q04"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "two actual trusted example callers bind executable modules to signed-verified bytes",
+  "sourceSha256": {
+    "tests/extension-source-binding.test.ts": "9226d933c9d29f8292d7c53f3b15844dfca7c126f67f4f3fe944e24084730c0e",
+    "examples/extension-installation/consumer.mjs": "1fffe3d1ede105e2784b760138863990aa07727dcfc46b8d3b3cef45e3c2744c",
+    "examples/operator-drills/operator-drills.ts": "87fd126be5deaedabb08a91f2024d43ccad35447bee8280cecce49a14d8023b1"
+  },
+  "oldRed": {
+    "argv": [
+      "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+      "--test",
+      "tests/extension-source-binding.test.ts"
+    ],
+    "pid": 9209,
+    "exitCode": 1,
+    "joined": true,
+    "elapsedSeconds": 0.534,
+    "originalCaller": "0ae72107:examples/extension-installation/consumer.mjs",
+    "failure": "Genuine canonical regression fails at marker true vs false after actual successful verified installation/activation. No native child/fixture remains."
+  },
+  "checks": [
+    {
+      "name": "regression",
+      "argv": [
+        "node",
+        "--test",
+        "tests/extension-source-binding.test.ts"
+      ],
+      "pid": 19664,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 0.532
+    },
+    {
+      "name": "operator",
+      "argv": [
+        "node",
+        "--test",
+        "--test-name-pattern=actual three drills keep deletion revocation retention and native cleanup",
+        "tests/operator-drills.test.ts"
+      ],
+      "pid": 19831,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 3.156
+    },
+    {
+      "name": "lint",
+      "argv": [
+        "npx",
+        "eslint",
+        "tests/extension-source-binding.test.ts",
+        "examples/extension-installation/consumer.mjs",
+        "examples/operator-drills/operator-drills.ts",
+        "packages/hub-server/src/https-coordinator-principal.test.ts",
+        "tools/qa-device-preview-language.mjs"
+      ],
+      "pid": 20873,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 2.451
+    },
+    {
+      "name": "types",
+      "argv": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "pid": 21636,
+      "exitCode": 0,
+      "joined": true,
+      "elapsedSeconds": 3.623
+    }
+  ],
+  "selectedCases": {
+    "bindingRegression": 1,
+    "actualThreeDrillFlow": 1,
+    "skipped": 0
+  },
+  "behavior": "Six lazy imports across two actual callers evaluate captured signed-verified dependency-free source bytes using existing Node data-URL idiom. All signatures, installed source equality, owner approval, conformance, cancellation and lifecycle guards remain.",
+  "witness": "Actual copied-file substitution after both release verifications causes original code to evaluate replacement marker; corrected actual caller activates verified original code without marker. Existing actual upgrade/rollback/incident selector also passes on both corrected callers.",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-local-followon/verified-byte-factories",
+    "commit": "147db0e2a9ae440f8697ca9593e4b4812e9e45e5",
+    "tree": "af4873b50ba36faa0a4763d11b570ca441aa02e7",
+    "readBackFiles": 160,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "appliedReviewSha256": "7a153c7965223c6126627b23397ab58a31658bd2f6a5ffe9c8946b2645afc293",
+  "cleanPatchReviewSha256": "bd3e7b9c85d99673e5c682bfc0ec8640b1a42d1802c647e08f6a5c1bf73d1349",
+  "cleanup": {
+    "checksAllPassed": true,
+    "ownedParentsAndGroupsAbsent": true,
+    "openFilesExitCode": 1,
+    "openFilesStdout": "",
+    "ownedScratch": "/Users/km/Dev/101/release/s13-operator-applied-20261016",
+    "cleanupGuardStoppedOn": "Only generated node-compile-cache remained; no test/producer failure.",
+    "cacheFiles": 2729,
+    "cacheBytes": 12114596,
+    "cachePolicy": "Generated cache is not unique draft source; remove after actual owner joins and empty open-file check.",
+    "removed": true
+  },
+  "limits": [
+    "No processor-installation library defect or automatic function/source identity check inferred; host still supplies trusted factory.",
+    "One controlled v1 activate-and-close substitution; operator/v2 controlled substitution not run. Positive actual three-drill flow exercises the corrected callers.",
+    "Authored and canonical test versions/executions differ by recorded setup/type/strictness adaptations. Earlier stage hash/provision custody discrepancies and amendments retained; canonical ephemeral keys are regenerated, not exact-input replay.",
+    "No hostile actor permissions, publisher-account/legal identity, sandbox, physical device, whole S13/E10/Q04 or startup reliability claim."
+  ]
+}

@@ -385,3 +385,61 @@ test('native abort ignores shadow listeners and reentrant Stop releases the issu
     assert.equal(await task.invite(), false); assert.equal(starts, 1);
   } finally { await task.close(); }
 });
+
+
+// Two real public task pairs; cooperative ports supply no browser DTLS or OS-user claim.
+test('an admitted display review cannot authorize a different live readings session', async t => {
+  const pairs: Awaited<ReturnType<typeof pair>>[] = [];
+  const effectsA: (readonly (readonly string[])[])[] = [], effectsB: (readonly (readonly string[])[])[] = [];
+  try {
+    const a = await pair({ apply(table, context) { if (context.isCurrent() && !context.signal.aborted) effectsA.push(table.rows); } }); pairs.push(a);
+    const b = await pair({ apply(table, context) { if (context.isCurrent() && !context.signal.aborted) effectsB.push(table.rows); } }); pairs.push(b);
+    const { decodeReceiverInvitation } = await import('@101/connect');
+    const invitations = [a, b].map(value => {
+      const code = value.receiver.snapshot().code, prefix = '101-readings-1.';
+      assert.ok(code.startsWith(prefix));
+      const packet = JSON.parse(Buffer.from(code.slice(prefix.length), 'base64url').toString('utf8'));
+      return decodeReceiverInvitation(JSON.stringify(packet.invitation), scope.wallNow());
+    });
+    assert.notEqual(invitations[0]!.sessionId, invitations[1]!.sessionId);
+    assert.notEqual(invitations[0]!.epoch, invitations[1]!.epoch);
+    const admittedA = selectBoth(a, 'record'), ownB = selectBoth(b, 'record');
+    assert.equal(a.source.setValue({ step: 42, ready: true, mode: 'count-up' }), true);
+    assert.equal(a.source.allow(admittedA.sending), true); assert.equal(a.receiver.allow(admittedA.display), true);
+    await a.pump(() => a.receiver.snapshot().rows[0]?.[0] === '42');
+    assert.deepEqual(a.receiver.snapshot().rows, [['42', 'On', 'count-up']]);
+    assert.ok(effectsA.some(rows => rows[0]?.[0] === '42'), 'The exported review genuinely admitted an actual A display');
+    const beforeA = a.receiver.snapshot();
+    assert.equal(b.source.setValue({ step: 77, ready: false, mode: 'count-down' }), true);
+    assert.equal(b.source.allow(ownB.sending), true);
+    assert.equal(b.receiver.allow(admittedA.display), false);
+    assert.equal(b.receiver.snapshot().permissionExpiresAt, undefined);
+    assert.equal(b.receiver.snapshot().owned.registrations, 0); assert.equal(b.receiver.snapshot().owned.routes, 0);
+    assert.deepEqual(b.receiver.snapshot().rows, []); assert.deepEqual(effectsB, []);
+    assert.deepEqual(a.receiver.snapshot().owned, beforeA.owned);
+    assert.equal(a.receiver.snapshot().permissionExpiresAt, beforeA.permissionExpiresAt);
+    assert.deepEqual(a.receiver.snapshot().rows, [['42', 'On', 'count-up']]);
+    a.clock.at += 300;
+    assert.equal(a.source.setValue({ step: 43, ready: true, mode: 'count-up' }), true);
+    await a.pump(() => a.receiver.snapshot().rows[0]?.[0] === '43');
+    assert.ok(effectsA.some(rows => rows[0]?.[0] === '43'), 'A still consumes new same-session data after B refuses the replay');
+    assert.equal(b.receiver.allow(ownB.display), true, 'Only B own explicitly selected current review may approve B display');
+    await b.pump(() => b.receiver.snapshot().rows[0]?.[0] === '77');
+    assert.deepEqual(b.receiver.snapshot().rows, [['77', 'Off', 'count-down']]);
+    assert.ok(effectsB.length > 0); assert.ok(effectsB.every(rows => rows[0]?.[0] === '77'));
+    assert.deepEqual(a.receiver.snapshot().rows, [['43', 'On', 'count-up']]);
+    t.diagnostic(JSON.stringify({ distinctSessions: true, admittedAReview: true, crossSessionApproval: false,
+      deniedBRegistrations: 0, deniedBRoutes: 0, deniedBApplies: 0, unaffectedAFreshReading: '43', ownBReading: '77',
+      scope: 'Actual public task/crypto/transport/binder/runtime/software reading effects with cooperative ports; no browser DTLS, sensor, OS-user isolation or whole S10 qualification.' }));
+  } finally {
+    const cleanup = await Promise.allSettled(pairs.map(value => value.close()));
+    assert.deepEqual(cleanup.filter(value => value.status === 'rejected'), []);
+    for (const value of pairs) for (const task of [value.source, value.receiver]) {
+      const status = task.snapshot();
+      assert.equal(status.rawPending, 0); assert.equal(status.cleanupUnconfirmed, false);
+      assert.equal(status.owned.registrations, 0); assert.equal(status.owned.routes, 0);
+      assert.equal(status.owned.producerTimers, 0); assert.equal(status.owned.expiryTimers, 0);
+      assert.deepEqual(status.rows, []);
+    }
+  }
+});

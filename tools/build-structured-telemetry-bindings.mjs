@@ -87,7 +87,7 @@ export function buildStructuredTelemetryBindings(reference, sdkRoot, sdkManifest
       '--scratch-path', join(work, 'swift-tests'), '--cache-path', join(work, 'swift-cache'), '--disable-sandbox', '--skip-update'],
     { env: { ...process.env, ONE01_STRUCTURED_FIXTURES: fixturePath,
       ONE01_STRUCTURED_NEGATIVE_FIXTURES: join(snapshot, `${base}/fixtures/structured-telemetry-negative-v1.json`) } });
-    assert.match(tests + readFileSync(join(work, 'swift-tests.stderr'), 'utf8'), /Test run with 8 tests.*passed/);
+    assert.match(tests + readFileSync(join(work, 'swift-tests.stderr'), 'utf8'), /Test run with 9 tests.*passed/);
     const consumer = join(work, 'consumer');
     run('ordinary-caller-compile', '/usr/bin/xcrun', ['swiftc', '-parse-as-library', '-swift-version', '6',
       '-strict-concurrency=complete', '-warnings-as-errors', '-I', join(artifact, 'lib'), '-L', join(artifact, 'lib'),

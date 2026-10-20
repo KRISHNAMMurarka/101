@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "tasks": [
+    "S03"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "classification": "actual native authenticated WSS receiver negotiation rejects owner60Hz when host grants30Hz; fresh30Hz approval succeeds",
+  "sourceHead": "0ae72107ed9921b36ff30ab369408d7904d3f55e",
+  "runnerSha256": "0166c7b7a7ba4db3fb069b4a599a4f2937c9d66bd211246f4996858121c7ac89",
+  "environment": "Node24.14.0/macOS26.5.2; actual native TLS1.3/mTLS/certificate pins/P256; public SDK source exports",
+  "sourceFilesObserved": 124,
+  "sourceRecovery": "outputs/controllers/2026-10-18-s03-rate/source-recovery.json",
+  "negative": {
+    "slot": 1,
+    "receiver": {
+      "active": 0,
+      "pending": 0,
+      "stopped": false,
+      "reason": "incompatible",
+      "clockReady": true
+    },
+    "publisher": {
+      "active": 0,
+      "pending": 0,
+      "stopped": false,
+      "reason": "incompatible"
+    },
+    "connection": {
+      "state": "closed",
+      "reason": "incompatible",
+      "pending": 0
+    },
+    "effects": 0
+  },
+  "positive": {
+    "slot": 2,
+    "connection": {
+      "state": "active",
+      "pending": 0
+    },
+    "limits": {
+      "maxHz": 30,
+      "maxAgeMs": 100,
+      "expiresAt": 1867.304209
+    }
+  },
+  "observedFrames": "outputs/controllers/2026-10-18-s03-rate/observed.json",
+  "actualEffects": [
+    {
+      "value": {
+        "x": 0.25,
+        "y": 0.75
+      },
+      "routeId": "route-2",
+      "generation": 1
+    }
+  ],
+  "cleanup": {
+    "nativeContexts": 0,
+    "pendingWrites": 0,
+    "temporaryCredentialsRemoved": true,
+    "issuedNativeSockets": 2
+  },
+  "custodyCleanup": "outputs/controllers/2026-10-18-s03-rate/custody-cleanup.json",
+  "independentReview": "outputs/controllers/2026-10-18-s03-rate/independent-review.json",
+  "limits": [
+    "Rate mismatch only: producer/sink/owner60Hz versus host30Hz, maxAge100ms unchanged; actual unmodified producer descriptor and real returned runtime connections.",
+    "Actual reliable bind/ready/stop frames, zero negative effects, retired real route and publisher slot; fresh separate30Hz approval yields one actual current-context sink effect.",
+    "No hostile sample during negotiation or measured sustained rate enforcement; no whole grant-tuple, installed artifact, browser, physical or native startup qualification.",
+    "Expected-green test of existing guard; no product defect, fake old-red, deadline relaxation, retry, prewarm or production source changes."
+  ]
+}

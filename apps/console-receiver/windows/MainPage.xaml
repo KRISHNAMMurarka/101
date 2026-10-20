@@ -1,0 +1,11 @@
+<Page x:Class="One01.ConsoleReceiver.MainPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Grid Background="Black" Padding="24" XYFocusKeyboardNavigation="Enabled">
+    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+    <StackPanel Orientation="Horizontal" Spacing="16">
+      <Button x:Name="OpenButton" Content="Open receiver" Click="OpenReceiver"/>
+      <Button Content="Stop receiver" Click="StopClicked"/>
+    </StackPanel>
+    <TextBlock x:Name="Status" Grid.Row="1" Foreground="White" TextWrapping="Wrap" Margin="0,12" AutomationProperties.LiveSetting="Polite" Text="Open this receiver to connect a controller."/>
+    <Grid x:Name="BrowserContainer" Grid.Row="2"/>
+  </Grid>
+</Page>

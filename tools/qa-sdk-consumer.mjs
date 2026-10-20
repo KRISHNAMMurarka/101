@@ -229,14 +229,16 @@ import { createCapabilityInventory, CAPABILITY_INVENTORY_LIMITS } from '@101/con
 import type { CapabilityInventoryController, CapabilityInventoryOptions, CapabilityInventorySnapshot } from '@101/device-runtime';
 import { createInvitationConnectionController, INVITATION_CONNECTION_PROFILE, INVITATION_CONNECTION_LIMITS } from '@101/connect';
 import type { InvitationConnectionController, InvitationConnectionOptions, InvitationConnectionSnapshot, InvitationDiscoveryEnrollment } from '@101/device-web';
-import { createNodeProcessorExecutor } from '@101/device-runtime/node';
-import type { NodeProcessorExecutor, NodeProcessorExecutorOptions, NodeProcessorExecutorResult, NodeProcessorExecutorStatus } from '@101/device-runtime/node';
+import { createNodeProcessorExecutor, createNodeProcessorHost } from '@101/device-runtime/node';
+import type { NodeProcessorExecutor, NodeProcessorExecutorOptions, NodeProcessorExecutorResult, NodeProcessorExecutorStatus,
+  NodeProcessorHost, NodeProcessorScope, NodeProcessorScopeStatus } from '@101/device-runtime/node';
 import { parsePrivateDirectoryPublication } from '@101/device-model';
 import type { PrivateDirectoryPublication } from '@101/device-model';
 import type { RuntimeOptions } from '@101/device-runtime';
 const byteBudgetOptions: Pick<RuntimeOptions, 'maxPendingDeliveryBytes' | 'maxPendingDeliveryBytesPerPrincipal'> = { maxPendingDeliveryBytes: 4096, maxPendingDeliveryBytesPerPrincipal: 1024 };
-export type SelectedLocalSoftwareDeclarations = [InvitationDiscoveryEnrollment, PrivateDirectoryPublication, NodeProcessorExecutor, NodeProcessorExecutorOptions, NodeProcessorExecutorResult, NodeProcessorExecutorStatus];
-void [createNodeProcessorExecutor, parsePrivateDirectoryPublication, byteBudgetOptions];
+export type SelectedLocalSoftwareDeclarations = [InvitationDiscoveryEnrollment, PrivateDirectoryPublication, NodeProcessorExecutor, NodeProcessorExecutorOptions, NodeProcessorExecutorResult, NodeProcessorExecutorStatus,
+  NodeProcessorHost, NodeProcessorScope, NodeProcessorScopeStatus];
+void [createNodeProcessorExecutor, createNodeProcessorHost, parsePrivateDirectoryPublication, byteBudgetOptions];
 export type DiscoveredReviewDeclaration = InvitationConnectionController['reviewDiscovered'];
 import { createInvitationConnectionSource } from '@101/connect/examples/invitation-connection';
 import type { InvitationConnectionSourceOptions } from '@101/connect/examples/invitation-connection';

@@ -192,6 +192,15 @@ test('real ownership preserves a held incumbent on decline, then releases before
     assert.equal(f.owner.snapshot().slots[0]!.owner?.sourceId, 'participant-2'); assert.equal(f.owner.snapshot().slots[0]!.held, false);
     const binds = f.ports[1]![1].channels.get('connect-control-1')?.sent.filter(value => typeof value === 'string').map(value => JSON.parse(value as string)).filter(value => value.protocol === 'connect' && value.type === 'bind') ?? [];
     assert.equal(new Set(binds.map(value => value.slot)).size, binds.length, 'one receiver preserves its wire slot watermark');
+    assert.equal(second.input('press'), true, 'The transferred participant can issue the next command');
+    await f.pump(() => f.owner.snapshot().slots[0]!.held);
+    assert.equal(first.request('exclusive', 30, true), true);
+    await f.pump(() => f.owner.snapshot().slots[0]?.request?.sourceId === 'participant-1');
+    first.cancelRequest(); const settledAt = f.time() + 50;
+    await f.pump(() => !f.owner.snapshot().slots[0]?.request && f.time() >= settledAt);
+    assert.equal(second.snapshot().participant.active, true, 'Cancelling the waiting request retains the transferred incumbent');
+    assert.equal(f.owner.snapshot().slots[0]!.owner?.sourceId, 'participant-2'); assert.equal(f.owner.snapshot().slots[0]!.held, true);
+    assert.equal(second.input('release'), true); await f.pump(() => !f.owner.snapshot().slots[0]!.held);
     f.advance(30001); f.owner.tick(); second.tick(); assert.equal(f.owner.snapshot().active, false); assert.equal(second.snapshot().participant.active, false);
   } finally { await f.close(); }
 });

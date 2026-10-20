@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap">
+  <Identity Name="One01.ConsoleReceiver.Local" Publisher="CN=101 Local Development" Version="0.1.0.0"/>
+  <Properties><DisplayName>101 controller receiver</DisplayName><PublisherDisplayName>101 local development</PublisherDisplayName><Logo>Assets\StoreLogo.png</Logo></Properties>
+  <Dependencies><TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.22000.0"/></Dependencies>
+  <Resources><Resource Language="en-us"/></Resources>
+  <Applications><Application Id="Receiver" Executable="$targetnametoken$.exe" EntryPoint="One01.ConsoleReceiver.App">
+    <uap:VisualElements DisplayName="101 controller receiver" Description="An application-only local controller receiver" BackgroundColor="black" Square150x150Logo="Assets\Logo150.png" Square44x44Logo="Assets\Logo44.png"/>
+  </Application></Applications>
+  <Capabilities><Capability Name="internetClient"/><Capability Name="privateNetworkClientServer"/></Capabilities>
+</Package>

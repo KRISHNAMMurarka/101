@@ -115,7 +115,7 @@ export default function GamepadView() {
       </div>)}</div>}
       <p>The first report can show a button already held. Button values belong to the last pressed or released report; they do not show continuous pressure or when a physical press began. Readings clear when they are no longer current; stopped input always needs fresh review.</p>
       <p>Use Tab and Enter or Space to operate this page. You can stop with the on-screen button or skip this preview.</p>
-      <Link href="/connections">Skip and return to Connections</Link>
+      <Link href="/connections" className={styles.skip}>Skip and return to Connections</Link>
     </section>
   </main>;
 }

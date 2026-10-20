@@ -72,6 +72,19 @@ object StructuredTelemetryWireTests {
         return entry["wireUtf8"].asString.toByteArray(StandardCharsets.UTF_8) to expected
     }
 
+    private fun futureWireRevisionCannotReinterpretSelectedRecordOrTable() {
+        val path = System.getenv("ONE01_STRUCTURED_NEGATIVE_FIXTURES") ?: error("missing shared negative fixtures")
+        val input = Files.newInputStream(Path.of(path)).use { it.readNBytes(16385) }
+        expect(input.size <= 16384, "negative fixture bytes bounded")
+        val entries = objectValue(input)["incompatibleRevisions"].asJsonArray
+        expect(entries.size() == 2, "two selected future-revision cases")
+        for (entry in entries) {
+            val wire = entry.asJsonObject["wireUtf8"].asString.toByteArray(StandardCharsets.UTF_8)
+            expect(StructuredTelemetryWire.decode(wire, TelemetryLane.DISPOSABLE) == null,
+                "future wire revision cannot reinterpret record or table")
+        }
+    }
+
     private fun genuineSdkBytesPreserveSelectedFields(packets: Map<String, ByteArray>) {
         val expected = mapOf(
             "record-absent" to sample(ReadingValue.Record(row())),
@@ -268,12 +281,18 @@ object StructuredTelemetryWireTests {
     }
 
     @JvmStatic fun main(args: Array<String>) {
+        if (args.contentEquals(arrayOf("--future-wire-revision"))) {
+            futureWireRevisionCannotReinterpretSelectedRecordOrTable()
+            println("structured-telemetry Kotlin future-revision checks: $checks")
+            return
+        }
         expect(args.isEmpty(), "test entry point takes no unqualified fixture substitution")
         val packets = actualPackets()
         genuineSdkBytesPreserveSelectedFields(packets)
         absentAndFalseRemainDistinct()
         val base = objectValue(packets.getValue("record-absent"))
         closedHeadersRejectCoercion(base)
+        futureWireRevisionCannotReinterpretSelectedRecordOrTable()
         selectedSchemasRejectMalformedValues(base)
         val (duplicate, duplicateExpected) = duplicateKeyNegative()
         expect((StructuredTelemetryWire.decode(duplicate, TelemetryLane.DISPOSABLE) != null) == duplicateExpected,

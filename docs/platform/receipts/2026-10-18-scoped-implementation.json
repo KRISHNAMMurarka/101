@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "result": "pass-selected-scopes; combined-unit-gate-unresolved",
+  "tasks": [
+    "S14",
+    "F05",
+    "N15",
+    "N16"
+  ],
+  "ordinaryHead": "0ae72107ed9921b36ff30ab369408d7904d3f55e",
+  "immutableSdkSource": {
+    "tree": "ea4275980a904669c76fefb772a4e6aaa1e4c29a",
+    "commit": "fdd619d518754aa07b1a570ef0963ee563dca68d",
+    "ref": "refs/codex/evidence/2026-10-18-implementation/sdk-input",
+    "ordinaryHead": "0ae72107ed9921b36ff30ab369408d7904d3f55e",
+    "indexUnchanged": true,
+    "indexSha256": "ac615e5e7801473c97e04eb450d43d41ea054cce86f31e44adc2388a862e44be",
+    "scope": "Immutable current tracked SDK/compiler/QA input custody; not integration or final whole candidate."
+  },
+  "processor": {
+    "profile": "host-owned signed closed-language interpreter admission",
+    "scopes": 4,
+    "workersPerScope": 1,
+    "guestMemoryBytesPerScope": 1048576,
+    "sourceBytesPerScope": 262144,
+    "perScopeCompute": {
+      "burstMs": 100,
+      "refillMsPerSecond": 100
+    },
+    "aggregateCompute": {
+      "burstMs": 400,
+      "refillMsPerSecond": 400
+    },
+    "charging": "Declared construction/process/reset worst case before issuance; no refund or queue; host debt survives scope turnover. Host must retain app/session scope across executor restarts.",
+    "oldRed": "outputs/controllers/2026-10-18-processor-scope/2026-10-18-processor-old-red.log",
+    "turnoverRed": "outputs/controllers/2026-10-18-processor-scope/2026-10-18-processor-turnover-red.log",
+    "focusedTests": 16,
+    "installed": {
+      "status": "pass",
+      "mode": "installed-compiled-public-export",
+      "sourcePins": {
+        "packages/device-runtime/src/processor-node.ts": "861732133d77d8b7e4f4705d368879b79ebfd0d55c2761ffb7a4728e56b445fb",
+        "packages/device-runtime/src/processor-worker.ts": "fdd872f0d0fcdcff552a773be8b03111490ac64d02063ec9bd178cae55bdb365",
+        "packages/device-runtime/src/processor-language.ts": "c476bc686653700e59601037004083a8912df96249e03963884d6ec2e5fa28e0",
+        "packages/device-runtime/src/processor-registry.ts": "492f61a93cfbb9bb9bbff15650b471bc297c7edccec6ce57957b30d0de1b7787",
+        "packages/device-runtime/src/processor-installation.ts": "bd56963d703b4f72ac52029ccdb67221a288c471fd1953d402d46747233b8bb5",
+        "packages/device-runtime/src/runtime.ts": "b8807a77921c4a795264930e6b65b51c225c7f7af57d473dbec44d9d07b334af",
+        "packages/device-runtime/src/types.ts": "0573d3a9dac212b215b64fd0817e013847a0a04dddfbc073f8a01f396fb3ccba",
+        "packages/device-runtime/src/index.ts": "500dbe645bfbd023c35f817a5974a336c64442a1bf4221e344d752e3ccca7a24",
+        "packages/device-runtime/package.json": "3bb80c6dfb469704fa18d5af0734d7204e54d971d48c6bb1350ece8bccb9cbda",
+        "packages/device-model/src/extension-release.ts": "8199765326c79eb128297bb4bea253667b2b250e22fb85aefc629ffcf65ff3f6",
+        "packages/device-model/src/processor-manifest.ts": "944291ab2cdacc348503f7a9bc9c0f2729c03c68f3881788bf5ab440f119d126",
+        "packages/device-model/src/descriptor.ts": "c54768db2e4899e9cfcf934de15d9e543a5cc86a4c135d5a4be5383cce5fc408",
+        "examples/processor-executor/consumer.mjs": "3762ec936530c9d7a1d0b92ec545193531c13325df7ff167b2aae898549daeb4",
+        "examples/external-processor/processor.mjs": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+        "examples/external-processor/manifest.json": "71855286c4a42f808a6bd79cdddfb819fcfb460eeabdcaed7f73919e1945105e",
+        "tools/qa-processor-executor.mjs": "a46beae6537138e230682e6c6d5b69246c400e59376d7d8d2578df79bb227d12"
+      },
+      "node": "24.14.0",
+      "caller": "/private/tmp/101-sdk-consumer-S2bUWm/.101-s14-caller-Hj5pKa",
+      "result": {
+        "status": "pass",
+        "profile": "reviewed-processor-extension/1",
+        "sourceSha256": "e1eed4f1a57e13304f79fe1403af92d127d113858799f78c143891d18e67c740",
+        "declaredGuestMemoryBytes": 65536,
+        "phases": [
+          {
+            "phase": "stop-pending",
+            "effects": [
+              true
+            ],
+            "freshApprovedRoutes": 2,
+            "staleEffectFenced": true,
+            "actualWorkerExited": true
+          },
+          {
+            "phase": "revoke-queued",
+            "effects": [
+              true
+            ],
+            "freshApprovedRoutes": 2,
+            "staleEffectFenced": true,
+            "actualWorkerExited": true
+          }
+        ],
+        "contention": {
+          "exhaustedScopeRefused": true,
+          "closeDidNotRefund": true,
+          "independentControlEffects": [
+            true
+          ],
+          "actualWorkersExited": true,
+          "aggregateGuestMemoryBytesAfterClose": 0
+        },
+        "excludedMemory": [
+          "source-parser-AST",
+          "host-dictionaries",
+          "Worker-V8-heap",
+          "RSS"
+        ],
+        "scope": "selected signed pure threshold guest language; no generic JavaScript sandbox or physical effect"
+      },
+      "distribution": {
+        "path": "/Users/km/Dev/101/release/sdk-3Z9JGj/manifest.json",
+        "sha256": "5eca8ddf85da112a8db46819747ddb5d648e379301b79d17bac374f477863dbc"
+      },
+      "tree": "ea4275980a904669c76fefb772a4e6aaa1e4c29a",
+      "receiptPath": "/private/tmp/101-s14-consumer-tetOnV/receipt.json"
+    },
+    "limitations": [
+      "Parent parsing/validation CPU and host implementation overhead are outside guest compute budgets.",
+      "Guest data, bounded source/AST and coarse Worker heap limits are distinct; no total RSS or arbitrary-JavaScript sandbox claim.",
+      "Trusted synchronous factories and global transport/service capacity are not preempted or qualified by this profile."
+    ]
+  },
+  "ssh": {
+    "profile": "loopback-openssh-fixture-summary/1",
+    "operation": "readFixtureSummary",
+    "fixedDocument": {
+      "byteLength": 67,
+      "lines": 2,
+      "sha256": "8fa60cd0831fb01e8fa16cce317127e8eefc95c6e0b467b367e620b7837a8738"
+    },
+    "separateOperationAndSensitiveResultGrants": true,
+    "metadataProducerUnchanged": true,
+    "focusedTests": 32,
+    "installedProof": "outputs/controllers/2026-10-18-n15-allowed-operation/installed-consumer.json",
+    "callerTree": "ea4275980a904669c76fefb772a4e6aaa1e4c29a",
+    "limitations": [
+      "Owned loopback fixture only; current user authority, no OS/account sandbox.",
+      "No arbitrary shell, program/path, PTY, remote-host selector or general terminal-session qualification.",
+      "Original startup/deadline failures remain historical and unexplained; passing new runs do not erase them."
+    ]
+  },
+  "application": {
+    "profile": "owned-node-raster-application/1",
+    "productionImplementationChanged": false,
+    "focusedTests": 4,
+    "publicSourceClientChecks": 20,
+    "newChecks": [
+      "N16-unselected-program-and-copied-owner-approval-denied-before-child",
+      "N16-path-and-destination-injection-refused-before-approval-or-native-dispatch",
+      "N16-cross-action-purpose-replay-and-pre-aborted-input-frame-have-no-native-effect",
+      "N16-cached-grant-cannot-cross-owner-provider-application-session-or-native-epoch",
+      "N16-frame-owner-revoke-refuses-new-read-stops-projection-and-clears-consumer-display",
+      "N16-launch-owner-revoke-joins-actual-child-and-old-epoch-is-unavailable"
+    ],
+    "sourceAndRuntimePins": "outputs/controllers/2026-10-18-n16-application/lane-receipt.json",
+    "limitations": [
+      "Fixed reviewed child application only; no arbitrary OS app or OS input control.",
+      "Public source Hub/SDK resolution; no installed Hub qualification.",
+      "Frame revocation blocks future provider/projection access; previously returned authorized caller copies remain caller responsibility.",
+      "Clipboard/filesystem cells reuse separately retained scoped evidence, not rerun or broadened.",
+      "Full N16 all-target acceptance and release/support promotion remain with root controller."
+    ]
+  },
+  "sharedSdk": {
+    "packages": 7,
+    "sourceInputs": 186,
+    "installedFiles": 411,
+    "checks": 10,
+    "strictDeclarations": [
+      "NodeNext",
+      "Bundler"
+    ],
+    "browsers": [
+      "Chromium",
+      "Firefox",
+      "WebKit"
+    ],
+    "receipt": "outputs/controllers/2026-10-18-processor-scope/sdk-consumer-receipt.json",
+    "cleanup": "outputs/controllers/2026-10-18-processor-scope/installed-cleanup.json"
+  },
+  "independentReview": "outputs/controllers/2026-10-18-implementation-review/review.json",
+  "sourceTreeOrRuntimePromotion": false,
+  "wholeTaskClosure": false,
+  "wholeCandidateGates": "docs/platform/receipts/2026-10-18-implementation-gates.json; full unit gate remains failed for native startup; SDK candidate-selection follow-up passed; no ordinary commit."
+}

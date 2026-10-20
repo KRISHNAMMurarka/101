@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "tasks": [
+    "S15"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "classification": "selected source-browser owned-canvas preview observation; scoped representations only, complete storage deletion unproven",
+  "environment": {
+    "node": "v24.14.0",
+    "typescript": "5.9.3",
+    "browsers": [
+      {
+        "name": "chromium",
+        "version": "149.0.7827.55"
+      },
+      {
+        "name": "webkit",
+        "version": "26.5"
+      }
+    ]
+  },
+  "hostSha256": "b86aedf58b16ab643ed8a680e595dbe2d250030c2611e3c676df0ad894feee16",
+  "pageModuleSha256": "b6d6808f938661f5f76b1e5b06637a91214247bfc02858ffa9eb4288bad21132",
+  "sourceRecovery": "outputs/controllers/2026-10-18-s15-privacy/source-recovery.json",
+  "sourceCompilerDependencyPins": 126,
+  "actualPrivacyJourneys": 2,
+  "dependentFixtureContexts": 4,
+  "observedScope": "Fresh owned loopback origin; actual public preview/runtime using owned canvas captureStream. After authorized nonempty8x8sample, revoke/release and close, selected JSON-row/decimal/base64 string and byte-buffer representations were not observed in bounded origin local/session storage, enumerable IndexedDB values, CacheStorage URLs/bodies and Playwright-rendered console text.",
+  "positiveControl": "Known string sentinel observed through all four storage observers and actual rendered-console event; marker/nonce representations not observed in post-cleanup snapshots. This does not prove complete persistent artifact deletion.",
+  "originalFailures": [
+    {
+      "path": "outputs/controllers/2026-10-18-s15-privacy/scope-old-red.stderr",
+      "scope": "Prepared host hash variable declared inside try cannot be read in finally. Minimal actual declaration/assignment-shape regression fails old and passes outer-scoped assignment before browser execution."
+    },
+    {
+      "path": "outputs/controllers/2026-10-18-s15-privacy/browser-mvcw9gd2-1xed.json",
+      "scope": "First full browser attempt fails Chromium positive IndexedDB control; not accepted. getAll(limit) selected a numeric key, not a record-count bound."
+    },
+    {
+      "path": "outputs/controllers/2026-10-18-s15-privacy/indexeddb-old-red.txt",
+      "scope": "Initial extracted-helper reproducer: Chromium genuine empty result; WebKit stopped at immediate onblocked cleanup prerequisite. Corrected reproducer awaits actual deletion success with a bounded deadline before its assertion."
+    }
+  ],
+  "regression": {
+    "old": "outputs/controllers/2026-10-18-s15-privacy/indexeddb-old-red-corrected-join.txt",
+    "oldFail": 2,
+    "corrected": "outputs/controllers/2026-10-18-s15-privacy/indexeddb-corrected-green.txt",
+    "correctedPass": 2,
+    "scope": "Actual string-keyed IndexedDB record in each real engine; exact observer helper extraction. One-line getAll(undefined,count) repair only."
+  },
+  "correctedExecution": "outputs/controllers/2026-10-18-s15-privacy/execution-corrected.json",
+  "correctedRawReceipt": "outputs/controllers/2026-10-18-s15-privacy/corrected.stdout.txt",
+  "cleanup": "outputs/controllers/2026-10-18-s15-privacy/custody-final.json",
+  "independentReview": "outputs/controllers/2026-10-18-s15-privacy/independent-review.json",
+  "rawProducerClaimRejected": "Raw ownedStorageArtifactsRemoved:true overstates proof: deleteDatabase onerror/onblocked resolve and post-check searches representations. Canonical acceptance is limited to observed sentinel/nonce representation absence after cleanup attempts, not complete artifact deletion.",
+  "limits": [
+    "WholeS15 remains open; no all-storage/log/privacy claim.",
+    "IndexedDB observer does not establish every primitive numeric-array/object-key/Map/Set representation; bounds and unsupported cases can fail closed. Known-string positive controls do not certify all structural representations.",
+    "Structured console arguments, transformed/encrypted/hash forms, browser-internal caches, OS logs/crash dumps and forensic memory erasure are unobserved.",
+    "No native display chooser/permission/physical capture/hardware freshness claim; actual capture source is the explicitly owned software canvas.",
+    "Actual browser handles2/contexts4/loopback server are joined/closed; Playwright does not provide stable subprocess PIDs here, so no browser OS PID proof is claimed.",
+    "No production source, dependency installation, deadline, OS policy or security change."
+  ]
+}

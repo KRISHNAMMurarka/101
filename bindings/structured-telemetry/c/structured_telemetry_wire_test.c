@@ -171,6 +171,29 @@ static void test_shared_duplicate_key_profile_verdict(void) {
                                   ONE01_TELEMETRY_DISPOSABLE, &result));
     json_decref(root);
 }
+static void test_future_wire_revision(void) {
+    const char *path = getenv("ONE01_STRUCTURED_NEGATIVE_FIXTURES");
+    unsigned char bytes[16385];
+    FILE *file;
+    size_t size, i;
+    json_error_t error;
+    json_t *root, *entries;
+    CHECK(path != NULL && path[0] != '\0');
+    file = fopen(path, "rb"); CHECK(file != NULL);
+    size = fread(bytes, 1, sizeof(bytes), file);
+    CHECK(!ferror(file) && size < sizeof(bytes) && feof(file));
+    CHECK(fclose(file) == 0);
+    root = json_loadb((const char *)bytes, size, JSON_REJECT_DUPLICATES, &error);
+    CHECK(json_is_object(root));
+    entries = json_object_get(root, "incompatibleRevisions");
+    CHECK(json_is_array(entries) && json_array_size(entries) == 2);
+    for (i = 0; i < json_array_size(entries); i++) {
+        json_t *wire = json_object_get(json_array_get(entries, i), "wireUtf8");
+        CHECK(json_is_string(wire));
+        rejected_bytes((const unsigned char *)json_string_value(wire), json_string_length(wire), ONE01_TELEMETRY_DISPOSABLE);
+    }
+    json_decref(root);
+}
 static void test_closed_envelope_and_number_types(void) {
     static const char *keys[] = {"protocol", "version", "epoch", "slot", "sequence", "capturedAt", "type", "value"};
     static const char *numeric[] = {"version", "slot", "sequence", "capturedAt"};
@@ -196,6 +219,7 @@ static void test_closed_envelope_and_number_types(void) {
         put(packet, "protocol", json_string("CONNECT")); rejected(packet);
         json_decref(packet);
     }
+    test_future_wire_revision();
 }
 static void test_metadata_bounds_and_large_finite_time(void) {
     static const double slots[] = {0, 129, 1.5, -1};
@@ -355,7 +379,13 @@ static void test_invalid_arguments(void) {
     CHECK(!one01_telemetry_encode(&sample, output, sizeof(output), NULL));
     json_decref(packet);
 }
-int main(void) {
+int main(int argc, char **argv) {
+    if (argc == 2 && strcmp(argv[1], "--future-wire-revision") == 0) {
+        test_future_wire_revision();
+        puts("selected-c-future-revision-cases:2");
+        return 0;
+    }
+    CHECK(argc == 1);
     test_genuine_sdk_fixture_and_reciprocal();
     test_closed_envelope_and_number_types();
     test_metadata_bounds_and_large_finite_time();

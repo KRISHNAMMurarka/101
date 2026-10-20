@@ -17,7 +17,7 @@ export interface NodeProcessorExecutorOptions {
   readonly approval: NodeProcessorApproval;
 }
 export type NodeProcessorExecutorResult = Readonly<{ ok: true; frame?: ProcessorFrame }> |
-  Readonly<{ ok: false; reason: 'inactive' | 'busy' | 'input' | 'output' | 'timeout' | 'memory' | 'compute' | 'unavailable' }>;
+  Readonly<{ ok: false; reason: 'inactive' | 'busy' | 'input' | 'output' | 'timeout' | 'memory' | 'compute' | 'budget' | 'unavailable' }>;
 export interface NodeProcessorExecutorStatus {
   readonly active: boolean; readonly rawExecutors: 0 | 1; readonly pending: boolean;
   /** Exactly the fixed guest data ArrayBuffer. Excludes source/parser/AST, host dictionaries, Worker/V8 heaps and RSS. */
@@ -53,6 +53,9 @@ function approvalSnapshot(input: NodeProcessorApproval): NodeProcessorApproval {
  * Arbitrary JavaScript is never evaluated; unsupported source language fails before worker launch.
  */
 export async function createNodeProcessorExecutor(options: NodeProcessorExecutorOptions): Promise<NodeProcessorExecutor> {
+  return createExecutor(options);
+}
+async function createExecutor(options: NodeProcessorExecutorOptions, onExit: () => void = () => {}): Promise<NodeProcessorExecutor> {
   const release = parseProcessorExtensionRelease(options.release), source = snapshotResourceBytes(options.source);
   const approval = approvalSnapshot(options.approval);
   let active = true;
@@ -99,7 +102,7 @@ export async function createNodeProcessorExecutor(options: NodeProcessorExecutor
     expiry = setTimeout(checkExpiry, Math.max(0, Math.min(approval.expiresAt - Date.now(), 60_000)));
   }
   let expiry = setTimeout(checkExpiry, Math.max(0, Math.min(approval.expiresAt - Date.now(), 60_000)));
-  worker.on('exit', () => { raw = 0; retire('unavailable'); completeExit(); });
+  worker.on('exit', () => { raw = 0; retire('unavailable'); completeExit(); onExit(); });
   worker.on('error', () => retire('unavailable'));
   worker.on('message', (message: { kind?: string; id?: number; ok?: boolean; frame?: unknown; reason?: string }) => {
     if (!current()) { retire('inactive'); return; }
@@ -147,5 +150,124 @@ export async function createNodeProcessorExecutor(options: NodeProcessorExecutor
       return Object.freeze({ active, rawExecutors: raw, pending: pending !== undefined, guestMemoryBytes: release.manifest.budgets.maxMemoryBytes });
     },
     close(): Promise<void> { retire('inactive'); return exited; },
+  });
+}
+
+export interface NodeProcessorScopeStatus {
+  readonly active: boolean;
+  /** Includes admitted verification/startup and retired workers until their actual exit. */
+  readonly reservedExecutors: number;
+  readonly guestMemoryBytes: number;
+}
+export interface NodeProcessorScope {
+  create(options: NodeProcessorExecutorOptions): Promise<NodeProcessorExecutor>;
+  status(): NodeProcessorScopeStatus;
+  close(): Promise<void>;
+}
+export interface NodeProcessorHost {
+  /** Host approval determines who receives this opaque scope; release data cannot select one. */
+  createScope(): NodeProcessorScope;
+  status(): NodeProcessorScopeStatus & Readonly<{ scopes: number }>;
+  close(): Promise<void>;
+}
+
+/** Fixed scoped interpreter admission: four scopes, one worker per scope, 1 MiB guest data,
+ * 256 KiB source and a 100 ms declared-compute token bucket refilled at 100 ms/second.
+ * Charges construction/process/reset before issuance, without refunds or queued work.
+ * This bounds admitted guest work, not parent validation CPU, total RSS or trusted host code.
+ * The host must map each authorized app/session to one scope and retain that scope across restarts.
+ */
+export function createNodeProcessorHost(): NodeProcessorHost {
+  let active = true, closing: Promise<void> | undefined;
+  let hostTokens = 400, hostMeasuredAt = performance.now();
+  const scopes = new Set<NodeProcessorScope>();
+  return Object.freeze({
+    createScope(): NodeProcessorScope {
+      if (!active) throw new Error('processor-inactive');
+      if (scopes.size >= 4) throw new Error('processor-capacity');
+      let current = true, reserved = 0, guestMemoryBytes = 0, tokens = 100, measuredAt = performance.now();
+      let stopping: Promise<void> | undefined;
+      const controllers = new Set<AbortController>(), executors = new Set<NodeProcessorExecutor>();
+      const openings = new Set<Promise<NodeProcessorExecutor>>();
+      function charge(compute: number): boolean {
+        const now = performance.now();
+        tokens = Math.min(100, tokens + Math.max(0, now - measuredAt) / 10); measuredAt = now;
+        hostTokens = Math.min(400, hostTokens + Math.max(0, now - hostMeasuredAt) * 0.4); hostMeasuredAt = now;
+        if (compute > tokens || compute > hostTokens) return false;
+        tokens -= compute; hostTokens -= compute; return true;
+      }
+      async function admit(options: NodeProcessorExecutorOptions): Promise<NodeProcessorExecutor> {
+        if (reserved) throw new Error('processor-capacity');
+        const release = parseProcessorExtensionRelease(options.release);
+        const memory = release.manifest.budgets.maxMemoryBytes, compute = release.manifest.budgets.maxComputeMs;
+        const byteLength = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(Uint8Array.prototype), 'byteLength')!.get!;
+        if (!(options.source instanceof Uint8Array) || byteLength.call(options.source) < 1 ||
+          byteLength.call(options.source) > 256 * 1024 || memory > 1024 * 1024 || compute > 100) throw new Error('processor-profile');
+        const approval = approvalSnapshot(options.approval);
+        if (!charge(compute)) throw new Error('processor-budget');
+        reserved = 1; guestMemoryBytes = memory;
+        const controller = new AbortController(); controllers.add(controller);
+        let released = false, executor: NodeProcessorExecutor | undefined;
+        const releaseReservation = () => {
+          if (released) return; released = true;
+          reserved = 0; guestMemoryBytes = 0; controllers.delete(controller);
+          if (executor) executors.delete(executor);
+        };
+        try {
+          executor = await createExecutor({ ...options, release, approval: {
+            expiresAt: approval.expiresAt,
+            signal: approval.signal ? AbortSignal.any([controller.signal, approval.signal]) : controller.signal,
+            isCurrent: () => current && active && approval.isCurrent() === true,
+          } }, releaseReservation);
+          if (!current || !active) { await executor.close(); throw new Error('processor-inactive'); }
+          executors.add(executor);
+          const owned = executor;
+          const dispatch = (operation: 'process' | 'reset', inputs?: unknown): Promise<NodeProcessorExecutorResult> => {
+            if (!current || !active || !owned.status().active) return Promise.resolve(bad('inactive'));
+            if (owned.status().pending) return Promise.resolve(bad('busy'));
+            // Invalid input never spends the approved scope's compute allowance.
+            if (operation === 'process') try { frame(inputs, release.manifest.inputs); } catch { return Promise.resolve(bad('input')); }
+            if (!charge(compute)) return Promise.resolve(bad('budget'));
+            return operation === 'process' ? owned.process(inputs) : owned.reset();
+          };
+          return Object.freeze({ manifest: owned.manifest,
+            process: (inputs: unknown) => dispatch('process', inputs), reset: () => dispatch('reset'),
+            status: () => owned.status(), close: () => owned.close() });
+        } catch (error) { releaseReservation(); throw error; }
+      }
+      const scope: NodeProcessorScope = Object.freeze({
+        create(options: NodeProcessorExecutorOptions): Promise<NodeProcessorExecutor> {
+          if (!current || !active) throw new Error('processor-inactive');
+          const opening = admit(options); openings.add(opening);
+          void opening.then(() => openings.delete(opening), () => openings.delete(opening));
+          return opening;
+        },
+        status: () => Object.freeze({ active: current && active, reservedExecutors: reserved, guestMemoryBytes }),
+        close(): Promise<void> {
+          if (stopping) return stopping;
+          current = false;
+          for (const controller of controllers) controller.abort();
+          stopping = (async () => {
+            await Promise.allSettled([...openings]);
+            await Promise.all([...executors].map(executor => executor.close()));
+            scopes.delete(scope);
+          })();
+          return stopping;
+        },
+      });
+      scopes.add(scope); return scope;
+    },
+    status() {
+      const states = [...scopes].map(scope => scope.status());
+      return Object.freeze({ active, scopes: scopes.size,
+        reservedExecutors: states.reduce((sum, state) => sum + state.reservedExecutors, 0),
+        guestMemoryBytes: states.reduce((sum, state) => sum + state.guestMemoryBytes, 0) });
+    },
+    close(): Promise<void> {
+      if (closing) return closing;
+      active = false;
+      closing = Promise.all([...scopes].map(scope => scope.close())).then(() => {});
+      return closing;
+    },
   });
 }

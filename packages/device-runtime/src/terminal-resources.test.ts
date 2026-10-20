@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { createHash } from 'node:crypto';
 import { createDisposableLoopbackSshHost, ownedSshHostPort } from '../../../examples/terminal-resources/disposable-host.mjs';
 import { createScopedLoopbackSshConnector } from '../../../examples/terminal-resources/ssh-connector.mjs';
 
@@ -294,3 +295,79 @@ test('owner abort retains an issued raw reservation until actual close and fresh
   try { const work = await fresh.readMetadata(makeContext()); assert.equal(work.ok, true); assert.equal(fresh.readResult(work.handle, makeContext()).ok, true); }
   finally { await fresh.close(); }
 }));
+
+const summaryFixture = '101 reviewed fixture\nA declared SSH job counts only this document.\n';
+
+test('declared SSH fixture-summary job keeps operation and result grants separate and returns actual document counts', async () => fixture(async host => {
+  const denied = createScopedLoopbackSshConnector({ ...options(host), authorize: () => undefined });
+  assert.equal(typeof denied.readFixtureSummary, 'function', 'Missing declared allowed SSH operation');
+  try { assert.equal((await denied.readFixtureSummary(makeContext())).reason, 'denied'); assert.equal(host.status().attempts, 0); }
+  finally { await denied.close(); }
+  const requests: Array<{ profile: string; operation: string; phase: string; resourceId: string; expiresAt: number }> = [];
+  let resultAllowed = false;
+  const connector = createScopedLoopbackSshConnector({ ...options(host), authorize(request: typeof requests[number]) {
+    requests.push(request); return request.phase === 'operation' || resultAllowed ? approve(request) : undefined;
+  } });
+  try {
+    const work = await connector.readFixtureSummary(makeContext()); assert.equal(work.ok, true); assert.equal(work.value, undefined);
+    const refusedResult = connector.readResult(work.handle, makeContext());
+    assert.equal(refusedResult.ok, false);
+    if (!refusedResult.ok) assert.equal(refusedResult.reason, 'denied');
+    resultAllowed = true; const result = connector.readResult(work.handle, makeContext()); assert.equal(result.ok, true);
+    assert.equal(result.value.profile, 'loopback-openssh-fixture-summary/1');
+    assert.equal(result.value.fixtureId, 'reviewed-document');
+    assert.equal(result.value.bytes, Buffer.byteLength(summaryFixture));
+    assert.equal(result.value.lines, summaryFixture.split('\n').length - 1);
+    assert.equal(result.value.sha256, createHash('sha256').update(summaryFixture).digest('hex'));
+    assert.ok(result.value.clockId.startsWith(host.identity.clockId + ':'));
+    assert.ok(requests.every(request => request.profile === 'loopback-openssh-fixture-summary/1' && request.operation === 'fixture-summary'));
+    assert.equal(requests[0].resourceId, 'fixture-summary-command'); assert.equal(requests.at(-1)?.resourceId, 'fixture-summary-result');
+    assert.equal(connector.readResult(work.handle, makeContext()).ok, false);
+    assert.equal(connector.status().audit.at(-1)?.operation, 'fixture-summary');
+    assert.equal(connector.status().retainedResults, 0);
+  } finally { await connector.close(); }
+}));
+
+test('declared summary refuses caller selectors and unrelated host identity or credential', async () => fixture(async host => fixture(async other => {
+  const connector = createScopedLoopbackSshConnector(options(host));
+  try {
+    assert.equal((await connector.readFixtureSummary({ ...makeContext(), command: 'uname -a' })).reason, 'invalid');
+    assert.equal((await connector.readFixtureSummary({ ...makeContext(), path: '/etc/passwd' })).reason, 'invalid');
+    assert.equal(host.status().attempts, 0);
+    assert.throws(() => ownedSshHostPort(host, host.credential).spawn(host.identity.hostKey, 'fixture-summary; uname -a'));
+  } finally { await connector.close(); }
+  for (const overrides of [{ hostKey: other.identity.hostKey }, { credential: other.credential }]) {
+    const selected = createScopedLoopbackSshConnector({ ...options(host), ...overrides });
+    try { assert.equal((await selected.readFixtureSummary(makeContext())).reason, 'native-failed'); assert.equal(selected.status().retainedResults, 0); }
+    finally { await selected.close(); }
+  }
+})));
+
+test('issued summary cancellation joins raw close and reconnect requires fresh identity and approval', async () => {
+  let firstIdentity: string | undefined;
+  await fixture(async host => {
+    firstIdentity = host.identity.id; const owner = new AbortController();
+    const connector = createScopedLoopbackSshConnector({ ...options(host), authorize(request: { expiresAt: number }) {
+      return { request, expiresAt: request.expiresAt, signal: owner.signal };
+    }, onNative(event: { stage: string }) {
+      if (event.stage === 'spawned') { owner.abort(); assert.equal(host.status().nativePending, 1); assert.equal(connector.status().rawPending, 1); }
+    } });
+    try {
+      assert.equal((await connector.readFixtureSummary(makeContext())).reason, 'revoked');
+      await connector.drain(); assert.equal(host.status().nativePending, 0); assert.equal(connector.status().retainedResults, 0);
+      assert.equal(connector.status().timerArmed, false); assert.equal(connector.status().issued, connector.status().settled);
+      assert.equal(connector.status().audit.at(-1)?.operation, 'fixture-summary');
+      assert.equal((await connector.readFixtureSummary(makeContext())).reason, 'denied');
+    } finally { await connector.close(); }
+  });
+  await fixture(async host => {
+    assert.notEqual(host.identity.id, firstIdentity);
+    const denied = createScopedLoopbackSshConnector({ ...options(host), authorize: () => undefined });
+    try { assert.equal((await denied.readFixtureSummary(makeContext())).reason, 'denied'); assert.equal(host.status().attempts, 0); }
+    finally { await denied.close(); }
+    const fresh = createScopedLoopbackSshConnector(options(host));
+    try { const work = await fresh.readFixtureSummary(makeContext()); assert.equal(work.ok, true);
+      const result = fresh.readResult(work.handle, makeContext()); assert.equal(result.ok, true); assert.equal(result.value.profile, 'loopback-openssh-fixture-summary/1'); }
+    finally { await fresh.close(); }
+  });
+});

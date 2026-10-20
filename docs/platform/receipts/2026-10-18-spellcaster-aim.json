@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "custodyRef": "refs/codex/evidence/2026-10-18-aim-history/final",
+  "ordinaryHead": "0ae72107ed9921b36ff30ab369408d7904d3f55e",
+  "ordinaryIndexSha256": "ac615e5e7801473c97e04eb450d43d41ea054cce86f31e44adc2388a862e44be",
+  "producerCandidateTree": "90864e18a0b09063b4505e5295c62c4e94edfc72",
+  "environment": "Local macOS26.5.2 arm64; Node24.14.0; Playwright1.61.1; Chromium149.0.7827.55 and WebKit26.5 automation",
+  "verification": {
+    "gates": {
+      "build": {
+        "path": "outputs/controllers/2026-10-18-spellcaster-aim/build.json",
+        "sha256": "9ad91201773185d98ab341ea0bf0076d1e0eac8e9c891ce085c1b620c93275ed"
+      },
+      "types": {
+        "path": "outputs/controllers/2026-10-18-spellcaster-aim/types.json",
+        "sha256": "93387284bbec0b8fdcf3f866000f78c67f91f2d7fb319bdc180d2db4dfb38ea7"
+      },
+      "lint": {
+        "path": "outputs/controllers/2026-10-18-spellcaster-aim/lint.json",
+        "sha256": "72d060ee7d2e22201f173be17b331aaeb9853448802927ac92915a8ab1cef490"
+      },
+      "rendered": {
+        "path": "outputs/controllers/2026-10-18-spellcaster-aim/rendered.json",
+        "sha256": "cb970fc8545f1452875a485fac5881123d7117942e948a3eeb43940ffe810930"
+      }
+    },
+    "renderedChecks": 37,
+    "lintErrors": 0,
+    "lintWarnings": 1,
+    "lintWarning": "Pre-existing PointerLab.tsx:145 effect-cleanup ref warning retained in lint.stdout.log",
+    "typeAndRenderedDependencyScope": "Production History source and full built artifact closure remain exact. Only the unbuilt History QA .mjs oracle/traversal changed after these gates; final full lint includes those corrections.",
+    "fullUnitSuiteRun": false,
+    "nativeStartupCaptureRun": false,
+    "fullGate": "Unresolved/red native startup gate from the retained prior combined run; no ordinary integration commit"
+  },
+  "independentReview": {
+    "path": "outputs/controllers/2026-10-18-aim-history-review/final-review.json",
+    "sha256": "acd947cf6bcc4f033f2cbdd2cd6fd70ac01d9a4c62ff80b33ce2e91d0b03a6d4"
+  },
+  "tasks": [
+    "G06"
+  ],
+  "classification": "Selected actual desktop Spellcaster vertical and local-role aim consumer effects, before and after natural result/restart",
+  "productionChanges": false,
+  "toolSources": [
+    {
+      "path": "tools/qa-spellcaster-aim.mjs",
+      "sha256": "7915e9d540dea3f5d41053e87501f2d391861ddf9843959494f738dc6a99c7b5"
+    },
+    {
+      "path": "tools/qa-spellcaster-reticle.mjs",
+      "sha256": "ba350e322bf3b06d1dd1bc959f3df57d89f7903366bfce2aeff030932260ffe8"
+    }
+  ],
+  "raw": {
+    "path": "outputs/controllers/2026-10-18-spellcaster-aim/report.json",
+    "sha256": "0300457a91b9dfba6b8acba778c55448a91aa28dd897ba7e8845d75dd59330fb"
+  },
+  "controlMatrix": {
+    "path": "outputs/controllers/2026-10-18-spellcaster-aim/controls-matrix.json",
+    "sha256": "b9cafbb7e47565a09a6c1271729fa4054eab20275b987549252daefdec88e351"
+  },
+  "readback": {
+    "path": "outputs/controllers/2026-10-18-spellcaster-aim/aim-readback.json",
+    "sha256": "0a9b1981f5e58fd927f168b33786d3609248e2bb38e64e2d9e91a22b2ac5819b"
+  },
+  "observerRegression": {
+    "oldSource": {
+      "path": "outputs/controllers/2026-10-18-spellcaster-aim/observer-before.mjs.txt",
+      "sha256": "6543115d8d5943a00344e78c29e8ba60fdb2884fee40531daef19e3d09ce4177"
+    },
+    "firstFailure": {
+      "path": "outputs/controllers/2026-10-18-spellcaster-aim/offline-first.json",
+      "sha256": "8cd19df4950198015938ced092e5074b85f306600960f0202f5c73e7de2c11bb"
+    },
+    "firstFailureCustody": "Values transcribed from actual exec output; no redirected full stderr and no rerun claimed",
+    "correctedOfflineOutput": {
+      "path": "outputs/controllers/2026-10-18-spellcaster-aim/offline.stdout.jsonl",
+      "sha256": "0f1e9230e5f02c7f0c9ce69b564ebaa0fa8f6456ef52a72cb338f1171174b74d"
+    },
+    "cause": "White sibling overlay buttons biased the old neutral-pixel centroid. Actual retained screenshots show the ring moving normally; no game renderer defect was established.",
+    "fix": "Exclude measured canvas-sibling DOM rectangles from the screenshot mask with one-pixel padding. Preserve the original region, colour/pixel bounds, >40px horizontal and >8px vertical assertions."
+  },
+  "validated": {
+    "renderedObservations": 40,
+    "directionChecks": 20,
+    "cells": "Each browser, initial and fresh run: canvas keyboard Up/Down; actual ARCANE AIM local-role surface arrow keys Left/Right/Up/Down and mouse drag Left/Right/Up/Down",
+    "minimumVerticalMovementPixels": 92.09978632478632,
+    "minimumLocalHorizontalMovementPixels": 331.4049627791563,
+    "restart": "Native Space on the actually focused natural result, then observed fresh game consumer",
+    "sourcePinsVerified": 339,
+    "builtArtifactPinsVerified": 602,
+    "screenshotPinsVerified": 40,
+    "boundsMs": {
+      "naturalEnd": 150000,
+      "wholeRun": 360000
+    },
+    "inputAndRender": "Actual browser keyboard/mouse events and canvas pixels; no injected game/input state, renderer hook, clock replacement, retry or deadline widening",
+    "reusedPriorProof": {
+      "receipt": "docs/platform/receipts/2026-10-18-spellcaster-controls-restart.json",
+      "evidenceRef": "refs/codex/evidence/2026-10-18-checklist-followthrough/final",
+      "horizontalTargetEffects": 8,
+      "initialSixActionEffects": 24,
+      "freshRunSixActionEffects": 24,
+      "relevantCurrentSourcePinsCompared": 308,
+      "sourceDrift": []
+    }
+  },
+  "cleanup": {
+    "engines": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "nativeChild": {
+          "pid": 1315,
+          "closed": true,
+          "exitCode": 0,
+          "signal": null
+        },
+        "contextClosed": true
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "nativeChild": {
+          "pid": 13554,
+          "closed": true,
+          "exitCode": 0,
+          "signal": null
+        },
+        "contextClosed": true
+      }
+    ],
+    "serverClosed": true,
+    "errors": [],
+    "sourcePinsUnchanged": true,
+    "buildPinsUnchanged": true,
+    "toolsUnchanged": true
+  },
+  "limits": [
+    "Selected desktop aim cells pass; complete G06 and other-game/control/mode acceptance remain open.",
+    "Desktop mouse events exercise the actual local-role surface; no physical phone touch, gamepad, camera, motion or remote input qualification.",
+    "Held input is released in cleanup, but no independent neutral-release assertion was made.",
+    "Focused target input does not establish keyboard traversal or actually heard announcements.",
+    "Prior failed visual attempts remain historical; the new offline observer regression and live aim pass supplement them.",
+    "Full unit/native gate remains unresolved and was not repeated; no ordinary integration."
+  ]
+}

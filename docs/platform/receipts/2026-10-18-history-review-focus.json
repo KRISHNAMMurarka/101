@@ -1,0 +1,230 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "custodyRef": "refs/codex/evidence/2026-10-18-aim-history/final",
+  "ordinaryHead": "0ae72107ed9921b36ff30ab369408d7904d3f55e",
+  "ordinaryIndexSha256": "ac615e5e7801473c97e04eb450d43d41ea054cce86f31e44adc2388a862e44be",
+  "producerCandidateTree": "90864e18a0b09063b4505e5295c62c4e94edfc72",
+  "environment": "Local macOS26.5.2 arm64; Node24.14.0; Playwright1.61.1; Chromium149.0.7827.55 and WebKit26.5 automation",
+  "verification": {
+    "gates": {
+      "build": {
+        "path": "outputs/controllers/2026-10-18-spellcaster-aim/build.json",
+        "sha256": "9ad91201773185d98ab341ea0bf0076d1e0eac8e9c891ce085c1b620c93275ed"
+      },
+      "types": {
+        "path": "outputs/controllers/2026-10-18-spellcaster-aim/types.json",
+        "sha256": "93387284bbec0b8fdcf3f866000f78c67f91f2d7fb319bdc180d2db4dfb38ea7"
+      },
+      "lint": {
+        "path": "outputs/controllers/2026-10-18-spellcaster-aim/lint.json",
+        "sha256": "72d060ee7d2e22201f173be17b331aaeb9853448802927ac92915a8ab1cef490"
+      },
+      "rendered": {
+        "path": "outputs/controllers/2026-10-18-spellcaster-aim/rendered.json",
+        "sha256": "cb970fc8545f1452875a485fac5881123d7117942e948a3eeb43940ffe810930"
+      }
+    },
+    "renderedChecks": 37,
+    "lintErrors": 0,
+    "lintWarnings": 1,
+    "lintWarning": "Pre-existing PointerLab.tsx:145 effect-cleanup ref warning retained in lint.stdout.log",
+    "typeAndRenderedDependencyScope": "Production History source and full built artifact closure remain exact. Only the unbuilt History QA .mjs oracle/traversal changed after these gates; final full lint includes those corrections.",
+    "fullUnitSuiteRun": false,
+    "nativeStartupCaptureRun": false,
+    "fullGate": "Unresolved/red native startup gate from the retained prior combined run; no ordinary integration commit"
+  },
+  "independentReview": {
+    "path": "outputs/controllers/2026-10-18-aim-history-review/final-review.json",
+    "sha256": "acd947cf6bcc4f033f2cbdd2cd6fd70ac01d9a4c62ff80b33ce2e91d0b03a6d4"
+  },
+  "tasks": [
+    "U12",
+    "U10",
+    "Q07"
+  ],
+  "classification": "History native review focus-return repair and bounded cancellation/refusal/Stop/expiry checks",
+  "productionSources": [
+    {
+      "path": "app/settings/history/HistoryView.tsx",
+      "sha256": "116cf4e007b776285f16d5a8d2cd9e04d37babbe3e96187b00c41b0213d217be"
+    }
+  ],
+  "qaSource": {
+    "path": "tools/qa-history-review-focus.mjs",
+    "sha256": "0f7c47abd4d065a0f494b6715ee3a0a34e510ef116258eab23d3436cae935f2a"
+  },
+  "rawReport": {
+    "path": "outputs/controllers/2026-10-18-history-review-focus/report.json",
+    "sha256": "e6af670798a67a0e2ff8bfb48873272fe849165fe373eb24f9002e4763e1469f"
+  },
+  "audit": {
+    "path": "outputs/controllers/2026-10-18-history-review-focus/audit.json",
+    "sha256": "d38e3723e1082d9a6a6be310939f8d838e7be48285366cd98110185c7787ee8a"
+  },
+  "finding": {
+    "id": "HISTORY-FOCUS-01",
+    "severity": "medium",
+    "status": "locally verified",
+    "surface": "/settings/history",
+    "rootCause": "Native WebKit pointer activation leaves document.activeElement at BODY; History review saved BODY as return target",
+    "productionFix": "Pass each of six actual review button event.currentTarget values into review(action, trigger)",
+    "source": "app/settings/history/HistoryView.tsx",
+    "sourceSha256": "116cf4e007b776285f16d5a8d2cd9e04d37babbe3e96187b00c41b0213d217be"
+  },
+  "oldFailure": {
+    "path": "outputs/controllers/2026-10-18-history-review-focus/old/webkit.stderr.log",
+    "sha256": "20ff14897e81ae3ccfbb03d121a1906bef5613e47ad652f742256ddb310b9293",
+    "selector": "Native mouse Manage history \u2192 review heading \u2192 Cancel \u2192 expect actual Manage history button focused",
+    "deadlineMs": 6000,
+    "observed": "BODY remained focused after Cancel; no storage opens, transactions, puts; original6-second check failed",
+    "executedSource": "outputs/controllers/2026-10-18-history-review-focus/old/HistoryView.tsx.txt",
+    "executedTool": "outputs/controllers/2026-10-18-history-review-focus/old/executed-tool.mjs.txt",
+    "rawCommand": "outputs/controllers/2026-10-18-history-review-focus/old/execution.json"
+  },
+  "fix": "All six review buttons pass their actual event.currentTarget into review. Existing connected/enabled target and Manage/status fallback behavior remains; no authority or storage lifecycle change.",
+  "expandedQaFailures": [
+    {
+      "path": "outputs/controllers/2026-10-18-history-review-focus/fixed",
+      "reason": "Forward native Tab from final control traversed outside document and History retired; diagnosed by focus/control disappearance, window-blur initially inferred from source",
+      "diagnosis": "outputs/controllers/2026-10-18-history-review-focus/fixed/diagnosis.json",
+      "productChanged": false
+    },
+    {
+      "path": "outputs/controllers/2026-10-18-history-review-focus/verified",
+      "reason": "Overstrong zero-put assumption for deep producer corruption; trusted owner transactions update lastNow/revision before producer validation",
+      "diagnosis": "outputs/controllers/2026-10-18-history-review-focus/verified/diagnosis.json",
+      "productChanged": false
+    }
+  ],
+  "finalExecutions": {
+    "path": "outputs/controllers/2026-10-18-history-review-focus/final/executions.json",
+    "sha256": "fe511940867bf96bf81ed2f783c7401c46b680a911de2821d516001be02aa063"
+  },
+  "finalProof": {
+    "path": "outputs/controllers/2026-10-18-history-review-focus/final/proof.json",
+    "sha256": "f86298470bbf5ac46b74e732d61dcd09f6d62dc16024fee5edc88766c77e4a42"
+  },
+  "validated": {
+    "browserChecks": 48,
+    "perBrowser": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "checks": 24,
+        "result": {
+          "path": "outputs/controllers/2026-10-18-history-review-focus/final/chromium.stdout.json",
+          "sha256": "1bd6392ed4a8eed0c1d8287ba5d436e41b0de30e48859970d698403495390ab8"
+        },
+        "stderr": {
+          "path": "outputs/controllers/2026-10-18-history-review-focus/final/chromium.stderr.log",
+          "sha256": "6f7c2bd0d4da9395185532429e81f415314d1742b770fc4178cca732c21a6157"
+        },
+        "expiryElapsedMs": [
+          30026,
+          30026
+        ]
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "checks": 24,
+        "result": {
+          "path": "outputs/controllers/2026-10-18-history-review-focus/final/webkit.stdout.json",
+          "sha256": "6cc2e67cce51fd1675c148ea89f6b9b76bfe1e53e12e6c230e557cffaccc081d"
+        },
+        "stderr": {
+          "path": "outputs/controllers/2026-10-18-history-review-focus/final/webkit.stderr.log",
+          "sha256": "4b3b8eef1d68a0cbbda09d0de5d00d72f65cfff9366db62c238917880b78fab0"
+        },
+        "expiryElapsedMs": [
+          30064,
+          30036
+        ]
+      }
+    ],
+    "coverage": "Six review actions with mouse and native keyboard Cancel; future/foreign/corrupt refusal with both inputs; approved-management status fallback; Stop during review with both inputs; two actual natural30-second expiries per engine; actual page-produced native IndexedDB fixtures",
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "focusedUnitChecks": 26,
+    "focusedChecks": {
+      "historyTaskTests": {
+        "command": [
+          "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+          "--test",
+          "app/settings/history/history-task.test.ts"
+        ],
+        "tests": 26,
+        "exitCode": 0
+      },
+      "lint": {
+        "command": [
+          "/Users/km/.nvm/versions/node/v24.14.0/bin/npx",
+          "eslint",
+          "app/settings/history/HistoryView.tsx",
+          "tools/qa-history-review-focus.mjs"
+        ],
+        "exitCode": 0
+      },
+      "logs": [
+        {
+          "path": "outputs/controllers/2026-10-18-history-review-focus/history-task.stdout.log",
+          "sha256": "7a17b3d5b0d61294f8ffa2aa166c6a9fa30ae988409162e680dd839f0b287b42"
+        },
+        {
+          "path": "outputs/controllers/2026-10-18-history-review-focus/history-task.stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "outputs/controllers/2026-10-18-history-review-focus/focused-lint.stdout.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "path": "outputs/controllers/2026-10-18-history-review-focus/focused-lint.stderr.log",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    "historySourcePinsVerified": 209,
+    "builtArtifactPinsVerified": 602,
+    "deadlineAndClock": "Original6000ms focus bound and real30-second approval expiry; native forward/reverse Tab according to target document order; no forced target focus, blur suppression, retry, clock substitution or deadline widening"
+  },
+  "preservationContract": {
+    "futureVersionAndWrongOwner": "Literal complete managed envelope preserved; zero native puts",
+    "corruptTelemetry": "Exact private records, copies, audit, deletion, dataRevision, epoch and every non-clock/revision field preserved; only monotonic lastNow/revision changes allowed",
+    "actualCorruptPutsPerCase": 5,
+    "sdkTrace": [
+      "packages/device-runtime/src/owner-data.ts:264 transaction",
+      "packages/device-runtime/src/owner-data.ts:280 owner lastNow/revision bookkeeping",
+      "packages/device-runtime/src/owner-data.ts:186 managed envelope/header parse",
+      "packages/device-runtime/src/telemetry-history.ts:141 private telemetry parseState"
+    ],
+    "uiMeaning": "Saved history refers to the retained measurements; it does not promise that trusted owner clock/revision bookkeeping remains byte-identical."
+  },
+  "retainedWarning": {
+    "path": "outputs/controllers/2026-10-18-spellcaster-aim/server-warning-assessment.json",
+    "sha256": "5260cfec191acad0d4810bf7af5f35439b11ad06edacdf94b6b4877b49912451"
+  },
+  "warningMeaning": "One Chromium local server ERR_STREAM_UNABLE_TO_PIPE warning is retained. Exact triggering request is unknown; page assertions pass with no page errors/foreign requests. No application/dependency patch or blanket harmless/clean-log claim is justified.",
+  "cleanup": {
+    "allOwnedRunsJoined": true,
+    "databaseRemovedEachRun": true,
+    "nativePending0EachRun": true,
+    "scratchFoldersCreated": [],
+    "ordinaryIndexUnchanged": true,
+    "ordinaryIndexSha256": "ac615e5e7801473c97e04eb450d43d41ea054cce86f31e44adc2388a862e44be"
+  },
+  "cleanupLimits": "Native pending0, database deletion, pages/context/browser/server close are joined. This History tool did not record a stable native browser OS PID; do not infer aim-style native-child PID evidence.",
+  "limits": [
+    "Whole U12/U10/Q07 remain open; this supplements the earlier six-area management inventory and Appearance focus proof.",
+    "Future/wrong-owner outer envelopes have zero native puts and whole-envelope equality. Deep corrupt telemetry has5puts per case and only monotonic owner lastNow/revision changes; private records/copies/audit/deletion/dataRevision/epoch and every other field remain exact.",
+    "No heard screen-reader, physical-device, installed-app/OS permissions, general-provider/account/cloud or native startup acceptance.",
+    "Full unit/native gate remains unresolved and was not repeated; no ordinary integration."
+  ]
+}

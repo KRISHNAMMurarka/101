@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "tasks": [
+    "S06",
+    "S14",
+    "F05",
+    "S15",
+    "V06",
+    "V10",
+    "Q05"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "classification": "selected local validation and observer repairs; earlier full native gate and first Firefox prerequisite failure remain unresolved",
+  "baseHead": "0ae72107ed9921b36ff30ab369408d7904d3f55e",
+  "productionChangesInThisWave": false,
+  "sourceSha256": {
+    "tools/qa-preview-privacy.mjs": "723acce2415c966764dff3f099373e271dc34c4da02ce2b942c77262bc6ec66c",
+    "tools/qa-preview-privacy-page.mjs": "60b043410cef1b11dedf939631abee7f65d646ba777f9ff6a87c388edb9f87e4",
+    "tools/qa-preview-privacy-observer.mjs": "08058ded48b6d3ee7e6034da20017e5d7fe8b284cfdc9f616f372fe7aea7e62a",
+    "tools/qa-lost-identity.mjs": "1e96eb481e4822083a73085ebe4a55338349defe47492d16bc9ca290bcf38727",
+    "tools/qa-application-video-codec.mjs": "8fc2fcae73be6b888333e28c280e589eb711a6a85a655568ef83d272b8cd5e7f",
+    "tools/qa-media-synchronization.mjs": "820ce8e348f24c161c420907f62f31bb4b368672c2a8a87720820dc1e25d67c1",
+    "packages/device-runtime/src/processor-executor.test.ts": "220ab3765c96ee3be882fc23489f9cfed0bf5fba06f3155f9e8446592c230ea8",
+    "packages/device-runtime/src/media-synchronization.test.ts": "311d2de862e415e878c7e4f37d97ddd78cb342aa356f7adc2e45b332b5ecc5e0"
+  },
+  "environment": {
+    "node": "v24.14.0",
+    "os": "macOS26.5.2 arm64",
+    "browsers": [
+      "Chromium149.0.7827.55",
+      "Firefox151.0",
+      "WebKit26.5"
+    ]
+  },
+  "lanes": {
+    "identityLoss": {
+      "result": "pass",
+      "receipt": "outputs/controllers/2026-10-18-identity-loss/receipt.json",
+      "verification": "outputs/controllers/2026-10-18-identity-loss/verification.json",
+      "checks": 59,
+      "scope": "Original ephemeral browser context destroyed before owner removal; old offer refused, fresh key/epoch/comparison and independent source/output consent required; incumbent key/epoch/held output preserved through97 observations. Actual native RTC/WebCrypto controller composition; no account, physical-key-erasure or UI claim."
+    },
+    "processorFailures": {
+      "result": "pass",
+      "raw": "outputs/controllers/2026-10-18-processor-failure-cleanup/unit-corrected.stdout.txt",
+      "tests": 18,
+      "addedTests": 2,
+      "scope": "Real signed guest construction timeout and narrowly injected postMessage issuance failure; capacity retained while actual Worker is live, released through actual exit, fresh successful reuse. No runtime change, widened timeout or total CPU/RSS isolation claim.",
+      "firstFixtureFailure": "First new construction fixture lacked state declaration and was correctly refused by parser before Worker; corrected to existing faithful guest shape, no production defect claim."
+    },
+    "previewPrivacy": {
+      "result": "pass",
+      "receipt": "outputs/controllers/2026-10-18-local-followthrough/privacy-browser.stdout.log",
+      "regression": "outputs/controllers/2026-10-18-privacy-followthrough/observer-nine-native-forms-green.tap",
+      "nativeRegressionTests": 4,
+      "nativeStructuredForms": 9,
+      "arrayRegression": "outputs/controllers/2026-10-18-privacy-followthrough/array-gap-green.tap",
+      "arrayRegressionTests": 2,
+      "browserJourneys": 2,
+      "scope": "Actual public owned-canvas preview: selected8x8JSON/decimal/base64 representations absent from bounded origin stores/cache and console text/supported actual structured arguments before deliberate positive controls, through sample/revoke/close. Native IDB nine-form positives include array own fields/mixed numeric spans/object keys/Map/Set/typed bytes. Actual deleteDatabase success plus exact owned DB/cache/key disappearance required; onblocked remains pending. This proves owned test artifact deletion only.",
+      "originalHistoricalClaim": "Earlier2026-10-18-preview-privacy-observation raw deletion flag remains rejected; this new current execution supplies additional proof without rewriting it.",
+      "cleanup": {
+        "browserHandlesClosed": 2,
+        "contextsClosed": 2,
+        "serverClosed": true,
+        "scratchRemoved": true,
+        "stableBrowserPidsAvailable": false
+      }
+    },
+    "adaptiveVideoFailures": {
+      "result": "pass",
+      "receipt": "outputs/controllers/2026-10-18-media-failures/evidence.json",
+      "cells": 33,
+      "assertions": 213,
+      "scope": "Eight labeled missing-API/native-support-result refusal cells plus actual grant expiry, source-dimension change and source revocation per engine, every refusal followed by actual fresh VP8 pixel recovery. Native VP8 supported at both tiers before injected refusals;16decoded/16closedframes per engine. Existing installed/success evidence reused without repetition."
+    },
+    "mediaSyncFailures": {
+      "result": "pass-selected-cells-with-unresolved-first-browser-failure",
+      "receipt": "outputs/controllers/2026-10-18-media-sync-failures/evidence.json",
+      "unitTests": 10,
+      "addedUnitGroups": 4,
+      "browserAssertions": 33,
+      "scope": "Controlled affine\u00b110000ppm monotonic clocks/uncertainty reject and fresh recovery; accepted uncertainty remains conservative. Actual owned PCM/raster and issued held final rAF callback cannot paint after Stop; outside wrapper callback explicitly remains pending at logical Stop, then is released and joined. No physical/native capture/PTS/scanout mapping claim.",
+      "retainedFailure": "FirstFirefox run failed at two-fresh-pairs prerequisite before Stop cell. Only diagnostic snapshot text changed; subsequent C/F/W pass does not explain or repair the first failure."
+    }
+  },
+  "verification": {
+    "selected": "outputs/controllers/2026-10-18-local-followthrough/verification.json",
+    "fullTypecheck": 0,
+    "selectedEightFileLint": 0,
+    "freshProductBuildRenderedAndFullUnitRerun": false,
+    "reason": "Only QA tools and test sources changed; product/dependency/distribution bytes unchanged in this wave. Prior broad candidate build/rendered pass is retained as historical exact-tree evidence; no new broad acceptance claimed.",
+    "priorFullGate": "docs/platform/receipts/2026-10-18-implementation-gates.json",
+    "fullGateStatus": "red; native2500ms startup zero-JS cause unresolved; prior SDK selector mismatch separately fixed/rechecked"
+  },
+  "review": "outputs/controllers/2026-10-18-local-followthrough-review/review.json",
+  "limits": [
+    "Scoped source/software proof only; whole rows and support acceptance remain open.",
+    "No all-storage/logger/native/OS/forensic privacy guarantee or erasure of already-authorized caller copies.",
+    "No new installed SDK, Windows/Xbox, Linux desktop, physical capture or external service qualification.",
+    "FirstFirefox prerequisite failure and historical native/browser failures remain preserved; no retry/deadline/prewarm/OS policy weakening."
+  ],
+  "custodyRef": "refs/codex/evidence/2026-10-18-local-followthrough/final"
+}

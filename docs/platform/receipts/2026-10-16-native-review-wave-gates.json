@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "Q05",
+    "Q13"
+  ],
+  "acceptance": false,
+  "integrated": true,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "exact reviewed131-path candidate integrated locally after all8gates pass",
+  "candidateCommit": "903eb2cd766c19da06404b647f7ea9023f4deef2",
+  "candidateTree": "4824e5953bf5dca7e862da67d9336b384ca24f1c",
+  "ordinaryCommit": "0ae72107ed9921b36ff30ab369408d7904d3f55e",
+  "unit": {
+    "tests": 3496,
+    "pass": 3496,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "rendered": {
+    "tests": 37,
+    "pass": 37,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "gateArchive": {
+    "ref": "refs/codex/evidence/2026-10-16-native-review-wave/gates",
+    "commit": "f4b212d973448dee0076300ba2b2449c986844bb",
+    "tree": "2c12f7135fe2915bf4971e86d52a9c9db9744387",
+    "readBackFiles": 165,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ownedScratchRemoved": true
+  },
+  "integrationArchive": {
+    "ref": "refs/codex/evidence/2026-10-16-native-review-wave/integration",
+    "commit": "35984877c0cf29c00f7e8b6af8ab6c201a889043",
+    "tree": "015d922856951f1d89edd22ca24d4a6a7660046d",
+    "readBackFiles": 11,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "frozenReviewSha256": "62b6836971fb482576caa465ca29983bbd07d22077eadad120c94bccbc5772d9",
+  "invariants": {
+    "installedManifestsMatched": 1018,
+    "privateMapperFilesMatched": 19,
+    "releaseEntriesRetained": 179,
+    "worktreesRetained": 12,
+    "allOwnedGateParentsAndGroupsAbsent": true,
+    "noVmUsed": true,
+    "noForeignProcessesStopped": true,
+    "noSourceOrIndexChangesDuringGates": true,
+    "noExternalWrites": true
+  },
+  "startupBoundMs": 2500,
+  "retriesOrPrewarmAdded": false,
+  "limits": [
+    "This successful exact-candidate run does not establish reliability or the cause of historical native startup misses.",
+    "Earlier rejected full candidates and all their genuine failures remain separately retained.",
+    "No current follow-on source is covered by this prior frozen result."
+  ]
+}

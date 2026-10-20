@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "custodyRef": "refs/codex/evidence/2026-10-18-checklist-followthrough/final",
+  "tasks": [
+    "G06"
+  ],
+  "classification": "actual desktop Spellcaster horizontal aim and six-action consumer effects after natural result/restart",
+  "productionChanges": false,
+  "currentToolSha256": "269165b6fbe5565b651c57b8f4b9c016d63b3c875bb83e0c72d8e731a366d5a3",
+  "executedMainToolSha256": "bbab24a68fc6ce87788274f542f92f49a400e6e82b97affd2499d720debd82ec",
+  "readback": {
+    "path": "outputs/controllers/2026-10-18-spellcaster-control-followthrough/readback.json",
+    "sha256": "671da9a170f4903c0e5b05d9f368eaf2f6b3fe8dd1affffa28a8473a1c9e1c6c"
+  },
+  "controlMatrix": {
+    "path": "outputs/controllers/2026-10-18-spellcaster-control-followthrough/controls-matrix.json",
+    "sha256": "cec9a349454a6a0063e761a06e4006f0210e069da143fa521e14d5ddc8303ae8"
+  },
+  "rawMain": {
+    "path": "outputs/controllers/2026-10-18-spellcaster-control-followthrough/report.json",
+    "sha256": "ef3e1ee8f89390fe5df785a06a23ecf6182cc9dfbd1580fe86c32e7396255aac"
+  },
+  "producerCandidateTree": "05f85cebf8b4860e5e6c907c855db65fdddd6d6d",
+  "producerServerSha256": "af6f3e503e935d4f7a95e69ab2641f6774362c35260824305d4873eb6b7dc800",
+  "validated": {
+    "mainPass": true,
+    "horizontalEffects": 8,
+    "postRestartSpellEffects": 24,
+    "engines": [
+      {
+        "engine": "chromium",
+        "version": "149.0.7827.55",
+        "nativeChild": {
+          "pid": 46409,
+          "closed": true,
+          "exitCode": 0,
+          "signal": null
+        },
+        "contextClosed": true
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "nativeChild": {
+          "pid": 52605,
+          "closed": true,
+          "exitCode": 0,
+          "signal": null
+        },
+        "contextClosed": true
+      }
+    ],
+    "allOwnedExecutionsJoined": true,
+    "allContextsAndBrowserChildrenJoined": true,
+    "serversClosed": true,
+    "ownedBuildAbsent": true
+  },
+  "priorSixActions": "24 initial-action effects reused only after78 exact source pins match. Main new proof matches308 relevant candidate pins.",
+  "retainedFailures": {
+    "first": {
+      "path": "attempt-01/report.json",
+      "cause": "Image mask counted canvas focus border and overlaid HUD text before a known render milestone; first image was prematurely sampled. It qualified zero aim/action effects.",
+      "executedSourceSha256": "e64a28c5085448ec82661516d615c5e32e5f82ffb3d07200d3a0eb482d02b15f"
+    },
+    "second": {
+      "path": "reticle-report.json",
+      "cause": "Interior crop still included white overlaid bottom buttons; centroid at y~412 failed the vertical assertion although retained images show the true ring moving y~329 to~226. No game defect established.",
+      "stoppingRule": "Stopped browser attempts after two failed visual approaches.",
+      "nextBoundedMethod": "Exclude overlay DOM rectangles from the pixel mask, preserving fixed movement assertions and original waits/bounds; only remaining local-role and post-restart reticle coverage needs a new browser selector. Do not repeat spell actions or all-game journeys."
+    },
+    "correction": {
+      "path": "report.json",
+      "field": "results[].rendererObservation.classification and scope clause about blank arena",
+      "correction": "This was provisional wording, preserved as raw execution output. Later actual screenshot in each engine shows enemies, ward and reticle rendered normally. Initial black capture was premature; no WebGL fallback defect or unreadable unsupported state was reproduced. The final selector metadata was corrected without repeating unchanged gameplay.",
+      "laterRenderedEvidence": [
+        "chromium-run1-aim-consumer.png",
+        "webkit-run1-aim-consumer.png",
+        "chromium-run1-keyboard-ArrowUp.png",
+        "webkit-run1-keyboard-ArrowDown.png"
+      ]
+    }
+  },
+  "sourceVersionLimit": "Executed main source is retained exactly. Current dedicated tool only corrects provisional scope wording; no current-tool full execution is claimed. Inactive reticle source was retained byte-identically as .mjs.txt; see Settings inactive-source-recovery manifest.",
+  "limits": [
+    "Both engines show actual target-type differences from horizontal aim and fresh-run six-action effects.",
+    "Vertical automated reticle measurement failed; manual images show initial keyboard y movement, but local-role aim and post-restart vertical aim remain unverified.",
+    "Premature black screenshot was not a reproduced renderer defect. Later screenshots show normal rendering; raw provisional wording remains historical.",
+    "Whole G06/other-game controls/phone play/heard announcements remain open; no product code changed."
+  ]
+}

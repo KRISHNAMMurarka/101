@@ -18,7 +18,7 @@ export type EnrolledPrimitivePresentation =
   | Readonly<{ type: 'scalar'; unit: string }>
   | Readonly<{ type: 'vector'; unit: string; components: readonly string[] }>;
 export interface EnrolledResource {
-  readonly id: string; readonly semantic: string; readonly permissions: readonly string[];
+  readonly id: string; readonly semantic: string; readonly label: string; readonly permissions: readonly string[];
   readonly previewable: boolean; readonly schemaVersion: number; readonly unit?: string;
   readonly primitive?: EnrolledPrimitivePresentation;
   readonly reading?: ReadingChoice;
@@ -96,20 +96,29 @@ export function formatEnrolledPrimitiveValue(resource: EnrolledResource, value: 
   }
   return parts.join(', ');
 }
-/** Reported semantics only. This helper performs no authentication, observation or authorization. */
+function resourceLabel(capability: DeviceCapability, reading: ReadingChoice | undefined): string {
+  if (reading) return reading.label;
+  if (capability.kind === 'command') return 'Action';
+  if (capability.kind === 'job') return 'Task';
+  if (capability.value.type === 'boolean') return 'On/off input';
+  if (capability.value.type === 'scalar') return 'Number input';
+  if (capability.value.type === 'vector') return 'Multi-value input';
+  return 'Other input';
+}
+/** Reported types supply display labels, never identity, purpose or permission. */
 export function inspectEnrolledResources(input: unknown): readonly EnrolledResource[] {
   const device = parseDeviceDescriptor(input), choices = device.capabilities.map(readingFor);
-  const totals = new Map<'record' | 'table', number>(), counts = new Map<'record' | 'table', number>();
-  for (const choice of choices) if (choice?.shape) totals.set(choice.shape, (totals.get(choice.shape) ?? 0) + 1);
+  const labels = device.capabilities.map((capability, index) => resourceLabel(capability, choices[index]));
+  const totals = new Map<string, number>(), counts = new Map<string, number>();
+  for (const label of labels) totals.set(label, (totals.get(label) ?? 0) + 1);
   return Object.freeze(device.capabilities.map((capability, index) => {
     let reading = choices[index];
-    const primitive = primitivePresentation(capability);
-    if (reading?.shape) {
-      const ordinal = (counts.get(reading.shape) ?? 0) + 1; counts.set(reading.shape, ordinal);
-      if ((totals.get(reading.shape) ?? 0) > 1) reading = Object.freeze({ ...reading, label: `${reading.label} ${ordinal}` });
-    }
+    const primitive = primitivePresentation(capability), baseLabel = labels[index]!;
+    const ordinal = (counts.get(baseLabel) ?? 0) + 1; counts.set(baseLabel, ordinal);
+    const label = (totals.get(baseLabel) ?? 0) > 1 ? `${baseLabel} ${ordinal}` : baseLabel;
+    if (reading && reading.label !== label) reading = Object.freeze({ ...reading, label });
     return Object.freeze({
-      id: capability.id, semantic: capability.semantic, permissions: Object.freeze([...capability.permissions]),
+      id: capability.id, semantic: capability.semantic, label, permissions: Object.freeze([...capability.permissions]),
       previewable: primitivePreviewable(capability) || reading !== undefined, schemaVersion: capability.schemaVersion,
       ...(primitive ? { primitive } : {}),
       ...(reading ? { reading } : {}),
@@ -117,6 +126,7 @@ export function inspectEnrolledResources(input: unknown): readonly EnrolledResou
     });
   }));
 }
+
 interface Preview {
   readonly owner: AbortController; readonly grant: Readonly<RouteGrant>; readonly chosen: ReadonlySet<string>;
   readonly sinks: Map<string, EndpointHandle>; readonly sourceRegistrations: Map<string, string>;

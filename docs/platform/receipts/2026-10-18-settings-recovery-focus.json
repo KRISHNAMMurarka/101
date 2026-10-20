@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "custodyRef": "refs/codex/evidence/2026-10-18-checklist-followthrough/final",
+  "tasks": [
+    "U12",
+    "U10",
+    "Q07"
+  ],
+  "classification": "actual built Settings recovery states and reproduced/fixed native WebKit review-focus return",
+  "productionChanges": [
+    "app/settings/SettingsView.tsx"
+  ],
+  "sourceSha256": {
+    "app/settings/SettingsView.tsx": "0b9828a0639d3524343f4d2b2c406b2aebfff9a90cde8841f00f5cb4680807b3",
+    "tools/qa-settings-recovery.mjs": "8bc6f57e7fa4047c3c4c720ea22b2215e49e213d38addde8b68f894c5d1c2541"
+  },
+  "inventory": {
+    "path": "outputs/controllers/2026-10-18-settings-recovery/management-inventory.json",
+    "sha256": "cdb38792ec8ad42774ed3cf626a1f43f149239a89d6931bd4ead11a24eb35e7e"
+  },
+  "oldFailure": {
+    "firstNativeFailure": {
+      "path": "outputs/controllers/2026-10-18-settings-recovery/webkit.stderr.log",
+      "sha256": "38bb1e5ec07705edca611413fbbf689568e54f296d8ab70ab5b0a83c5f8f9fc2"
+    },
+    "boundedDiagnosis": {
+      "path": "outputs/controllers/2026-10-18-settings-recovery/focus-diagnosis/webkit.stderr.log",
+      "sha256": "e1af2d675c120003139c26be1f8269d577f358e4d4f9cf4e2b557a34e7e5bbff"
+    },
+    "rootCause": "Native WebKit mouse activation leaves BODY focused. Capturing document.activeElement remembers that non-focusable body; after the review heading is removed, focus remains on BODY. The separate six-second observation confirms it is not merely deferred focus.",
+    "fix": "Remember the actual initiating button through event.currentTarget for every appearance review. Existing disconnected/disabled fallback focus remains."
+  },
+  "verification": {
+    "freshBuild": {
+      "path": "outputs/controllers/2026-10-18-settings-recovery/build.json",
+      "sha256": "188779fb9256384e21dbdf43188df9fbba6c8a47b19bcbae67e0b23ba2d739e7"
+    },
+    "builtSourceTree": "111fe48dc8084f6d11247edbf9aec33ec2d26f76",
+    "fullRecoveryChecks": 16,
+    "focusedPreStopFaultRechecks": 10,
+    "fullChecks": {
+      "types": {
+        "path": "outputs/controllers/2026-10-18-settings-recovery/types.json",
+        "sha256": "8576251c6f18bb434a535b26fd80aff0dd682239aaa77f9f346e48e10d2541e4"
+      },
+      "lint": {
+        "path": "outputs/controllers/2026-10-18-settings-recovery/lint.json",
+        "sha256": "837b69c89be054e4b8cc0efc5bf473cc3ecef36dfc163ac5a49dd9f4755329c9"
+      },
+      "rendered": {
+        "path": "outputs/controllers/2026-10-18-settings-recovery/rendered.json",
+        "sha256": "9f05a926a68cd6e15ad861377b8e83d72a33f2cfa07ac1c0038f679a4931ee87"
+      }
+    },
+    "fullUnitSuiteRun": false,
+    "nativeCaptureRun": false,
+    "note": "Focused rechecks overlap earlier recovery coverage; they are not26unique scenarios."
+  },
+  "nativeScope": "Actual default built route and IndexedDB, native keyboard/focus, single-field negative mutations derived from real Settings page-produced bytes. Corrupt current choices require reset review; Cancel retains private bytes. Managed-envelope version3 and foreign owner fail before stores open and preserve the whole envelope; pre-Stop controls and writes are measured directly.",
+  "cleanup": "Both successful selections close owned pages/context/browser and remove their database with native pending0. Servers join exit0. Failed selectors also join and retain raw output.",
+  "review": {
+    "path": "outputs/controllers/2026-10-18-local-checklist-review/review.json",
+    "sha256": "b8a98ca80b4732b09e3ffc91321a464dd81a163b68ab1c6e19c44a60177beb6a"
+  },
+  "limits": [
+    "Whole U12/U10/Q07 remain open; the six-area inventory maps existing browser surfaces without qualifying all providers.",
+    "Generic SettingsStore.reset explicitly supports reviewed future discard; this receipt concerns earlier managed-envelope refusal only.",
+    "History review mouse-focus return uses a similar source pattern but is not verified or claimed fixed in this wave.",
+    "No physical inputs, heard screen-reader result, installed-app/OS permission or account/cloud identity qualification.",
+    "Full native gate remains red and was not repeated; no ordinary integration."
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "tasks": [
+    "V10",
+    "Q05"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "classification": "investigated prerequisite timing; observed safe refusal; attribution diagnostics and selected negative coverage, not historical cause or flake elimination",
+  "productionChanges": false,
+  "sourceSha256": {
+    "tools/qa-media-synchronization.mjs": "e91d5c647e7d25bf1f7396475e449d065f4b56de343bc0cb8699e16801965679",
+    "packages/device-runtime/src/media-synchronization.test.ts": "9dafb6e59040533ac9ce842630ad033622e326bae8212c06713f6f014ec067e2",
+    "packages/device-runtime/src/media-synchronization.ts": "b3401e2605b91554b763a0d9e420f0d1adfe6a5607bfa5ece1324ab46c92e12a",
+    "examples/device-pipelines/media-synchronization.ts": "aa946248c8afa380ba3d4be69d99ee4ea17e30f559d9a64075d6565473997cd9"
+  },
+  "historicalFailure": {
+    "receipt": "docs/platform/receipts/2026-10-18-local-followthrough.json",
+    "actualFirstStderr": "outputs/controllers/2026-10-18-media-sync-failures/source-failures-first.stderr.log",
+    "cause": "unproven: first run retained neither timing trace nor state snapshot; cannot distinguish scheduler age/clock uncertainty/other prerequisite refusal",
+    "nativeStartupRelation": "No evidence links it to the separate zero-JS native2500ms failure."
+  },
+  "investigation": {
+    "passiveSourceRun": "outputs/controllers/2026-10-18-firefox-sync-diagnosis/first.stdout.json",
+    "originalChromiumThenFirefoxOrder": "outputs/controllers/2026-10-18-firefox-sync-diagnosis/sequence.stdout.json",
+    "controlledCounterexample": "outputs/controllers/2026-10-18-firefox-sync-diagnosis/controlled-pause-failure-state.json",
+    "controlledCase": "Two actual native Firefox software pairs accepted at337ms; deliberate125ms main-thread pause plus unchanged45ms cadence yielded at510ms age-budget/pairs0/new epoch2 with zero effects. This reproduces the failure class while the runtime enforces its100ms guard; it does not establish the historical trigger.",
+    "rootCauseClaim": "No runtime bug demonstrated. The old two-pairs assertion conflated acknowledgement with freshness after a timer wait.",
+    "probeChanges": "Read actual second-offer acknowledgement immediately, then retain unchanged45ms cadence and a distinct freshness prerequisite; on failure include bounded32-record native-time/state trace. No retry, clock freezing, timeout expansion or prewarm. Existing16KiB complete output cap preserved.",
+    "traceLegend": {
+      "step": "sample/offer/cadence boundary",
+      "t": "actual performance.now() milliseconds",
+      "e": "epoch",
+      "r": "reason",
+      "n": "recovery pairs",
+      "o": "offers",
+      "p": "painted",
+      "c": "pending contexts"
+    }
+  },
+  "checks": {
+    "units": {
+      "pass": 11,
+      "addedTests": 1,
+      "raw": "outputs/controllers/2026-10-18-firefox-sync-diagnosis/units.stdout.txt",
+      "scope": "Accepted two-pair history expires after a controlled101ms gap; no old-history effect and three fresh pairs/new maps required."
+    },
+    "nativeFreshness": {
+      "selection": "--freshness-source",
+      "assertions": 24,
+      "raw": "outputs/controllers/2026-10-18-firefox-sync-diagnosis/freshness.stdout.txt",
+      "engines": [
+        {
+          "engine": "chromium",
+          "version": "149.0.7827.55",
+          "checks": 8,
+          "actualPauseMs": 136.2000002861023
+        },
+        {
+          "engine": "firefox",
+          "version": "151.0",
+          "checks": 8,
+          "actualPauseMs": 137
+        },
+        {
+          "engine": "webkit",
+          "version": "26.5",
+          "checks": 8,
+          "actualPauseMs": 135
+        }
+      ],
+      "scope": "Actual native PCM/MessagePort/raster under native performance clock; deliberate125ms scheduling pause requires safe100ms refusal, zero effect and fresh maps/three-pair recovery."
+    },
+    "nativeHeldStop": {
+      "selection": "--failures-source",
+      "assertions": 36,
+      "raw": "outputs/controllers/2026-10-18-firefox-sync-diagnosis/held-stop.stdout.txt",
+      "engines": [
+        {
+          "engine": "chromium",
+          "version": "149.0.7827.55",
+          "checks": 12,
+          "latePaintCalls": 0
+        },
+        {
+          "engine": "firefox",
+          "version": "151.0",
+          "checks": 12,
+          "latePaintCalls": 0
+        },
+        {
+          "engine": "webkit",
+          "version": "26.5",
+          "checks": 12,
+          "latePaintCalls": 0
+        }
+      ]
+    },
+    "fullTypes": 0,
+    "scopedLint": 0,
+    "fullSuiteRebuiltOrRerun": false
+  },
+  "cleanup": {
+    "nodeHostsJoined": true,
+    "browserHandlesClosed": true,
+    "loopbackServersClosed": true,
+    "pairedContextsEffectsPortsTimersAndObservedNativePcmRaf": 0,
+    "temporaryCompiledAndProvenanceDirectoriesRemovedAfterCustody": true,
+    "browserStableOsPidsClaim": false
+  },
+  "review": {
+    "path": "outputs/controllers/2026-10-18-firefox-sync-diagnosis/reviewer/final-review.json",
+    "sha256": "c92bad3a7c89d4756bf87e75738ca24b1b2f1ba597fb3c59db71d65e338b0046"
+  },
+  "limits": [
+    "Historical Firefox cause remains unknown; current pass and controlled reproduction do not prove stability or a repaired product bug.",
+    "A valid later scheduling or uncertainty failure must still fail the freshness prerequisite; no automatic retry or bypass.",
+    "No physical capture/audio/video PTS/scanout mapping, network loss or installed SDK requalification.",
+    "Runtime/example bytes unchanged; new test/tool source only. Prior full native gate remains red; no ordinary commit."
+  ],
+  "custodyRef": "refs/codex/evidence/2026-10-18-firefox-and-storage/final"
+}

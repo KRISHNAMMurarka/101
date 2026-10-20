@@ -80,10 +80,25 @@ assert.ok(proof.cleanup.every(value => value.removedOwnedRoot && value.nativePen
 for (const entry of proof.receipts) { assert.equal(entry.connectorStatus.rawPending, 0); assert.equal(entry.connectorStatus.retainedResults, 0);
   assert.equal(entry.connectorStatus.issued, entry.connectorStatus.settled); assert.equal(entry.connectorStatus.timerArmed, false); }
 for (const path of owned) assert.equal(hash(readFileSync(join(root, path))), fingerprints[path], 'Caller source changed during proof: ' + path);
-const receipt = { schemaVersion: 1, result: 'pass', profile: 'loopback-openssh-metadata/1', createdAt: new Date().toISOString(),
+const operationProof = proof.allowedOperations;
+assert.equal(operationProof.result, 'pass'); assert.equal(operationProof.profile, 'loopback-openssh-fixture-summary/1');
+assert.equal(operationProof.kind, 'actual-native-openssh-public-runtime');
+assert.equal(operationProof.receipts.length, 2); assert.equal(operationProof.cleanup.length, 2); assert.equal(operationProof.checks.length, 17);
+assert.ok(operationProof.cleanup.every(value => value.removedOwnedRoot && value.nativePending === 0 && !value.timerArmed));
+assert.notEqual(operationProof.receipts[0].hostIdentity.hostFingerprint, operationProof.receipts[1].hostIdentity.hostFingerprint);
+for (const entry of operationProof.receipts) {
+  assert.equal(entry.operation, 'fixture-summary'); assert.equal(entry.result.profile, operationProof.profile);
+  assert.equal(entry.result.sha256, entry.fixtureDocumentSha256); assert.equal(entry.result.lines, 2);
+  assert.equal(entry.connectorStatus.rawPending, 0); assert.equal(entry.connectorStatus.retainedResults, 0);
+  assert.equal(entry.connectorStatus.issued, 2); assert.equal(entry.connectorStatus.issued, entry.connectorStatus.settled);
+  assert.equal(entry.connectorStatus.timerArmed, false);
+  assert.ok(entry.connectorStatus.audit.every(row => row.operation === 'fixture-summary' && row.profile === operationProof.profile));
+  assert.ok(entry.connectorStatus.audit.some(row => row.issued && ['cancelled', 'revoked'].includes(row.outcome)));
+}
+const receipt = { schemaVersion: 1, result: 'pass', profile: 'loopback-openssh-metadata/1', allowedOperationProfile: 'loopback-openssh-fixture-summary/1', createdAt: new Date().toISOString(),
   mode: 'unchanged-installed-immutable-public-sdk-with-separate-new-native-caller', packedTree, callerTree,
   immutableManifest: packed.manifest, dependencySourceSha256: dependencySource, installedSha256: installed, sourceSha256: fingerprints,
   consumer, caller, publicEsmResolutions: resolutions, environment: { node: process.version, platform: platform(), arch: arch(), kernel: release() }, proof,
-  scope: 'New owned non-root loopback OpenSSH metadata host and explicit pinned native host/client identity. Exact actual public runtime invoke and subscribe->write result grants, with separate current operation/result owner consent before one validated result is published. No remote host, interactive shell, PTY/forwarding/agent, existing keys/config/account changes, OS sandbox, issued-operation undo or physical support qualification.' };
+  scope: 'New owned non-root loopback OpenSSH hosts for unchanged metadata and one declared fixed document-summary job, with explicit pinned native host/client identity. Summary proof cancels an issued job, joins native close, reconnects with fresh identity/approvals and validates bounded operation-specific audit. Exact actual public runtime invoke and subscribe->write result grants, with separate current operation/result owner consent before one validated result is published. No remote host, interactive shell, PTY/forwarding/agent, existing keys/config/account changes, OS sandbox, issued-operation undo or physical support qualification.' };
 const receiptPath = join(caller, 'receipt.json'); writeFileSync(receiptPath, JSON.stringify(receipt, null, 2) + '\n');
 console.log(JSON.stringify({ receiptPath, ...receipt }));

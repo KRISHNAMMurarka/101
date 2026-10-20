@@ -62,7 +62,7 @@ export async function runTmp102OwnedCaller(runner,scenario='normal'){
  assert.ok(legs.every(r=>r.status==='fulfilled'));const execution=JSON.parse(stdout.toString().trim());assert.equal(execution.result.status,'pass');assert.equal(execution.result.producerClosed,true);
  assert.equal(execution.result.producerExit.code,0);assert.equal(execution.result.producerExit.signal,null);return{...execution,callerClose:closed,callerNaturalExit:natural,issuedPipeWrites:legs.length};
 }
-export async function runTmp102HwmonQa({root=resolve(import.meta.dirname,'..'),repoRoot=root,workRoot=join(root,'evidence'),scenarios=['normal','malformed','missing','replacement','route-expiry','route-revoke','owner-revoke','caller-revoke','grant-revoke','gateway-expiry','callback-stop']}={}){
+export async function runTmp102HwmonQa({root=resolve(import.meta.dirname,'..'),repoRoot=root,workRoot=join(root,'evidence'),scenarios=['normal','malformed','short','missing','replacement','route-expiry','route-revoke','owner-revoke','caller-revoke','grant-revoke','gateway-expiry','callback-stop']}={}){
  mkdirSync(workRoot,{recursive:true});workRoot=realpathSync(workRoot);const before=sourceClosure(root,repoRoot),work=realpathSync(mkdtempSync(join(workRoot,'tmp102-source-'))),artifacts=prepareTmp102Artifacts({root,repoRoot,work});
  const fence=createTmp102ClosureFence({artifacts,sourcePaths:Object.keys(before)}),results=[];for(const scenario of scenarios)results.push(await runTmp102OwnedCaller(artifacts.runner,scenario));
  fence.verify();assert.deepEqual(sourceClosure(root,repoRoot),before);assert.ok(fileURLToPath(results[0].entry).startsWith(join(realpathSync(repoRoot),'packages','connect')+sep),'Actual source SDK entry required');

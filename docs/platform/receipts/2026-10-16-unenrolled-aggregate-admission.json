@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "S11"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "coverage-only actual TLS/public coordinator caller aggregate admission negative",
+  "sourceSha256": {
+    "packages/hub-server/src/https-coordinator-principal.test.ts": "2f349bf01b2a3c5003a67ab464a982b0f702e049a8c9b5a9db3d78cbb12eec32"
+  },
+  "appliedCheck": {
+    "sourceSha256": {
+      "packages/hub-server/src/https-coordinator-principal.test.ts": "2f349bf01b2a3c5003a67ab464a982b0f702e049a8c9b5a9db3d78cbb12eec32"
+    },
+    "command": [
+      "node",
+      "--test",
+      "--test-name-pattern=unenrolled TLS channels share the global raw budget without displacing an admitted incumbent",
+      "packages/hub-server/src/https-coordinator-principal.test.ts"
+    ],
+    "exitCode": 0,
+    "commandReturnedAndJoined": true,
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "nativeClientCloses": 34,
+    "allClosesJoined": true,
+    "coordinatorStopped": true,
+    "productionChange": false,
+    "rootReviewSha256": "a27f3559bb1dce5c16638d1222be14896d7459863a4ee954685adf2b67baf20a"
+  },
+  "observed": "One admitted incumbent plus31 valid-CA unenrolled TLS1.3 channels occupies the shared raw32 ceiling. A new supported caller is refused while incumbent serves200. Actual close of one unenrolled channel restores caller200. All34 observed client socket closes and coordinator stop join.",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-local-followon/aggregate-admission",
+    "commit": "ab2243004235794f4909660ad5c59ba8e90d2b1d",
+    "tree": "fda774375a981d2bb95e067716dfd366ee610bda",
+    "readBackFiles": 35,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "rootReviewSha256": "a27f3559bb1dce5c16638d1222be14896d7459863a4ee954685adf2b67baf20a",
+  "isolatedReportSha256": "696dc99af753fcc702703e40cb417ac9dd138eb92facd1cd08b5280d92f5d60e",
+  "productionChange": false,
+  "limits": [
+    "Loopback selected native TLS/caller coverage; no new guard or policy change.",
+    "No TLS-resumption, handshake CPU fairness, global OS denial-of-service, remote network or whole S11 proof."
+  ]
+}

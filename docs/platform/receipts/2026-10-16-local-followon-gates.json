@@ -1,0 +1,269 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "Q05",
+    "Q13"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "exact23-path follow-on rejected by one actual broker prerequisite timeout; subsequent diagnostic-only timestamp fields focused-pass",
+  "candidateCommit": "d3f74ca00a66c1d0dba3a2ca1e383870a436f134",
+  "candidateTree": "d72534051c4179abc6b7999738dfb4ad1e11c269",
+  "unit": {
+    "tests": 3500,
+    "pass": 3499,
+    "fail": 1,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "rendered": {
+    "tests": 37,
+    "pass": 37,
+    "fail": 0,
+    "skipped": 0,
+    "cancelled": 0
+  },
+  "gates": [
+    {
+      "name": "records",
+      "command": [
+        "node",
+        "--test",
+        "tests/platform-records.test.ts"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.468,
+      "childPid": 35360,
+      "childJoined": true,
+      "log": "records.log"
+    },
+    {
+      "name": "platform-audit",
+      "command": [
+        "node",
+        "tools/audit-platform-records.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 0.156,
+      "childPid": 35486,
+      "childJoined": true,
+      "log": "platform-audit.log"
+    },
+    {
+      "name": "production-audit",
+      "command": [
+        "node",
+        "tools/audit-production.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 2.573,
+      "childPid": 35565,
+      "childJoined": true,
+      "log": "production-audit.log"
+    },
+    {
+      "name": "types",
+      "command": [
+        "npx",
+        "tsc",
+        "--noEmit"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 3.508,
+      "childPid": 36321,
+      "childJoined": true,
+      "log": "types.log"
+    },
+    {
+      "name": "lint",
+      "command": [
+        "npm",
+        "run",
+        "lint"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 21.956,
+      "childPid": 37364,
+      "childJoined": true,
+      "log": "lint.log"
+    },
+    {
+      "name": "unit",
+      "command": [
+        "npm",
+        "run",
+        "test:unit"
+      ],
+      "exitCode": 1,
+      "elapsedSeconds": 558.852,
+      "childPid": 43539,
+      "childJoined": true,
+      "log": "unit.log"
+    },
+    {
+      "name": "build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 14.168,
+      "childPid": 13845,
+      "childJoined": true,
+      "log": "build.log"
+    },
+    {
+      "name": "rendered",
+      "command": [
+        "node",
+        "--test",
+        "tests/rendered-html.test.mjs"
+      ],
+      "exitCode": 0,
+      "elapsedSeconds": 1.922,
+      "childPid": 18003,
+      "childJoined": true,
+      "log": "rendered.log"
+    }
+  ],
+  "gateArchive": {
+    "ref": "refs/codex/evidence/2026-10-16-local-followon/gates",
+    "commit": "bd02594feb32c8a446e8b2035e0e407b5e195900",
+    "tree": "6ad6fc60660c5afc095db0a9d668ed43c2a42f05",
+    "readBackFiles": 74,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true,
+    "ownedScratchRemoved": true
+  },
+  "invariants": {
+    "installedManifestsMatched": 1018,
+    "privateMapperFilesMatched": 19,
+    "releaseEntriesRetained": 179,
+    "worktreesRetained": 12,
+    "allOwnedGateParentsAndGroupsAbsent": true,
+    "noVmUsed": true,
+    "noForeignProcessesStopped": true,
+    "noSourceOrIndexChangesDuringGates": true,
+    "noExternalWrites": true
+  },
+  "failure": {
+    "pid": 2221,
+    "command": [
+      "/opt/homebrew/opt/mosquitto/sbin/mosquitto",
+      "-h"
+    ],
+    "timeoutMs": 2000,
+    "elapsedMs": 2002.455834,
+    "status": null,
+    "signal": "SIGTERM",
+    "error": "ETIMEDOUT",
+    "stdout": "",
+    "stderr": "",
+    "phase": "Before owned broker directory/listener/producer/connector/PUBACK setup",
+    "sourceUnchangedFromPassingCandidate": true,
+    "kernelCauseEstablished": false
+  },
+  "followup": {
+    "logCorrelation": "Matching current installed path only; no targetPID2221 or absolute failed-probe bracket. Adjacent log intervals are not a proved policy validation duration.",
+    "diagnostic": {
+      "schemaVersion": 1,
+      "status": "diagnostic-only-focused-pass; native-reliability-unresolved",
+      "originalHelperSha256": "a89520c5dc412d4423fb47a7e8bc9ebae521331c744da2b7795f22b65cb711be",
+      "appliedSourceSha256": {
+        "tools/mqtt-broker-binary.mjs": "2f6d259abd318e1f7bf033a18dbfef43f7882286840fdd80f03f20f04ddccc52",
+        "tests/mqtt-broker-diagnostics.test.ts": "dae91605767fbc45e7c9abf94da0bb02167d363bb444a86743baf82fdc602fd7"
+      },
+      "observedExecutions": [
+        {
+          "command": [
+            "node",
+            "--test",
+            "tests/mqtt-broker-diagnostics.test.ts"
+          ],
+          "source": "original helper plus new regression",
+          "exitCode": 1,
+          "log": "old-red.log",
+          "tests": 1,
+          "pass": 0,
+          "fail": 1,
+          "reason": "missing startedAtUnixMs number"
+        },
+        {
+          "command": [
+            "node",
+            "--test",
+            "tests/mqtt-broker-diagnostics.test.ts",
+            "tests/mqtt-helper-artifacts.test.ts"
+          ],
+          "source": "corrected helper plus same regression",
+          "exitCode": 0,
+          "log": "fixed-green.log",
+          "tests": 5,
+          "pass": 5,
+          "fail": 0,
+          "skipped": 0
+        },
+        {
+          "command": [
+            "node",
+            "node_modules/typescript/bin/tsc",
+            "--noEmit"
+          ],
+          "exitCode": 0,
+          "log": "types.log"
+        },
+        {
+          "command": [
+            "node",
+            "node_modules/eslint/bin/eslint.js",
+            "tests/mqtt-broker-diagnostics.test.ts",
+            "tools/mqtt-broker-binary.mjs"
+          ],
+          "exitCode": 0,
+          "log": "lint.log"
+        }
+      ],
+      "executionMetadataOrigin": "Exit codes directly observed from root tool calls; command spellings above omit fixed absolute Node24.14.0 path and env unsets retained in conversation. No retroactive start/end wall timing is claimed.",
+      "review": {
+        "path": "independent-review.json",
+        "sha256": "ec5d0ddd1f99e5a52c8138714f1f82dee5d2c8aba276cdb668566ebe26772076"
+      },
+      "bounds": {
+        "brokerHelpMs": 2000,
+        "originalRuntimeHostMs": 2500,
+        "changed": false,
+        "retriesOrPrewarmAdded": false
+      },
+      "meaning": "Each failed broker-help result gains parent Unix-millisecond start/end samples and parent PID, preserving original monotonic elapsed/PID/result/stream diagnostics. Parent wall clock can adjust; these are not kernel exec timestamps or request IDs.",
+      "nativeLaunchesByFocusedChecks": 0,
+      "ordinaryCommitMade": false,
+      "noVmUsed": true,
+      "noExternalWrites": true,
+      "priorCandidate": {
+        "commit": "d3f74ca00a66c1d0dba3a2ca1e383870a436f134",
+        "rejected": true,
+        "unitPass": 3499,
+        "unitTotal": 3500,
+        "failure": "Actual installed Mosquitto help exceeded unchanged2000ms before intended broker assertion; no causal attribution."
+      }
+    },
+    "custody": {
+      "ref": "refs/codex/evidence/2026-10-16-native-startup/probe-timing",
+      "commit": "303846f0ee43e7d4b12e7e9c80bbe06ee9995f81",
+      "tree": "d56eb5c3e95829db4639e017d20b34212ecc2864",
+      "readBackFiles": 27,
+      "allBytesMatched": true,
+      "realIndexUnchanged": true
+    }
+  },
+  "limits": [
+    "Seven gates pass; unit gate fails. No ordinary commit on red.",
+    "Follow-up diagnostic source is newer than rejected candidate; its5focused passes do not substitute for full candidate checks.",
+    "No whole task, support row, native reliability, admin remediation or historical cause is accepted."
+  ]
+}

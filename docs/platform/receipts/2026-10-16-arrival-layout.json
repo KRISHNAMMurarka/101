@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "U07"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "bounded safe-arrival geometry audit and two recovery-link target consistency improvements",
+  "sourceSha256": {
+    "app/connections/audio/AudioView.tsx": "6dd6c43f3aa45e78b05bb272f475ccecbf3e9f65bc673970c01c20e48e27d333",
+    "app/connections/gamepad/GamepadView.tsx": "986aac56e192a5c6105bf5a2356a635c32eab828d6ff5ef1c373329c8147ca63",
+    "app/connections/resources/resource-task.module.css": "c690626a06bd99fe8eef0a1e98abd1a837dcd0b7d3dbce674efc15cbc5b28115"
+  },
+  "initialAudit": {
+    "safeRoutes": 27,
+    "widths": [
+      320,
+      768,
+      1440
+    ],
+    "cases": 81,
+    "HTTP200": 81,
+    "documentOrMainOverflow": 0,
+    "viewportClippedControls": 0,
+    "pageOrConsoleErrors": 0,
+    "reportSha256": "8166ef257e74dc5418680a48bec21db381a97b52171e51bf1089210a722eda3b",
+    "context": "Chromium desktop/fine-pointer at all widths;10gameplay arrival routes and developer routes excluded."
+  },
+  "improvement": "Two bottom return links reuse existing padded skip class. Original measured height21px becomes40px, with href and logic unchanged; no CSS change.",
+  "focusedFixed": {
+    "cases": 6,
+    "pass": 6,
+    "minimumMeasuredHeight": 40,
+    "href": "/connections",
+    "documentOrMainOverflow": 0,
+    "fullCopiedBuildFiles": 602,
+    "declaredRuntimeSourcePins": 200,
+    "reportSha256": "5a54945bb584d34d5567d4fc97c1aa7d091369033a091ed8b1b36f7506f44940"
+  },
+  "observed": [
+    {
+      "route": "/connections/audio",
+      "viewport": {
+        "width": 320,
+        "height": 900
+      },
+      "height": 40,
+      "href": "/connections"
+    },
+    {
+      "route": "/connections/gamepad",
+      "viewport": {
+        "width": 320,
+        "height": 900
+      },
+      "height": 40,
+      "href": "/connections"
+    },
+    {
+      "route": "/connections/audio",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "height": 40,
+      "href": "/connections"
+    },
+    {
+      "route": "/connections/gamepad",
+      "viewport": {
+        "width": 768,
+        "height": 1024
+      },
+      "height": 40,
+      "href": "/connections"
+    },
+    {
+      "route": "/connections/audio",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "height": 40,
+      "href": "/connections"
+    },
+    {
+      "route": "/connections/gamepad",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "height": 40,
+      "href": "/connections"
+    }
+  ],
+  "rootReviewSha256": "e7f193451e35cac27b90825228ab998527d9a5df9a7f520e29b687a227d0d8d3",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-local-followon/arrival-layout",
+    "commit": "f95b2709b36b18c8829afacfc75a3ed32182f7d8",
+    "tree": "7240b6e811cca144688fc403596be4270e7cc25e",
+    "readBackFiles": 67,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "cleanup": {
+    "original": {
+      "ownedScratch": "/Users/km/Dev/101/release/u07-arrival-layout-sgc8jquv",
+      "removedOnlyOwnedDirectory": true,
+      "scratchAbsent": true,
+      "uniqueRunSourceAndInputBytesRetainedAndReadbackMatch": true,
+      "copiedDerivedBuild602FenceBeforeRemoval": true,
+      "ownedRunnerAndBrowserGroupsJoinedAbsent": [
+        37314,
+        37427
+      ],
+      "nativeBrowserExitCode": 0,
+      "ownedPathOpenfilesBeforeRemoval": {
+        "exitCode": 1,
+        "stdoutEmpty": true,
+        "stderrEmpty": true
+      },
+      "canonicalIndexSourceDistWritesByAudit": false,
+      "noBuildDependencyOrCacheCopiesRetained": true
+    },
+    "fixed": {
+      "status": "complete",
+      "removedOnly": "/Users/km/Dev/101/release/u07-recovery-target-fixed-5_1g4yp1",
+      "ownerRecordRetained": "execution-owner.json.txt",
+      "ownedGroupsAbsentBeforeRemoval": {
+        "38083": true,
+        "38198": true
+      },
+      "nativeProfile": "/var/folders/fl/_vtlq7rx7bq7c4fllv5gn1rc0000gn/T/playwright_chromiumdev_profile-0mBmZa",
+      "nativeProfileAbsent": true,
+      "lsof": {
+        "argv": [
+          "/usr/sbin/lsof",
+          "-nP",
+          "+D",
+          "/Users/km/Dev/101/release/u07-recovery-target-fixed-5_1g4yp1"
+        ],
+        "exitCode": 1,
+        "stdoutEmpty": true,
+        "stderrEmpty": true
+      },
+      "copiedBuild602HashReadback": true,
+      "uniqueExecutionBytesRetainedAndReadBack": [
+        {
+          "original": "/Users/km/Dev/101/release/u07-recovery-target-fixed-5_1g4yp1/audit.mjs",
+          "retained": "outputs/controllers/2026-10-16-arrival-layout-next/fixed/execution-audit.mjs.txt",
+          "sha256": "5ddec3200d0d8dfb4ef581d41db70a950f3f3895807eff1e48a420c4904fe6df"
+        },
+        {
+          "original": "/Users/km/Dev/101/release/u07-recovery-target-fixed-5_1g4yp1/input.json",
+          "retained": "outputs/controllers/2026-10-16-arrival-layout-next/fixed/execution-input.json.txt",
+          "sha256": "fb524ff7a074852af2df2f3166d4ccd9bcfd68429641f19f41831c7acdd3be4c"
+        },
+        {
+          "original": "/Users/km/Dev/101/release/u07-recovery-target-fixed-5_1g4yp1/owner.json",
+          "retained": "outputs/controllers/2026-10-16-arrival-layout-next/fixed/execution-owner.json.txt",
+          "sha256": "9df44d6ed0d3374c5a0dee1faa3bcf32f239511b81692349f21596c360408373"
+        }
+      ],
+      "compactArtifactCountReadBackBeforeRemoval": 24,
+      "allScratchBytesWereOrdinaryFiles": true,
+      "rootAppDistHoldReleasedBeforeCleanup": true,
+      "timestampUtc": "2026-10-16T02:07:56.798233+00:00"
+    }
+  },
+  "limits": [
+    "40px geometry is a Chromium desktop/fine-pointer viewport result; no physical touch, AT, orientation/text-scale or complete U07 claim.",
+    "Launcher footer tiny heuristic was excluded after existing pointer:coarse44px rule and spacing inspection; no unjustified footer fix.",
+    "Initial low target-size observation was not an accessibility conformance or task failure; no retrospective old-red claim.",
+    "No click, grant, enrollment, capture, gameplay, text scaling, safe-area, watch/TV/device geometry or named AT acceptance."
+  ]
+}

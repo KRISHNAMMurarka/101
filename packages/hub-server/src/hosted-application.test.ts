@@ -11,7 +11,7 @@ import { existsSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { createWorkloadHandoff } from '@101/device-runtime';
 import type { DeliveryContext, HandoffEpoch } from '@101/device-runtime';
-import type { HostedApplicationOptions, HostedApplicationApprovalRequest, HostedApplicationEpoch } from './hosted-application.ts';
+import type { HostedApplicationOptions, HostedApplicationApproval, HostedApplicationApprovalRequest, HostedApplicationEpoch } from './hosted-application.ts';
 const pause = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 async function until(check: () => boolean) { const end = performance.now() + 2500; while (!check()) { assert.ok(performance.now() < end); await pause(5); } }
 function fixture(providerId = 'host-a', customize: Partial<HostedApplicationOptions> = {}) {
@@ -215,4 +215,77 @@ test('denied launch attempts preserve their real epoch in later valid native fra
     trace.restore(); if (failed) t.diagnostic(JSON.stringify({ kind: 'hosted-startup', clock: 'parent-performance',
       launchExpiresAt, retiredAt, ...trace.milestones, status: selected.provider.status() }));
   } }
+});
+
+test('N16 cached and copied owner grants cannot cross action, purpose, epoch or application scope', async () => {
+  assert.ok(api); let cached: HostedApplicationApproval | undefined, replay = false;
+  const owner = new AbortController(), scopes: HostedApplicationApprovalRequest[] = [];
+  const selected = fixture('n16-origin', { authorize(request) {
+    scopes.push(request); if (replay) return cached;
+    const grant = { request, signal: owner.signal, expiresAt: performance.now() + 9000 };
+    if (request.action === 'launch') cached = grant; return grant;
+  } });
+  try {
+    const epoch = await active(selected), before = selected.provider.status().operations; replay = true;
+    assert.deepEqual(await selected.provider.input(epoch, { x: 1, y: 1 }, { purpose: 'another-purpose', signal: owner.signal, context: context() }), { ok: false, reason: 'denied' });
+    assert.deepEqual(await selected.provider.frame(epoch, { purpose: 'read-sensitive', signal: owner.signal }), { ok: false, reason: 'denied' });
+    assert.equal(selected.provider.status().operations, before); await selected.provider.stop();
+    assert.deepEqual(await selected.provider.start({ purpose: 'explicit-launch', version: 1 }), { ok: false, reason: 'denied' });
+    assert.equal(selected.provider.status().starts, 1); assert.notEqual(scopes.at(-1)!.epoch, cached!.request.epoch);
+    const variants = [{ providerId: 'n16-other' }, { ownerId: 'another-owner' }, { applicationId: 'another-app' }, { sessionId: 'another-session' }];
+    for (const variant of variants) {
+      const other = fixture('n16-origin', { ...variant, authorize: () => cached });
+      try { assert.deepEqual(await other.provider.start({ purpose: 'explicit-launch', version: 1 }), { ok: false, reason: 'denied' }); assert.equal(other.provider.status().starts, 0); }
+      finally { await other.provider.close(); assert.equal(other.provider.status().cleanupVerified, true); }
+    }
+    const copied = fixture('n16-copy', { authorize(request) { return { request: Object.freeze({ ...request }), signal: owner.signal, expiresAt: performance.now() + 9000 }; } });
+    try { assert.deepEqual(await copied.provider.start({ purpose: 'explicit-launch', version: 1 }), { ok: false, reason: 'denied' }); assert.equal(copied.provider.status().starts, 0); }
+    finally { await copied.provider.close(); }
+  } finally { await selected.provider.close(); assert.equal(selected.provider.status().cleanupVerified, true); }
+});
+
+test('N16 unselected program/path/destination fields and pre-aborted operations issue no native work', async () => {
+  assert.ok(api); const selected = fixture('n16-destinations');
+  try {
+    assert.deepEqual(await selected.provider.start({ purpose: 'launch', version: 1, program: '/unselected-program' } as { purpose: string; version: number }), { ok: false, reason: 'invalid' });
+    assert.equal(selected.provider.status().starts, 0); const epoch = await active(selected);
+    const before = selected.provider.status().operations, approvals = selected.scopes.length, signal = selected.owner.signal;
+    assert.deepEqual(await selected.provider.input(epoch, { x: 2, y: 2, path: '/unselected-file' } as { x: number; y: number }, { purpose: 'input', signal, context: context() }), { ok: false, reason: 'invalid' });
+    assert.deepEqual(await selected.provider.input(epoch, { x: 2, y: 2 }, { purpose: 'input', signal, context: context(), destination: 'foreign-output' } as { purpose: string; signal: AbortSignal; context: DeliveryContext }), { ok: false, reason: 'invalid' });
+    assert.deepEqual(await selected.provider.frame(epoch, { purpose: 'frame', signal, path: '/unselected-file' } as { purpose: string; signal: AbortSignal }), { ok: false, reason: 'invalid' });
+    assert.equal(selected.scopes.length, approvals);
+    const cancelled = new AbortController(); cancelled.abort();
+    assert.deepEqual(await selected.provider.input(epoch, { x: 2, y: 2 }, { purpose: 'input', signal: cancelled.signal, context: context() }), { ok: false, reason: 'cancelled' });
+    assert.deepEqual(await selected.provider.frame(epoch, { purpose: 'frame', signal: cancelled.signal }), { ok: false, reason: 'cancelled' });
+    assert.equal(selected.provider.status().operations, before); assert.equal(selected.provider.status().inputs, 0);
+  } finally { await selected.provider.close(); assert.equal(selected.provider.status().cleanupVerified, true); }
+});
+
+test('N16 frame owner revocation removes future access and a refused new read releases no bytes', async () => {
+  assert.ok(api); let frameAllowed = true; const grants = new Map<string, AbortController>();
+  const selected = fixture('n16-sensitive', { authorize(request) {
+    if (request.action === 'frame' && !frameAllowed) return;
+    const grant = new AbortController(); grants.set(request.action, grant); return { request, signal: grant.signal, expiresAt: performance.now() + 9000 };
+  } });
+  try {
+    const epoch = await active(selected), frame = await selected.provider.frame(epoch, { purpose: 'view', signal: selected.owner.signal }); assert.ok(frame.ok);
+    assert.equal(selected.provider.currentFrame(epoch), frame.value); grants.get('frame')!.abort(); frameAllowed = false;
+    assert.equal(selected.provider.currentFrame(epoch), undefined); const before = selected.provider.status().operations;
+    assert.deepEqual(await selected.provider.frame(epoch, { purpose: 'view', signal: selected.owner.signal }), { ok: false, reason: 'denied' });
+    assert.equal(selected.provider.status().operations, before);
+    // Returned authorized caller copies cannot be retroactively erased by provider revocation.
+    assert.equal(frame.value.pixels.length, 64);
+  } finally { await selected.provider.close(); assert.equal(selected.provider.status().cleanupVerified, true); }
+});
+
+test('N16 launch owner revocation settles its real child and old epoch cannot regain authority', async () => {
+  assert.ok(api); const selected = fixture('n16-revoke');
+  try {
+    const old = await active(selected), observed = selected.observations[0]!; selected.grants.get('launch')!.abort();
+    await until(() => selected.provider.status().phase === 'idle');
+    assert.equal(selected.provider.status().cleanupVerified, true); assert.equal(existsSync(observed.socketPath.slice(0, -2)), false);
+    assert.deepEqual(await selected.provider.frame(old, { purpose: 'view', signal: selected.owner.signal }), { ok: false, reason: 'denied' });
+    const next = await active(selected); assert.notEqual(next, old); assert.equal(selected.scopes.filter(scope => scope.action === 'launch').length, 2);
+    assert.deepEqual(await selected.provider.input(old, { x: 1, y: 2 }, { purpose: 'stale', signal: selected.owner.signal, context: context() }), { ok: false, reason: 'denied' });
+  } finally { await selected.provider.close(); assert.equal(selected.provider.status().cleanupVerified, true); }
 });

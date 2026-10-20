@@ -11,9 +11,9 @@ import ts from 'typescript';
 import { chromium, firefox, webkit } from 'playwright';
 
 const root = resolve(import.meta.dirname, '..'), args = process.argv.slice(2), hash = bytes => createHash('sha256').update(bytes).digest('hex');
-assert.ok(args.length === 1 && args[0] === '--source' || args.length === 2 && ['--sdk-root', '--feature-red'].includes(args[0]), 'Use --source, --sdk-root OWNED_CONSUMER, or --feature-red OWNED_CONSUMER');
+assert.ok(args.length === 1 && ['--source', '--failures-source'].includes(args[0]) || args.length === 2 && ['--sdk-root', '--failures-sdk-root', '--feature-red'].includes(args[0]), 'Use --source, --failures-source, --sdk-root OWNED_CONSUMER, --failures-sdk-root OWNED_CONSUMER, or --feature-red OWNED_CONSUMER');
 assert.equal(process.env.NODE_OPTIONS, undefined); assert.equal(process.env.NODE_PATH, undefined);
-const sourceMode = args[0] === '--source', feature = args[0] === '--feature-red';
+const sourceMode = ['--source', '--failures-source'].includes(args[0]), feature = args[0] === '--feature-red', failuresOnly = args[0].startsWith('--failures-');
 const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect'];
 const paths = ['packages/device-web/src/application-video-codec.ts', 'packages/device-web/src/application-video-codec.test.ts',
   'examples/device-pipelines/application-video-codec.ts', 'tools/qa-application-video-codec.mjs'];
@@ -85,6 +85,63 @@ try {
   }
   const imports = Object.fromEntries(names.map(name => ['@101/' + name, '/@101/' + name + '/dist/index.js']));
   if (!feature) imports['@101/connect/examples/application-video-codec'] = '/@101/connect/examples/application-video-codec.js';
+  // Dedicated cells extend the old evidence without repeating adaptation/loss runs.
+  // Refusals are explicit fault injection around genuine native VP8 probes.
+  const failureCells = String.raw`
+globalThis.failureFixture={async run(){
+ const evidence=[],assertions=[];
+ function expect(value,label){bounded();if(!value||assertions.length>=96)throw Error(label);assertions.push(label);}
+ const nativeSupport=[];
+ for(const tier of [{width:320,height:180,frameRate:20,bitrate:384000},{width:160,height:90,frameRate:10,bitrate:128000}]){
+  const encoder=await NativeEncoder.isConfigSupported({codec:'vp8',width:tier.width,height:tier.height,framerate:tier.frameRate,bitrate:tier.bitrate,latencyMode:'realtime',bitrateMode:'variable',hardwareAcceleration:'prefer-software'});
+  const decoder=await NativeDecoder.isConfigSupported({codec:'vp8',codedWidth:tier.width,codedHeight:tier.height,optimizeForLatency:true});
+  expect(encoder.supported===true&&decoder.supported===true,'native-vp8-supported-'+tier.width);nativeSupport.push({tier,encoder:encoder.supported,decoder:decoder.supported});
+ }
+ async function vp8Open(){example.setConsent('first','source',true);example.setConsent('first','sink',true);const binding=await example.start('first',['video/vp8']);if(!binding)throw Error('missing-vp8-binding');return binding;}
+ async function recovered(label){const binding=await vp8Open();expect(await binding.ready&&binding.status().codec==='video/vp8',label+'-fresh-ready');await samples();await until(()=>binding.status().frames>0);expect(pixels('first')[0]>150&&pixels('first')[1]<80,label+'-fresh-native-pixels');return binding;}
+ for(const name of ['VideoEncoder','VideoDecoder','VideoFrame','EncodedVideoChunk']){
+  await reset();const original=Object.getOwnPropertyDescriptor(globalThis,name),before={encoders:encoders.length,decoders:decoders.length};let refusal;
+  try{expect(original?.configurable===true,'missing-'+name+'-fault-installed');delete globalThis[name];const binding=await vp8Open();expect(await binding.ready===false,'missing-'+name+'-refused');await binding.closed;refusal={...binding.status(),controller:example.video.status()};expect(refusal.reason==='unsupported'&&refusal.controller.outputs===0&&refusal.controller.pendingNative===0&&refusal.controller.probes===0&&encoders.length===before.encoders&&decoders.length===before.decoders&&!containers.first.querySelector('canvas'),'missing-'+name+'-no-native-acquisition');}
+  finally{Object.defineProperty(globalThis,name,original);}
+  const recovery=await recovered('missing-'+name);evidence.push({cell:'missing-'+name,injection:'required realm API removed',refusal,recovery:recovery.status()});await example.stop();
+ }
+ for(const kind of ['encoder','decoder'])for(const width of [320,160]){
+  await reset();const before={encoders:encoders.length,decoders:decoders.length},probes=[];let refusal;
+  const Encoder=globalThis.VideoEncoder,Decoder=globalThis.VideoDecoder;
+  Object.defineProperty(Encoder,'isConfigSupported',{configurable:true,value:async config=>{const result=await NativeEncoder.isConfigSupported(config),refuse=kind==='encoder'&&config.width===width;probes.push({kind:'encoder',codec:config.codec,width:config.width,nativeSupported:result.supported,injectedRefusal:refuse});return refuse?{...result,supported:false}:result;}});
+  Object.defineProperty(Decoder,'isConfigSupported',{configurable:true,value:async config=>{const result=await NativeDecoder.isConfigSupported(config),refuse=kind==='decoder'&&config.codedWidth===width;probes.push({kind:'decoder',codec:config.codec,width:config.codedWidth,nativeSupported:result.supported,injectedRefusal:refuse});return refuse?{...result,supported:false}:result;}});
+  try{const binding=await vp8Open();expect(await binding.ready===false,'unsupported-'+kind+'-'+width+'-refused');await binding.closed;refusal={...binding.status(),controller:example.video.status()};expect(refusal.reason==='unsupported'&&refusal.controller.outputs===0&&refusal.controller.pendingNative===0&&refusal.controller.probes===4&&probes.length===4&&probes.every(probe=>probe.codec==='vp8'&&probe.nativeSupported===true)&&probes.filter(probe=>probe.injectedRefusal).length===1&&encoders.length===before.encoders&&decoders.length===before.decoders&&!containers.first.querySelector('canvas'),'unsupported-'+kind+'-'+width+'-bounded-native-probes');}
+  finally{delete Encoder.isConfigSupported;delete Decoder.isConfigSupported;}
+  const recovery=await recovered('unsupported-'+kind+'-'+width);evidence.push({cell:'unsupported-'+kind+'-'+width,injection:'one native support result narrowed to unsupported',probes,refusal,recovery:recovery.status()});await example.stop();
+ }
+ function direct(ttl=2000){
+  const owner=new AbortController(),sourceOwner=new AbortController(),sinkOwner=new AbortController(),deadline={at:performance.now()+ttl};
+  const approve=request=>request.codec==='video/vp8'?{request,signal:request.role==='source'?sourceOwner.signal:sinkOwner.signal,grant:{expiresAt:deadline.at,maxHz:20,maxAgeMs:1000}}:undefined;
+  const video=api.createBrowserApplicationVideoCodec({ownerSignal:owner.signal,applicationId:'independent-vp8-failure-caller',sessionId:'local-vp8',clockDomain:'caller-performance',now:()=>performance.now(),authorizeSource:approve,authorizeSink:approve});
+  let handle=video.registerSource({sourceId:'video:independent',ownerPrincipalId:'source-owner',canvas:source});if(!handle)throw Error('independent-source-unavailable');
+  return{video,owner,deadline,get source(){return handle;},register(){handle=video.registerSource({sourceId:'video:independent',ownerPrincipalId:'source-owner',canvas:source});return handle;},async open(){const binding=video.bind({source:handle,outputId:'video:independent-output',ownerPrincipalId:'independent-recipient',container:containers.first,label:'Independent VP8 output',codecs:['video/vp8'],ownerSignal:new AbortController().signal});expect(await binding.ready&&binding.status().codec==='video/vp8','independent-vp8-ready');return binding;},async stop(){release();owner.abort();await video.close();}};
+ }
+ async function directPixels(caller,binding){expect(caller.video.capture(caller.source),'independent-native-capture');await until(()=>binding.status().frames>0);expect(pixels('first')[0]>150&&pixels('first')[1]<80,'independent-native-pixels');}
+ let caller;
+ try{
+  caller=direct(250);let binding=await caller.open();await directPixels(caller,binding);const expiresAt=binding.status().expiresAt,frames=binding.status().frames;
+  await until(()=>binding.status().state==='stopped',1200);await binding.closed;
+  expect(binding.status().reason==='expired'&&performance.now()>=expiresAt&&binding.status().frames===frames&&binding.status().pendingNative===0&&caller.video.status().outputs===0&&!containers.first.querySelector('canvas')&&!caller.video.capture(caller.source),'actual-timer-grant-expiry-cleans-output-without-capture');
+  const refusal={...binding.status(),controller:caller.video.status()};caller.deadline.at=performance.now()+2000;binding=await caller.open();await directPixels(caller,binding);evidence.push({cell:'actual-grant-expiry',injection:false,expiresAt,refusal,recovery:binding.status()});
+ }finally{if(caller)await caller.stop();caller=undefined;}
+ for(const loss of ['source-dimension-change','source-revocation'])try{
+  caller=direct();const binding=await caller.open();await directPixels(caller,binding);holdDecoder=decoders.length;await wait(55);expect(caller.video.capture(caller.source),'loss-pending-native-capture');await until(()=>held.length===1);const before=binding.status();
+  if(loss==='source-dimension-change'){source.width=319;expect(!caller.video.capture(caller.source),'source-dimension-loss-refuses-capture');}
+  else{expect(caller.video.revokeSource(caller.source),'source-revocation-accepted');expect(caller.register()===undefined,'source-reservation-retained-until-native-settlement');}
+  expect(binding.status().state==='stopped'&&binding.status().pendingNative>0&&!containers.first.querySelector('canvas'),'source-loss-clears-owned-output-before-native-settlement');let settled=false;binding.closed.then(()=>{settled=true;});await wait(0);expect(!settled,'source-loss-closed-waits-for-issued-work');release();await binding.closed;
+  expect(binding.status().frames===before.frames&&binding.status().pendingNative===0&&caller.video.status().outputs===0,'source-loss-no-late-frame-and-no-pending-work');const refusal={...binding.status(),controller:caller.video.status()};
+  source.width=320;color();if(loss==='source-revocation')expect(!!caller.register(),'source-registers-after-native-settlement');caller.deadline.at=performance.now()+2000;const recovery=await caller.open();await directPixels(caller,recovery);evidence.push({cell:loss,injection:false,pendingAtLoss:before.pendingNative,refusal,recovery:recovery.status()});
+ }finally{source.width=320;color();if(caller)await caller.stop();caller=undefined;}
+ expect(encoders.every(codec=>codec.state==='closed')&&decoders.every(codec=>codec.state==='closed')&&rawCallbacks===0&&held.length===0&&nativeFrames===frameClosures,'all-failure-cell-owned-native-work-closed');
+ expect(source.width===320&&source.height===180&&containers.first.children.length===1&&containers.second.children.length===1,'failure-cell-borrowed-source-and-sentinels-preserved');
+ return{assertions,evidence,nativeSupport,nativeFrames,frameClosures,rawCallbacks,ownedCodecsClosed:true,offeredCodecs:['video/vp8'],hardwareClaim:false,browserInternalQuiescenceClaim:false};
+}};
+`;
   const html = `<!doctype html><html lang="en"><meta charset="utf-8"><title>Owned application codec fixture</title>
 <style>body{font:16px system-ui;color:#111;background:#fff}canvas{max-width:100%;height:auto}section{min-height:44px}</style>
 <canvas id="source" width="320" height="180" aria-label="Owned generated source"></canvas><section id="first"><p>First recipient sentinel</p></section><section id="second"><p>Second recipient sentinel</p></section>
@@ -140,7 +197,9 @@ globalThis.fixture={prefix,async run(){
  await reset();binding=await open('first');drawObserver=(canvas,input)=>{if(input instanceof NativeFrame){drawObserver=undefined;clockObserver=()=>{clockObserver=undefined;owner.abort();};}};await samples(1);await binding.closed;check(binding.status().frames===0&&!containers.first.querySelector('canvas'),'final-host-clock-revocation-blocks-visible-copy');
  await example.stop();check(source.width===320&&source.height===180&&containers.first.children.length===1&&containers.second.children.length===1,'borrowed-source-and-container-sentinels-preserved');check(encoders.every(codec=>codec.state==='closed')&&decoders.every(codec=>codec.state==='closed')&&rawCallbacks===0&&held.length===0&&nativeFrames===frameClosures,'owned-codecs-frames-and-observed-api-callbacks-closed');return{producer,checks,nativeChunks,decodeAdmissions,nativeFrames,frameClosures,nativeChunkTypes:{key:observedTypes.filter(type=>type==='key').length,delta:observedTypes.filter(type=>type==='delta').length},configuredFormats:[...new Map(configurations.map(({encoder,...format})=>[JSON.stringify(format),format])).values()],rawCallbacks,controller:example.video.status(),browserInternalQuiescenceClaim:false,softwareChunkLoss:true,ipNetworkLoss:false,interFrameStreaming:false,achievedBitrate:'unknown'};
  `}
- },async unsupported(){await reset();const binding=await open('first'),ready=await binding.ready;await binding.closed;await example.stop();return{ready,reason:binding.status().reason,encoders:encoders.length,decoders:decoders.length,pending:example.video.status().pendingNative};},async finish(){release();if(example)await example.stop();owner?.abort();}};globalThis.ready=true;
+ },async unsupported(){await reset();const binding=await open('first'),ready=await binding.ready;await binding.closed;await example.stop();return{ready,reason:binding.status().reason,encoders:encoders.length,decoders:decoders.length,pending:example.video.status().pendingNative};},async finish(){release();if(example)await example.stop();owner?.abort();}};
+${failuresOnly ? failureCells : ''}
+globalThis.ready=true;
 </script></html>`;
   const server = createServer((request, response) => {
     if (request.url === '/') { response.setHeader('Content-Type', 'text/html'); response.end(html); return; }
@@ -157,17 +216,18 @@ globalThis.fixture={prefix,async run(){
       try {
         const page = await browser.newPage(), errors = [], foreign = [];
         page.on('pageerror', error => errors.push(error.message)); page.on('request', request => { if (!request.url().startsWith(origin + '/')) foreign.push(request.url()); });
-        await page.goto(origin); await page.waitForFunction(() => globalThis.ready); const prefix = await page.evaluate(() => globalThis.fixture.prefix());
+        await page.goto(origin); await page.waitForFunction(() => globalThis.ready); const prefix = failuresOnly ? undefined : await page.evaluate(() => globalThis.fixture.prefix());
         let result;
         try {
-          if (!prefix.supported) { result = feature ? { unsupported: prefix.reason, missingFeatureClaim: false } : await page.evaluate(() => globalThis.fixture.unsupported());
+          if (failuresOnly) { result = await page.evaluate(() => globalThis.failureFixture.run()); assert.equal(result.evidence.length, 11); assert.equal(result.rawCallbacks, 0); assert.equal(result.nativeFrames, result.frameClosures); }
+          else if (!prefix.supported) { result = feature ? { unsupported: prefix.reason, missingFeatureClaim: false } : await page.evaluate(() => globalThis.fixture.unsupported());
             if (!feature) assert.deepEqual(result, { ready: false, reason: 'unsupported', encoders: 0, decoders: 0, pending: 0 });
           } else { assert.ok(prefix.emitted > 0 && prefix.decoded > 0 && prefix.pixel[0] > 150, JSON.stringify({engine:name,nativePrefix:prefix})); result = await page.evaluate(() => globalThis.fixture.run());
             if (feature) { genuineFeatureMissing ||= result.missingApi; assert.equal(result.missingApi, true); }
             else assert.ok(result.checks.length > 20 && result.controller.pendingNative === 0 && result.rawCallbacks === 0);
           }
         } finally { await page.evaluate(() => globalThis.fixture.finish()); }
-        assert.deepEqual(errors, []); assert.deepEqual(foreign, []); results.push({ engine: name, nativePrefix: prefix, result, pageErrors: 0, foreignRequests: 0 });
+        assert.deepEqual(errors, []); assert.deepEqual(foreign, []); results.push({ engine: name, browserVersion: browser.version(), nativePrefix: prefix, result, pageErrors: 0, foreignRequests: 0 });
       } finally { await browser.close(); }
     }
   } finally { await new Promise(resolve => server.close(resolve)); }
@@ -177,8 +237,8 @@ globalThis.fixture={prefix,async run(){
   const directory = mkdtempSync(join(tmpdir(), '101-application-video-codec-proof-')), receipt = join(directory, 'provenance.json');
   writeFileSync(receipt, JSON.stringify({ pins, provenance, compilerPins: Object.fromEntries(compilerPins), node: process.version }, null, 2));
   const bytes = readFileSync(receipt); assert.ok(bytes.length <= 256 * 1024);
-  const output = { result: 'pass', profile: 'local-application-video-codec/1', results, provenance: { path: receipt, sha256: hash(bytes) }, ownedBrowserContexts: 0,
+  const output = { result: 'pass', profile: 'local-application-video-codec/1', selection: failuresOnly ? 'vp8-refusal-and-lifecycle-only' : 'existing-codec-profile', results, provenance: { path: receipt, sha256: hash(bytes) }, ownedBrowserContexts: 0,
     ownedServers: 0, cameraPermission: false, hardwareCodecClaim: false, networkLossClaim: false, browserInternalMemoryClaim: false, v06FullMatrix: false };
-  const serialized = JSON.stringify(output) + '\n'; assert.ok(Buffer.byteLength(serialized) <= 16384); process.stdout.write(serialized);
+  const serialized = JSON.stringify(output) + '\n'; assert.ok(Buffer.byteLength(serialized) <= (failuresOnly ? 65536 : 16384)); process.stdout.write(serialized);
   if (feature) assert.equal(genuineFeatureMissing, false, 'actual native codec producer works; selected public encoded controller is missing');
 } finally { if (compiled) rmSync(compiled, { recursive: true, force: true }); if (ownedProbe) rmSync(ownedProbe, { recursive: true, force: true }); }

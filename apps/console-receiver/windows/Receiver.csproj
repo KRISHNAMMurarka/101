@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">x64</Platform>
+    <ProjectGuid>{9E80E594-7C57-44DC-ABAF-28E3186B9C05}</ProjectGuid>
+    <OutputType>AppContainerExe</OutputType>
+    <RootNamespace>One01.ConsoleReceiver</RootNamespace>
+    <AssemblyName>One01.ConsoleReceiver</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion>10.0.22000.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>15</MinimumVisualStudioVersion>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <AppxBundle>Never</AppxBundle>
+    <GenerateAppInstallerFile>false</GenerateAppInstallerFile>
+    <ReceiverInvocationRoot Condition="'$(ReceiverInvocationRoot)' == ''">..\..\..\release\console-receiver\windows\$([System.Guid]::NewGuid().ToString('N'))</ReceiverInvocationRoot>
+    <OutputPath>$(ReceiverInvocationRoot)\bin\$(Platform)\$(Configuration)\</OutputPath>
+    <BaseIntermediateOutputPath>$(ReceiverInvocationRoot)\obj\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Platform)\$(Configuration)\</IntermediateOutputPath>
+    <PlatformTarget>$(Platform)</PlatformTarget>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <DebugType>pdbonly</DebugType>
+    <UseDotNetNativeToolchain Condition="'$(Configuration)' == 'Release'">true</UseDotNetNativeToolchain>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs"><DependentUpon>App.xaml</DependentUpon></Compile>
+    <Compile Include="MainPage.xaml.cs"><DependentUpon>MainPage.xaml</DependentUpon></Compile>
+    <AppxManifest Include="Package.appxmanifest" />
+    <ApplicationDefinition Include="App.xaml"><Generator>MSBuild:Compile</Generator></ApplicationDefinition>
+    <Page Include="MainPage.xaml"><Generator>MSBuild:Compile</Generator></Page>
+    <Content Include="..\..\..\release\console-receiver\web\**\*"><Link>Web\%(RecursiveDir)%(Filename)%(Extension)</Link></Content>
+    <Content Include="..\..\..\release\console-receiver\assets\*.png"><Link>Assets\%(Filename)%(Extension)</Link></Content>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14" />
+    <PackageReference Include="Microsoft.UI.Xaml" Version="2.8.2" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+</Project>

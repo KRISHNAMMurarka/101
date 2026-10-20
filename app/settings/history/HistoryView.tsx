@@ -63,8 +63,8 @@ export default function HistoryView() {
     }
     if (state.review || !state.pending) previousReview.current = state.review?.token;
   }, [state.review, state.active, state.pending]);
-  function review(action: HistoryAction) {
-    returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  function review(action: HistoryAction, trigger: HTMLButtonElement) {
+    returnFocus.current = trigger;
     task.current?.review(action, action === 'capture' ? { resourceId: state.selectedResource, retentionMs: retention } : undefined);
   }
   const busy = state.pending || !!state.review, currentReview = state.review ? reviews[state.review.action] : undefined;
@@ -81,7 +81,7 @@ export default function HistoryView() {
       <h2 id="history-management-title">Local history</h2>
       <p>Arrival opens no saved history and collects nothing. Management is temporary and collection always needs its own review.</p>
       <p ref={status} role="status" aria-live="polite" tabIndex={-1} className={styles.status}>{messages[state.message]}</p>
-      {!state.active && <button ref={manageButton} type="button" disabled={busy} onClick={() => review('manage')}>Manage history</button>}
+      {!state.active && <button ref={manageButton} type="button" disabled={busy} onClick={event => review('manage', event.currentTarget)}>Manage history</button>}
       {state.active && <>
         <label className={appearance.choice}>Saved resource
           <select value={state.selectedResource} disabled={busy || state.canResume} onChange={event => { void task.current?.selectResource(event.target.value); }}>
@@ -91,10 +91,10 @@ export default function HistoryView() {
         <p>{selected.label}: {state.count} saved {state.count === 1 ? 'item' : 'items'}{state.partial ? ' shown' : ''}.</p>
         <p className={styles.note}>Every saved item expires by its original collection approval deadline. Expired items are cleared on the next approved use, rather than in the background.</p>
         <div className={styles.actions}>
-          <button type="button" disabled={busy || !state.canExport} onClick={() => review('export')}>Export selected history</button>
-          <button type="button" disabled={busy || !state.canDelete} onClick={() => review('delete')}>Remove selected history</button>
-          {state.canResume && <button type="button" disabled={busy} onClick={() => review('resume-delete')}>Resume selected removal</button>}
-          <button type="button" disabled={busy || !state.canSweep} onClick={() => review('sweep')}>Remove expired history</button>
+          <button type="button" disabled={busy || !state.canExport} onClick={event => review('export', event.currentTarget)}>Export selected history</button>
+          <button type="button" disabled={busy || !state.canDelete} onClick={event => review('delete', event.currentTarget)}>Remove selected history</button>
+          {state.canResume && <button type="button" disabled={busy} onClick={event => review('resume-delete', event.currentTarget)}>Resume selected removal</button>}
+          <button type="button" disabled={busy || !state.canSweep} onClick={event => review('sweep', event.currentTarget)}>Remove expired history</button>
         </div>
       </>}
       {(state.active || state.pending) && <button className={appearance.stop} type="button" onClick={() => { returnFocus.current = manageButton.current; task.current?.stop(); }}>Stop management</button>}
@@ -111,7 +111,7 @@ export default function HistoryView() {
       </label>
       <p className={styles.note}>The shorter of your choice and the original approval applies. Changing this choice never extends existing saved items.</p>
       <div className={styles.actions}>
-        <button type="button" disabled={busy || !state.canCapture} onClick={() => review('capture')}>Record page measurements</button>
+        <button type="button" disabled={busy || !state.canCapture} onClick={event => review('capture', event.currentTarget)}>Record page measurements</button>
         {state.capture && <button type="button" onClick={() => task.current?.stopCapture()}>Stop collection</button>}
       </div>
       {collection && <p>Collecting {collection.label.toLowerCase()}. A collection keeps at most 16 items, then stops.</p>}

@@ -49,7 +49,7 @@ export function ownedProducer(workRoot){
  return{child,enrollment,send,finish,abort};
 }
 export async function runTmp102HwmonExample({workRoot=tmpdir(),scenario='normal'}={}){
- assert.ok(['normal','malformed','missing','replacement','route-expiry','route-revoke','owner-revoke','caller-revoke','grant-revoke','gateway-expiry','callback-stop'].includes(scenario));
+ assert.ok(['normal','malformed','short','missing','replacement','route-expiry','route-revoke','owner-revoke','caller-revoke','grant-revoke','gateway-expiry','callback-stop'].includes(scenario));
  workRoot=await fs.realpath(workRoot);let owned,owner,caller,grant,route,connector,producerResult,runtime,denied,detach,hadPrimary=false,primary,result,cleanupFailures=[];
  try{
  owned=ownedProducer(workRoot);const enrollment=await owned.enrollment;
@@ -77,8 +77,8 @@ export async function runTmp102HwmonExample({workRoot=tmpdir(),scenario='normal'
   assert.deepEqual(applied.slice(0,4).map(v=>v.value),[-.062,0,25,25]);
   assert.deepEqual(readings[0].decoded.rationalCelsius,{numerator:-62,denominator:1000});assert.equal(readings[0].decoded.exactDecimalCelsius,'-0.062');
   await connector.stop();const count=readings.length;runtime.setReadiness(source,'available');route=runtime.route({from:source,to:sink,...scope,leaseMs:8000});assert.ok(route.start().ok);assert.ok((await connector.start({purpose:'fresh-explicit-read',signal:caller.signal,deadline})).ok);assert.equal(readings.at(-1).localSequence,count+1);
- }else if(['malformed','missing','replacement'].includes(scenario)){
-  await owned.send(scenario==='malformed'?'contents':scenario==='replacement'?'replace':'missing',scenario==='malformed'?{bytes:'0.0\n'}:{});
+ }else if(['malformed','short','missing','replacement'].includes(scenario)){
+  await owned.send(['malformed','short'].includes(scenario)?'contents':scenario==='replacement'?'replace':'missing',scenario==='malformed'?{bytes:'0.0\n'}:scenario==='short'?{bytes:'-62'}:{});
   await until(()=>{runtime.flush();return connector.status().phase==='idle';},'Fixture fault retires source',1800);assert.equal(readings.length,1);assert.ok(unavailable.length>0);
   if(scenario==='malformed'){await owned.send('contents',{bytes:'0\n'});runtime.setReadiness(source,'available');route=runtime.route({from:source,to:sink,...scope,leaseMs:8000});assert.ok(route.start().ok);assert.ok((await connector.start({purpose:'explicit-recovery',signal:caller.signal,deadline})).ok);await until(()=>{runtime.flush();return applied.some(o=>o.value===0);},'Explicit public recovery after authentic release',1800);}
   else assert.equal((await connector.start({purpose:'no-reenrollment',signal:caller.signal,deadline})).ok,false);

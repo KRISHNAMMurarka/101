@@ -157,8 +157,8 @@ export async function runOperatorDrills(input: OperatorDrillOptions) {
         return {expiresAt:wall()+60000,signal:approval.signal,isCurrent:()=>active(approval.signal)&&active(owner.signal)&&active(options!.signal)};}}); retirement.add(()=>store.close());
     const first=releases[0]!,second=releases[1]!;need(await call(()=>store.install(first,sources[0]!)));
     assert.ok(await call(()=>verifyProcessorExtensionRelease(second,sources[1]!,pair.publicKey)));
-    const firstFactory=(await call(()=>import('../external-processor/processor.mjs'))).createTemperatureBand;
-    const secondFactory=(await call(()=>import('../extension-installation/temperature-band-v2.mjs'))).createTemperatureBand;
+    const firstFactory=(await call(()=>import(`data:text/javascript;base64,${Buffer.from(sources[0]!).toString('base64')}`))).createTemperatureBand;
+    const secondFactory=(await call(()=>import(`data:text/javascript;base64,${Buffer.from(sources[1]!).toString('base64')}`))).createTemperatureBand;
     const configuration={onAt:30,offAt:28},fixture=(strict:boolean)=>({configuration,invalidConfiguration:{onAt:'bad',offAt:28},invalidInputs:{temperature:'bad'},
       cases:[{inputs:{temperature:30},...(strict?{}:{outputs:{switch:true}})},{inputs:{temperature:31},...(strict?{outputs:{switch:true}}:{})},{inputs:{temperature:28},outputs:{switch:false}}]});
     let retired=0;

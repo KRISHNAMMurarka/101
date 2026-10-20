@@ -75,8 +75,8 @@ export default function SettingsView() {
     }
     if (state.review || !state.pending) previousReview.current = state.review?.token;
   }, [state.review, state.active, state.pending]);
-  function review(action: SettingsAction) {
-    returnFocus.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+  function review(action: SettingsAction, trigger: HTMLButtonElement) {
+    returnFocus.current = trigger;
     task.current?.review(action);
   }
   function restorePreview() { preview.current?.restore(); preview.current = undefined; }
@@ -106,7 +106,7 @@ export default function SettingsView() {
       <h2 id="appearance-title">Appearance</h2>
       <p>Saved appearance is not loaded or applied on arrival. A management session lasts up to 30 seconds.</p>
       <p ref={status} className={styles.status} role="status" aria-live="polite" tabIndex={-1}>{messages[state.message]}</p>
-      {!state.active && <button ref={manageButton} type="button" disabled={busy} onClick={() => review('manage')}>Manage appearance</button>}
+      {!state.active && <button ref={manageButton} type="button" disabled={busy} onClick={event => review('manage', event.currentTarget)}>Manage appearance</button>}
       {state.active && <>
         <label className={appearance.choice}>Page appearance
           <select value={state.theme} disabled={busy || !state.canSave} onChange={event => choose(event.target.value as ThemeChoice)}>
@@ -115,10 +115,10 @@ export default function SettingsView() {
         </label>
         <p className={styles.note}>The preview ends with Cancel preview, Stop management, or when you leave or hide this page. Saving does not apply it elsewhere.</p>
         <div className={styles.actions}>
-          <button type="button" disabled={busy || !state.canSave} onClick={() => review('save')}>Review save</button>
-          <button type="button" disabled={busy || !state.canReset} onClick={() => review('reset')}>Reset saved appearance</button>
-          <button type="button" disabled={busy || !state.canDelete} onClick={() => review('delete')}>Remove saved appearance</button>
-          {state.canResume && <button type="button" disabled={busy} onClick={() => review('resume-delete')}>Review Finish removal</button>}
+          <button type="button" disabled={busy || !state.canSave} onClick={event => review('save', event.currentTarget)}>Review save</button>
+          <button type="button" disabled={busy || !state.canReset} onClick={event => review('reset', event.currentTarget)}>Reset saved appearance</button>
+          <button type="button" disabled={busy || !state.canDelete} onClick={event => review('delete', event.currentTarget)}>Remove saved appearance</button>
+          {state.canResume && <button type="button" disabled={busy} onClick={event => review('resume-delete', event.currentTarget)}>Review Finish removal</button>}
           <button type="button" disabled={busy || !state.canSave} onClick={() => { restorePreview(); task.current?.cancelPreview(); }}>Cancel preview</button>
           <button type="button" disabled={busy || state.canResume || state.message === 'wrong-owner'} onClick={() => { restorePreview(); void task.current?.reload(); }}>Reload saved appearance</button>
         </div>

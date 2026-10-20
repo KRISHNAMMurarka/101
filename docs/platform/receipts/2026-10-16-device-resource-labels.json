@@ -1,0 +1,258 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "U05"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "schema-derived readable player Devices resource headings and approval/output names",
+  "sourceSha256": {
+    "app/devices/enrolled-device.ts": "50237c03fbe4c0bcf3ec09584726c944013f431a84ff881cbfbc379d7a8be119",
+    "app/devices/EnrolledDevices.tsx": "03232a7c9097012e74e0c337bcd6f8894fc3dbec1e6054eed0ba2dae02cb9424",
+    "app/devices/enrolled-device.test.ts": "fb99582096a2023f5f53baec950ee07aacecb685fc932dfd10e18d005f5e2e1e",
+    "tools/qa-device-preview-language.mjs": "b7bf2ae7e0e0d3c9c5b040f134d7c460e21523cebbe3d510f66f19d73e0473de"
+  },
+  "oldUnitRed": {
+    "argv": [
+      "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+      "--test",
+      "/Users/km/Dev/101/release/u05-label-red-20261016/label.test.ts"
+    ],
+    "pid": 23749,
+    "exitCode": 1,
+    "joined": true,
+    "sourceSha256": {
+      "app/devices/enrolled-device.ts": "08d06a16fb855b9f96120e8e5ccbd454b0a2a0ecd2aaccc95b28e9402a4e6386",
+      "app/devices/EnrolledDevices.tsx": "1e2bf3c9c97dfc1103724b6d2ac14d5419152f13e99264ce951d5491c51fa314"
+    },
+    "oldRed": "Actual unchanged inspector produces undefined display labels; expected schema-derived readable names. No native or network work created.",
+    "priorInvalidFixture": "First draft omitted required min/max fields, failed at descriptor parsing before label assertions. Exact invalid source/raw retained separately; not a product regression.",
+    "ownedScratchRemovedAfterReadback": true
+  },
+  "unit": {
+    "tests": 21,
+    "pass": 21,
+    "fail": 0,
+    "skipped": 0
+  },
+  "scopedLintExitCode": 0,
+  "focusedBuildExitCode": 0,
+  "browser": {
+    "engines": {
+      "chromium": {
+        "result": "pass",
+        "checks": [
+          "actual-p256-pairing-and-metadata-arrival",
+          "plain-schema-derived-resource-headings",
+          "real-webRTC-p256-endpoint-proof",
+          "independent-whole-digest-confirmation",
+          "descriptor-validation",
+          "no-resource-access-before-preview-approval",
+          "source-publication-owner-approval-alone-grants-no-receiver-preview",
+          "separate-three-resource-preview-approval",
+          "actual-published-switch-scalar-vector-values",
+          "publisher-authority-and-current-routes",
+          "plain-switch-language",
+          "scalar-with-declared-unit",
+          "labeled-vector-components",
+          "explicit-receiver-stop-before-producer-disconnect",
+          "stop-releases-values-and-resource-authority"
+        ],
+        "resultSha256": "f4522fa21cd6c63eefe26700d1d4dc77ce03034d1fd69b32b9f94bbfd76c98d9",
+        "browser": "149.0.7827.55",
+        "headings": [
+          "On/off input",
+          "Number input",
+          "Multi-value input"
+        ],
+        "noAccessBeforeApproval": {
+          "active": 0,
+          "pending": 0,
+          "stopped": false,
+          "reason": "ready-to-select",
+          "sent": 0,
+          "binds": 0,
+          "peer": "connected"
+        },
+        "actualValues": {
+          "switchOff": "Off",
+          "switchOn": "On",
+          "scalar": "21.5 Cel",
+          "vector": "x: 0.5 m, y: 0.25 m"
+        },
+        "activePreview": {
+          "active": 3,
+          "pending": 0,
+          "stopped": false,
+          "reason": "active",
+          "sent": 4,
+          "binds": 3,
+          "peer": "connected"
+        },
+        "afterStop": {
+          "active": 0,
+          "pending": 0,
+          "stopped": true,
+          "reason": "unavailable",
+          "sent": 4,
+          "binds": 3,
+          "peer": "disconnected"
+        },
+        "nativeBrowserChild": {
+          "pid": 6846,
+          "closed": true,
+          "exitCode": 0,
+          "signal": null
+        },
+        "cleanup": {
+          "errors": [],
+          "receiverStopped": true,
+          "sourceStopped": true,
+          "sourceMetrics": {
+            "active": 0,
+            "pending": 0,
+            "stopped": true,
+            "reason": "unavailable",
+            "sent": 4,
+            "binds": 3,
+            "peer": "disconnected"
+          },
+          "sourcePageClosed": true,
+          "receiverPageClosed": true,
+          "contextClosed": true,
+          "browserClosed": true,
+          "serverClosed": true
+        },
+        "sourceStable": true,
+        "buildStable": true,
+        "validOwnershipClosure": true,
+        "errors": [],
+        "foreignRequests": []
+      },
+      "webkit": {
+        "result": "pass",
+        "checks": [
+          "actual-p256-pairing-and-metadata-arrival",
+          "plain-schema-derived-resource-headings",
+          "real-webRTC-p256-endpoint-proof",
+          "independent-whole-digest-confirmation",
+          "descriptor-validation",
+          "no-resource-access-before-preview-approval",
+          "source-publication-owner-approval-alone-grants-no-receiver-preview",
+          "separate-three-resource-preview-approval",
+          "actual-published-switch-scalar-vector-values",
+          "publisher-authority-and-current-routes",
+          "plain-switch-language",
+          "scalar-with-declared-unit",
+          "labeled-vector-components",
+          "explicit-receiver-stop-before-producer-disconnect",
+          "stop-releases-values-and-resource-authority"
+        ],
+        "resultSha256": "cffe1c68066b0cd2af493b1240f413f9f274b79f8186a304bac7b24150d284c1",
+        "browser": "26.5",
+        "headings": [
+          "On/off input",
+          "Number input",
+          "Multi-value input"
+        ],
+        "noAccessBeforeApproval": {
+          "active": 0,
+          "pending": 0,
+          "stopped": false,
+          "reason": "ready-to-select",
+          "sent": 0,
+          "binds": 0,
+          "peer": "connected"
+        },
+        "actualValues": {
+          "switchOff": "Off",
+          "switchOn": "On",
+          "scalar": "21.5 Cel",
+          "vector": "x: 0.5 m, y: 0.25 m"
+        },
+        "activePreview": {
+          "active": 3,
+          "pending": 0,
+          "stopped": false,
+          "reason": "active",
+          "sent": 6,
+          "binds": 3,
+          "peer": "connected"
+        },
+        "afterStop": {
+          "active": 0,
+          "pending": 0,
+          "stopped": true,
+          "reason": "unavailable",
+          "sent": 6,
+          "binds": 3,
+          "peer": "disconnected"
+        },
+        "nativeBrowserChild": {
+          "pid": 7883,
+          "closed": true,
+          "exitCode": 0,
+          "signal": null
+        },
+        "cleanup": {
+          "errors": [],
+          "receiverStopped": true,
+          "sourceStopped": true,
+          "sourceMetrics": {
+            "active": 0,
+            "pending": 0,
+            "stopped": true,
+            "reason": "unavailable",
+            "sent": 6,
+            "binds": 3,
+            "peer": "disconnected"
+          },
+          "sourcePageClosed": true,
+          "receiverPageClosed": true,
+          "contextClosed": true,
+          "browserClosed": true,
+          "serverClosed": true
+        },
+        "sourceStable": true,
+        "buildStable": true,
+        "validOwnershipClosure": true,
+        "errors": [],
+        "foreignRequests": []
+      }
+    },
+    "checksPerEngine": 15,
+    "enginesPass": 2,
+    "copiedBuildFiles": 602,
+    "declaredRuntimeSourceFiles": 201,
+    "actualProducerBundleModuleFiles": 102,
+    "serverSha256": "83c31edebc57f5563d2220664f7d5dd745825983fd7144bfe260987db2b324b8",
+    "reportSha256": "0a7de9d5e460f87b9e4a67596bd5a71af35ca7c27c9173d0e8f5abdd243e3355"
+  },
+  "staticInventory": {
+    "pages": 37,
+    "appFiles": 125,
+    "staticTextFacts": 1284
+  },
+  "sourceAuditSha256": "f25e2ec70a0ee76ffa72f71a852848ea6540ad7cd34d2591373f460cc38d2624",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-local-followon/device-labels",
+    "commit": "6534e45bf6bccc1d78190c70a5cf8bd60d53234a",
+    "tree": "b83c5ddd5a9eea54a6d110ef6274ba4fbb75f1d6",
+    "readBackFiles": 112,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "independentSourceReviewSha256": "6639812bb161ddca99c54f9e70610320dc7d0fa933067ca28c70f6f39720fb48",
+  "behavior": "Reported type supplies On/off input, Number input or Multi-value input; duplicate names receive descriptor-order ordinals. Existing structured names persist. IDs, semantics, preview selection, authentication and separate owner/resource grants remain unchanged.",
+  "priorFailures": "Genuine old-browser raw identifier red retained. Both first fixed attempts reached14assertions but final failed on redundant cleanup Stop; WebKit also detected unrelated unit-source mutation in broad fence. One diagnosed harness correction per engine passes15checks. No old failure is relabeled pass.",
+  "limits": [
+    "37player entry pages/125app-relative source files/1284static text facts is a narrow source-language inventory, not complete state/runtime/visual/accessibility review.",
+    "Actual browser journey covers3primitive labels, separate preview grants, Off/On, scalar/vector values and Stop; duplicate/command/job/fallback naming is source/unit-only.",
+    "Canonical reusable QA selector changes are separate from executed ownership-enhanced harness; no byte-identical harness claim.",
+    "No whole U05, named assistive technology, device geometry/physical or native reliability acceptance."
+  ]
+}

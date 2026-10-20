@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "scope": "U04/Q05 selected original WebKit exclusive-transfer/cancel journey; no whole task closure",
+  "result": "pass-current-selected-native-journey",
+  "builtSourceTree": "05f85cebf8b4860e5e6c907c855db65fdddd6d6d",
+  "sourcePins": {
+    "app/sharing/ConnectedSharingView.tsx": "865fbfb5a6bac8a25945e8aa0324f537af955863a54dcb5e708e854782c46e3b",
+    "app/sharing/connected-sharing-task.ts": "8470cd7b71346f44856b70ab8feadbdb558269380b2a90bd174c0bd2df7e290f",
+    "app/sharing/connected-sharing-task.test.ts": "22af61815d3833c20bc117d2ee0e9d2907419397e6c30022da7e2011e28ca1c6",
+    "app/sharing/sharing-peer.ts": "ed6d648979607d8be137e8eb6ae2ce3f783a1231ac36daa3e8f1ed21259ae6b8",
+    "tools/qa-connected-sharing.mjs": "191769ba3d964f11886d4e5c43d4e9e4c088993bede67e6bc2be756ad14f718f"
+  },
+  "productionSourceChangedInLane": false,
+  "focused": {
+    "command": [
+      "node",
+      "--experimental-strip-types",
+      "--test",
+      "--test-name-pattern=real ownership preserves",
+      "app/sharing/connected-sharing-task.test.ts"
+    ],
+    "status": 0,
+    "elapsedMs": 807.74,
+    "parentJoined": true,
+    "runtimeSourceChanged": false,
+    "proofBoundary": "Real SDK auth/task/ownership over explicit queued ports; no native browser DTLS qualification."
+  },
+  "browser": {
+    "process": "webkit-first-process.json",
+    "rawReceipt": "webkit-first-receipt.json",
+    "rawTransitionDiagnostics": "webkit-first-transfer-observations.json",
+    "checks": 26,
+    "nativeRTC": {
+      "issued": 4,
+      "closed": 4,
+      "open": 0
+    },
+    "cleanup": {
+      "pageClosed": true,
+      "contextPages": 0,
+      "additionalPagesClosed": true,
+      "additionalContextPages": 0,
+      "browserConnected": false,
+      "nativeBrowserChildCloseObserved": true,
+      "browserServerCloseObserved": true,
+      "qaTimers": 0,
+      "qaSignalListeners": 0,
+      "appServerOwnedByQA": false,
+      "errors": 0
+    },
+    "sourceAndBuildFencesStable": true,
+    "natural30sExpiryActuallyObserved": true,
+    "timedOut": false,
+    "interrupted": false,
+    "originalLimits": {
+      "nativeRunMs": 120000,
+      "stepMs": 5000,
+      "expiryMs": 31000,
+      "navigationMs": 10000,
+      "requests": 768,
+      "checks": 40,
+      "receiptBytes": 16384
+    }
+  },
+  "originalFailureBoundaryCurrentObservation": {
+    "participant2PressDisabled": false,
+    "participant2Visibility": "visible",
+    "participant2Status": "Sharing is active for the approved play area.",
+    "elapsedSinceActualRequestClickMs": 96,
+    "durationSeconds": 30,
+    "participant2Native": {
+      "issued": 1,
+      "closed": 0,
+      "open": 1,
+      "states": [
+        [
+          "connected",
+          "connected"
+        ]
+      ]
+    },
+    "ownerExclusive": {
+      "owner": "Participant 2",
+      "held": "false"
+    }
+  },
+  "historicalFailure": {
+    "rawReceipt": "historical-webkit-receipt.json",
+    "rawLog": "historical-webkit.log",
+    "result": "authentic-fail-retained",
+    "cause": "UNKNOWN",
+    "explainedByCurrentPass": false,
+    "oldRedProductionFixCycle": "Not applicable: focused regression passed unchanged production; no production fix was made."
+  },
+  "verification": {
+    "selectedLintStatus": 0,
+    "syntaxStatus": 0,
+    "diffCheckStatus": 0,
+    "independentBroadGatesRunInLane": false,
+    "rootSuppliedFreshBuildOnlyProvenance": true
+  },
+  "cleanup": {
+    "qaParentJoined": true,
+    "serverJoined": true,
+    "serverStatus": 0,
+    "ownedServerScratchRemoved": true,
+    "ownedQaScratchRemoved": true,
+    "pidsAbsent": {
+      "appServer": true,
+      "browserChild": true
+    },
+    "uniqueDriverBytesRetained": [
+      "browser-driver.py.txt",
+      "server-runner.mjs.txt"
+    ]
+  },
+  "limits": [
+    "One original WebKit execution, not repeated for green; no prewarm, forced UI, scroll bypass or timing/grant/permission changes.",
+    "Selected native software/browser journey only; not physical input/AT/network qualification.",
+    "Historical missing observations prevent retroactive root-cause inference.",
+    "Current pass does not itself close U04/Q05 or qualify unrelated changed candidate files."
+  ],
+  "artifacts": {
+    "historical-webkit-receipt.json": {
+      "sha256": "c3f12a7e8ee50c333a6a8482e8db78d86f5fb1fd9f9dc82db743852e0fe37f5a",
+      "bytes": 8951
+    },
+    "historical-webkit.log": {
+      "sha256": "94efe9c6bc2d867dd38e1bfbf11c69d7f3c1a68850376fa71cc42176079d8821",
+      "bytes": 1632
+    },
+    "post-transfer-focused.log": {
+      "sha256": "e52fcbf24565e03c54d79bc5109fa006ed96f26a566d45ad21e76f243d874d47",
+      "bytes": 227
+    },
+    "webkit-first-receipt.json": {
+      "sha256": "0283e76393e703206efaac063a99dd5abdaa4771abe98618eac22202c9fc6a07",
+      "bytes": 9461
+    },
+    "webkit-first-transfer-observations.json": {
+      "sha256": "fa8c9734241af85f236b26572bdde80564675f5fe0c16f6015ee9a53fed8b722",
+      "bytes": 10132
+    },
+    "webkit-first-process.json": {
+      "sha256": "98d8cfe03d146a2306f7c0732b88e4b6714524a2becae3462378a450a2c917ea",
+      "bytes": 1025
+    },
+    "served-proof.json": {
+      "sha256": "b7d4707d4aae47d8f2853bab52d1bd78e0d8bcdd5319d0727258b908d3c18528",
+      "bytes": 90100
+    },
+    "browser-driver.py.txt": {
+      "sha256": "20588f45d4d480919527c2a25e8019f817c3cbd834969192557e54c59b6d8f1d",
+      "bytes": 5830
+    },
+    "server-runner.mjs.txt": {
+      "sha256": "6ce2ba54581896fa72e667f95c0d9669408fac47395154a48e33d2d2acd345fa",
+      "bytes": 688
+    },
+    "server.log": {
+      "sha256": "61055dac27585ea0ea81624de3b70b5f51e91d8325bd4cda1300e427dfa49726",
+      "bytes": 34
+    }
+  }
+}

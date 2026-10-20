@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "Q03"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "applied one genuine documented short-sample producer/caller negative; no decoder behavior change",
+  "sourceSha256": {
+    "examples/tmp102-hwmon/consumer.mjs": "d230cc8157c7939eeda93694e916b6a54223878a445c5075fc40a1c970401bc2",
+    "tools/qa-tmp102-hwmon.mjs": "32f515b840275753b742af5460650efbe11638071f9ef2577e580fe4dde2cb72",
+    "packages/hub-server/src/tmp102-hwmon.ts": "248cd804465c3013f9d04e20e2c0d239f756a333ca371e7d3608036904673cc8"
+  },
+  "oldRed": {
+    "argv": [
+      "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+      "/Users/km/Dev/101/release/q03-short-old-red-20261016/run.mjs"
+    ],
+    "pid": 85797,
+    "exitCode": 1,
+    "joined": true,
+    "producerSpawned": false,
+    "failure": "Original public consumer refuses short scenario before fixture/native ownership",
+    "ownedScratchRemovedAfterReadback": true
+  },
+  "appliedExecution": {
+    "argv": [
+      "/Users/km/.nvm/versions/node/v24.14.0/bin/node",
+      "/Users/km/Dev/101/release/q03-short-applied-20261016/run.mjs"
+    ],
+    "runnerPid": 98037,
+    "exitCode": 0,
+    "joined": true,
+    "producerPid": 98180,
+    "producerClosed": true,
+    "producerExit": {
+      "code": 0,
+      "signal": null
+    },
+    "readings": 1,
+    "publiclyApplied": 1,
+    "unavailable": [
+      "read-failed",
+      "read-failed"
+    ],
+    "attempts": 2,
+    "pendingOperations": 0,
+    "openHandles": 0,
+    "timers": 0
+  },
+  "declaredClosure": {
+    "files": 399,
+    "stable": true,
+    "meaning": "Declared source/compiler/runtime byte inventory; not complete actual-loaded graph."
+  },
+  "witness": "Initial -62 LF-delimited sample publishes -0.062 C once; existing producer contents IPC writes truncated -62, connector retires read-failed without a second publication. Existing explicit no-reenrollment start is a second attempt; it is also refused. Two unavailable callbacks correspond to those two explicit starts, not duplicate notification or automatic retry.",
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-local-followon/producer",
+    "commit": "0224ea8ad42a7cb105b2ad1fdf00ecdba0ea659a",
+    "tree": "322e4608384063722309cb4b9b310d3fd701a445",
+    "readBackFiles": 30,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "independentReviewSha256": "e5edba59adc1085089c5b4989c4bcccbf731d7392c7a620de156251b39f612c0",
+  "cleanup": {
+    "runnerAndProducerJoined": true,
+    "ownedPids": [
+      98037,
+      98180
+    ],
+    "ownedProcessesAndGroupsAbsent": true,
+    "openFileCheck": {
+      "exitCode": 1,
+      "stdoutEmpty": true
+    },
+    "producerFixtureRootAbsent": true,
+    "executedRunnerReadBackMatched": true,
+    "ownedScratch": "/Users/km/Dev/101/release/q03-short-applied-20261016",
+    "removedAfterReadback": true,
+    "foreignReleaseEntriesTouched": false
+  },
+  "limits": [
+    "Owned ordinary-file software fixture using actual public SDK and current connector; no physical TMP102, Linux hwmon/sysfs/I2C or whole Q03 proof.",
+    "Declared source/compiler/runtime-byte inventory is stable; it is not a complete actual-loaded dependency graph.",
+    "Original isolated cleanup observations were author narrative. This applied execution independently records owned process/group absence, empty open-file check, fixture-root absence and durable source/raw readback."
+  ]
+}

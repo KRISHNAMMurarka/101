@@ -137,3 +137,44 @@ test('Stop settles all owned idle and saturated channels without reopening autho
     await assert.rejects(() => coordinator.start(), /closed/);
   } finally { await destroySockets(sockets); await coordinator.stop(); }
 });
+
+
+test('unenrolled TLS channels share the global raw budget without displacing an admitted incumbent', { timeout: 10000 }, async t => {
+  const { HTTPS_COORDINATOR_LIMITS } = await import('@101/hub-server');
+  const { channel } = await import('node:diagnostics_channel');
+  const connections: { socket: import('node:net').Socket; closed: Promise<void> }[] = [];
+  const created = channel('net.client.socket');
+  const observe = (message: unknown) => {
+    const socket = (message as { socket: import('node:net').Socket }).socket;
+    connections.push({ socket, closed: new Promise<void>(resolve => socket.once('close', () => resolve())) });
+  };
+  const coordinator = createHttpsCoordinator(configuration());
+  const endpoint = await coordinator.start();
+  const sockets: OwnedSocket[] = [], client = caller(endpoint, 1);
+  created.subscribe(observe);
+  try {
+    const incumbent = openSocket(endpoint); sockets.push(incumbent);
+    assert.equal(await incumbent.ready, true); assert.equal(await socketHealth(incumbent, endpoint), 200);
+    const unenrolled = Array.from({ length: HTTPS_COORDINATOR_LIMITS.connections - 1 }, () => openSocket(endpoint, fixtures.clients[5]!));
+    sockets.push(...unenrolled);
+    assert.deepEqual(await Promise.all(unenrolled.map(owned => owned.ready)), Array(unenrolled.length).fill(true));
+    assert.ok(unenrolled.every(owned => !owned.socket.destroyed && owned.socket.authorized && owned.socket.getProtocol() === 'TLSv1.3'));
+    assert.equal(sockets.length, HTTPS_COORDINATOR_LIMITS.connections);
+    assert.equal(await health(client, endpoint), 'refused');
+    assert.equal(await socketHealth(incumbent, endpoint), 200, 'An existing admitted channel remains usable while aggregate raw capacity is full');
+    assert.ok(unenrolled.every(owned => !owned.socket.destroyed));
+    unenrolled[0]!.socket.end(); await unenrolled[0]!.closed;
+    assert.equal(await health(client, endpoint), 200, 'Only actual native close of one resident channel restores the next supported caller slot');
+    assert.equal(await socketHealth(incumbent, endpoint), 200);
+    t.diagnostic(JSON.stringify({ globalRawCeiling: HTTPS_COORDINATOR_LIMITS.connections,
+      incumbentAdmittedChannels: 1, unenrolledValidCaTlsChannels: unenrolled.length,
+      overflowPublicCaller: 'refused', incumbentStillServes: true, releasedUnenrolledNativeClose: true,
+      freshPublicCallerAfterRelease: 200, tlsVersion: 'TLSv1.3', forcedTlsResumption: false,
+      scope: 'Actual selected loopback native TLS coordinator/public caller admission; no handshake CPU fairness, OS-wide DoS, remote network or whole S11 qualification.' }));
+  } finally {
+    created.unsubscribe(observe); client.close(); await destroySockets(sockets); await coordinator.stop();
+    await Promise.all(connections.map(value => value.closed));
+    assert.ok(connections.every(value => value.socket.destroyed));
+    t.diagnostic(JSON.stringify({ ownedNativeClientSockets: connections.length, allOwnedNativeClientClosesJoined: true, coordinatorStopped: true }));
+  }
+});

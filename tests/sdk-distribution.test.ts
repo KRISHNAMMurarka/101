@@ -7,7 +7,10 @@ import test from 'node:test';
 
 test('immutable general SDK packs compiled public contracts and licenses without workspace source', () => {
   const root = resolve(import.meta.dirname, '..');
-  const tree = execFileSync('git', ['write-tree'], { cwd: root, encoding: 'utf8' }).trim();
+  // Controllers can qualify an immutable candidate without changing the developer's staging area.
+  // Every packed producer byte is still checked against the current checkout below.
+  const tree = process.env.SDK_TEST_SOURCE_TREE ?? execFileSync('git', ['write-tree'], { cwd: root, encoding: 'utf8' }).trim();
+  assert.match(tree, /^[a-f0-9]{40}$/, 'SDK_TEST_SOURCE_TREE must be an immutable Git tree');
   const result = JSON.parse(execFileSync(process.execPath, ['tools/build-sdk.mjs', tree], { cwd: root, encoding: 'utf8' }));
   assert.ok(result.outputDir.startsWith(resolve(root, 'release', 'sdk-')) && result.outputDir.startsWith(resolve(root, 'release') + sep));
   const owned = [result.outputDir];

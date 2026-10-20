@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+    <title>101 controller receiver</title>
+    <link rel="stylesheet" href="./src/style.css">
+  </head>
+  <body>
+    <main>
+      <header><span>101</span><button id="stop" type="button">Stop</button></header>
+      <h1>Controller receiver</h1>
+      <p>Use your controller on the surface below. Every connection needs your permission.</p>
+      <p id="status" role="status" aria-live="polite"></p>
+      <div class="actions"><button id="invite" type="button">Create invitation</button><button id="cancel" type="button" disabled>Cancel request</button></div>
+      <section aria-label="Connect a controller">
+        <label for="invitation">Receiver invitation</label><textarea id="invitation" rows="3" readonly spellcheck="false"></textarea>
+        <label for="offer">Controller offer</label><textarea id="offer" rows="3" maxlength="131072" spellcheck="false"></textarea>
+        <button id="use-offer" type="button" disabled>Use offer</button>
+        <label for="answer">Receiver answer</label><textarea id="answer" rows="3" readonly spellcheck="false"></textarea>
+        <label for="comparison">Connection code — compare every character on both screens</label><textarea id="comparison" rows="2" readonly spellcheck="false"></textarea>
+        <button id="confirm" type="button" disabled>Codes match — allow connection</button>
+        <p>A matching code verifies this connection. It does not identify a person or account.</p>
+        <button id="allow" type="button" disabled>Allow pointer for one minute</button>
+      </section>
+      <div id="surface" role="img" aria-label="Controller surface. No pointer allowed." data-active="false" data-contact="false"><span id="pointer" hidden></span></div>
+      <p id="effect" aria-live="off">No pointer allowed.</p>
+      <p>The invitation and local identity last for this session. Stop or leaving this screen ends control. Start again to reconnect.</p>
+    </main>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

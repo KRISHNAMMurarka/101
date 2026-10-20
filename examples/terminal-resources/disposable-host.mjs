@@ -22,6 +22,22 @@ await new Promise(resolve=>setTimeout(resolve,100));
 process.stdout.write(JSON.stringify({profile:'loopback-openssh-metadata/1',platform:platform(),arch:arch(),sourceTime:performance.now(),clockId:process.env.METADATA_CLOCK+':'+process.pid+':'+randomBytes(6).toString('hex')}));
 `;
 export const SSH_METADATA_SOURCE_SHA256 = sha(metadataSource);
+const fixtureDocument = '101 reviewed fixture\nA declared SSH job counts only this document.\n';
+export const SSH_FIXTURE_DOCUMENT_SHA256 = sha(fixtureDocument);
+// Only these two reviewed literals select producer code. Neither command text
+// nor caller input is evaluated, interpolated, or used as a filesystem path.
+const operationSource = `import {constants,openSync,fstatSync,readFileSync,closeSync} from 'node:fs';import {createHash,randomBytes} from 'node:crypto';
+const command=process.env.SSH_ORIGINAL_COMMAND;
+if(command==='metadata'){await import('./metadata.mjs');}
+else if(command==='fixture-summary'){
+const fd=openSync(new URL('./reviewed-document.txt',import.meta.url),constants.O_RDONLY|constants.O_NOFOLLOW);
+let bytes;try{const stat=fstatSync(fd);if(!stat.isFile()||stat.uid!==process.getuid()||(stat.mode&0o777)!==0o600||stat.nlink!==1||stat.size!==${Buffer.byteLength(fixtureDocument)})process.exit(65);bytes=readFileSync(fd);}finally{closeSync(fd);}
+const digest=createHash('sha256').update(bytes).digest('hex');if(digest!=='${SSH_FIXTURE_DOCUMENT_SHA256}')process.exit(65);
+await new Promise(resolve=>setTimeout(resolve,100));
+process.stdout.write(JSON.stringify({profile:'loopback-openssh-fixture-summary/1',fixtureId:'reviewed-document',sha256:digest,bytes:bytes.byteLength,lines:bytes.reduce((count,value)=>count+(value===10?1:0),0),sourceTime:performance.now(),clockId:process.env.METADATA_CLOCK+':'+process.pid+':'+randomBytes(6).toString('hex')}));
+}else process.exit(64);
+`;
+export const SSH_OPERATION_SOURCE_SHA256 = sha(operationSource);
 function fingerprint(key) { return 'SHA256:' + createHash('sha256').update(Buffer.from(key.split(' ')[1], 'base64')).digest('base64').replace(/=+$/, ''); }
 function end(child) { return new Promise(resolve => child.once('close', resolve)); }
 function kill(child, group = false) { try { if (group) process.kill(-child.pid, 'SIGKILL'); else child.kill('SIGKILL'); } catch { /* Already settled. */ } }
@@ -36,15 +52,20 @@ function sameFile(path, previous, mode) {
     (value.mode & 0o777) === mode && value.nlink === 1 && value.dev === previous.dev && value.ino === previous.ino && realpathSync(path) === path; }
   catch { return false; }
 }
-function sourceCurrent(record) {
+function pinnedFile(path, previous, source, digest) {
   let descriptor;
   try {
-    if (!sameFile(record.metadataFile, record.metadataStat, 0o600)) return false;
-    descriptor = openSync(record.metadataFile, constants.O_RDONLY | constants.O_NOFOLLOW);
-    const stat = fstatSync(descriptor); if (stat.dev !== record.metadataStat.dev || stat.ino !== record.metadataStat.ino || stat.size !== Buffer.byteLength(metadataSource)) return false;
-    const bytes = Buffer.alloc(Buffer.byteLength(metadataSource) + 1), size = readSync(descriptor, bytes, 0, bytes.byteLength, 0);
-    return size === Buffer.byteLength(metadataSource) && sha(bytes.subarray(0, size)) === SSH_METADATA_SOURCE_SHA256;
+    if (!sameFile(path, previous, 0o600)) return false;
+    descriptor = openSync(path, constants.O_RDONLY | constants.O_NOFOLLOW);
+    const stat = fstatSync(descriptor); if (stat.dev !== previous.dev || stat.ino !== previous.ino || stat.size !== Buffer.byteLength(source)) return false;
+    const bytes = Buffer.alloc(Buffer.byteLength(source) + 1), size = readSync(descriptor, bytes, 0, bytes.byteLength, 0);
+    return size === Buffer.byteLength(source) && sha(bytes.subarray(0, size)) === digest;
   } catch { return false; } finally { if (descriptor !== undefined) closeSync(descriptor); }
+}
+function sourceCurrent(record) {
+  return pinnedFile(record.metadataFile, record.metadataStat, metadataSource, SSH_METADATA_SOURCE_SHA256) &&
+    pinnedFile(record.operationFile, record.operationStat, operationSource, SSH_OPERATION_SOURCE_SHA256) &&
+    pinnedFile(record.fixtureFile, record.fixtureStat, fixtureDocument, SSH_FIXTURE_DOCUMENT_SHA256);
 }
 
 /** Explicit owned macOS fixture; importing is inert. The native daemon has the
@@ -83,6 +104,8 @@ export async function createDisposableLoopbackSshHost() {
     const clientKey = (await readFile(join(root, 'client.pub'), 'utf8')).trim();
     await writeFile(join(root, 'authorized_keys'), 'restrict,from="127.0.0.1" ' + clientKey + '\n', { mode: 0o600 });
     await writeFile(join(root, 'metadata.mjs'), metadataSource, { mode: 0o600 });
+    await writeFile(join(root, 'operation.mjs'), operationSource, { mode: 0o600 });
+    await writeFile(join(root, 'reviewed-document.txt'), fixtureDocument, { mode: 0o600 });
     const nonce = randomBytes(16).toString('hex'), clockId = 'ssh:' + nonce;
     // Only this owned socket selects a high port. A subsequent bind collision
     // fails startup; no retry can retarget to another listener.
@@ -99,7 +122,7 @@ export async function createDisposableLoopbackSshHost() {
       'MaxSessions 1', 'MaxStartups 1', 'MaxAuthTries 1', 'LoginGraceTime 2', 'ChannelTimeout session=2s', 'UnusedConnectionTimeout 2s',
       'PrintMotd no', 'PrintLastLog no', 'LogLevel VERBOSE',
       'SetEnv HOME=' + root + ' ZDOTDIR=' + root + ' PATH=/usr/bin:/bin:/usr/sbin:/sbin LANG=C LC_ALL=C METADATA_CLOCK=' + clockId,
-      'ForceCommand exec ' + process.execPath + ' ' + join(root, 'metadata.mjs')].join('\n') + '\n';
+      'ForceCommand exec ' + process.execPath + ' ' + join(root, 'operation.mjs')].join('\n') + '\n';
     await writeFile(join(root, 'sshd_config'), config, { mode: 0o600 });
     stage = 'configuration-validation';
     const valid = spawnSync('/usr/sbin/sshd', ['-t', '-f', join(root, 'sshd_config')], { env, encoding: 'utf8', timeout: 1000, maxBuffer: 4096 });
@@ -112,6 +135,8 @@ export async function createDisposableLoopbackSshHost() {
     record = { root, env, daemon, daemonDone, port, account: account.username, hostKey, closing: false, removed: false, clients: new Set(),
       closePromise: undefined, expiresAt, clockId, attempts: 0, credentialFile: join(root, 'client'), credentialStat: await lstat(join(root, 'client')),
       metadataFile: join(root, 'metadata.mjs'), metadataStat: await lstat(join(root, 'metadata.mjs')),
+      operationFile: join(root, 'operation.mjs'), operationStat: await lstat(join(root, 'operation.mjs')),
+      fixtureFile: join(root, 'reviewed-document.txt'), fixtureStat: await lstat(join(root, 'reviewed-document.txt')),
       id: 'ssh-' + nonce, credentialId: 'credential-' + randomBytes(16).toString('hex'), hostFingerprint: fingerprint(hostKey) };
     async function stop() {
       if (record.closePromise) return record.closePromise;
@@ -173,9 +198,9 @@ export function ownedSshHostPort(host, credential) {
   return Object.freeze({ identity: host.identity, credentialId: key.credentialId,
     isCurrent: () => current(record) && current(key),
     spawn(hostKey, literal = 'metadata') {
-      // The second fixed literal exists only for a genuine host refusal probe;
-      // it cannot choose code or a command, and the forced producer exits64.
-      if (!keyPattern.test(hostKey) || !['metadata', 'unsupported-fixture'].includes(literal) || !current(record) || !current(key) || record.clients.size >= 1 ||
+      // Only two reviewed operations and a fixed refusal probe are admitted.
+      // No supplied literal can select a program, path or shell expression.
+      if (!keyPattern.test(hostKey) || !['metadata', 'fixture-summary', 'unsupported-fixture'].includes(literal) || !current(record) || !current(key) || record.clients.size >= 1 ||
         record.attempts >= SSH_HOST_LIMITS.attempts || !sameFile(key.credentialFile, key.credentialStat, 0o600) || !sourceCurrent(record)) unavailable();
       // One owned600 file carries the explicit pin. No global/user known_hosts
       // files or DNS can introduce another identity. stdin is always disabled.

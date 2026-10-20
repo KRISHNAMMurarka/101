@@ -142,7 +142,7 @@ export default function AudioView() {
         onChange={event => work(value => value.setVolume(Number(event.target.value)))} /></label>
       <p>The page reports the browser request, without confirming what you hear. Use your device’s sound controls to change its current destination.</p>
       <p>Use Tab and Enter or Space for the buttons, and arrow keys for volume.</p>
-      <Link href="/connections">Skip and return to Connections</Link>
+      <Link href="/connections" className={styles.skip}>Skip and return to Connections</Link>
     </section>
   </main>;
 }

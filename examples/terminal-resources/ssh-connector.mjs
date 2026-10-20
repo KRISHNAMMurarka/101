@@ -1,4 +1,4 @@
-import { SSH_HOST_LIMITS, ownedSshHostPort } from './disposable-host.mjs';
+import { SSH_HOST_LIMITS, SSH_FIXTURE_DOCUMENT_SHA256, ownedSshHostPort } from './disposable-host.mjs';
 
 export const SCOPED_SSH_LIMITS = Object.freeze({ ...SSH_HOST_LIMITS, retainedResults: 1, auditRows: 64 });
 const fail = reason => Object.freeze({ ok: false, reason });
@@ -25,17 +25,30 @@ function grant(input, request) {
   if (!Number.isFinite(expiresAt) || expiresAt > request.expiresAt || !activeSignal(signal)) return;
   return Object.freeze({ expiresAt, signal });
 }
+function sourceClock(value, clockId) {
+  return typeof value.clockId === 'string' && value.clockId.length <= 64 && value.clockId.startsWith(clockId + ':') &&
+    /^[1-9][0-9]{0,9}:[0-9a-f]{12}$/.test(value.clockId.slice(clockId.length + 1)) &&
+    Number.isFinite(value.sourceTime) && value.sourceTime >= 0 && value.sourceTime <= 60000;
+}
 function metadata(bytes, clockId) {
   let value; try { value = JSON.parse(bytes.toString('utf8')); } catch { return; }
   if (!plain(value, ['profile', 'platform', 'arch', 'sourceTime', 'clockId']) || value.profile !== 'loopback-openssh-metadata/1' ||
-    value.platform !== 'darwin' || value.arch !== 'arm64' || typeof value.clockId !== 'string' || value.clockId.length > 64 ||
-    !value.clockId.startsWith(clockId + ':') || !/^[1-9][0-9]{0,9}:[0-9a-f]{12}$/.test(value.clockId.slice(clockId.length + 1)) ||
-    !Number.isFinite(value.sourceTime) || value.sourceTime < 0 || value.sourceTime > 60000) return;
+    value.platform !== 'darwin' || value.arch !== 'arm64' || !sourceClock(value, clockId)) return;
   return Object.freeze(value);
 }
+function fixtureSummary(bytes, clockId) {
+  let value; try { value = JSON.parse(bytes.toString('utf8')); } catch { return; }
+  if (!plain(value, ['profile', 'fixtureId', 'sha256', 'bytes', 'lines', 'sourceTime', 'clockId']) ||
+    value.profile !== 'loopback-openssh-fixture-summary/1' || value.fixtureId !== 'reviewed-document' || value.sha256 !== SSH_FIXTURE_DOCUMENT_SHA256 ||
+    !Number.isSafeInteger(value.bytes) || value.bytes < 1 || value.bytes > SSH_HOST_LIMITS.stdoutBytes ||
+    !Number.isSafeInteger(value.lines) || value.lines < 1 || value.lines > value.bytes || !sourceClock(value, clockId)) return;
+  return Object.freeze(value);
+}
+const metadataOperation = Object.freeze({ profile: 'loopback-openssh-metadata/1', operation: 'metadata', decode: metadata });
+const summaryOperation = Object.freeze({ profile: 'loopback-openssh-fixture-summary/1', operation: 'fixture-summary', decode: fixtureSummary });
 
 /** Current exact operation and separate sensitive-result approval. The selected
- * native operation is metadata only. No credentials, executable state or
+ * native operations are metadata and one fixed document-summary job. No credentials, executable state or
  * resource grants are stored; host callbacks are cooperative, not sandboxed.
  * Owner grants require a real AbortSignal; callback-only grants are rejected.
  * DeliveryContext.isCurrent observes the route. Mutable route revocation must
@@ -53,7 +66,7 @@ export function createScopedLoopbackSshConnector(options) {
     typeof hostKey !== 'string' || !/^ssh-ed25519 [A-Za-z0-9+/]{68}=?$/.test(hostKey)) throw Error('Scoped SSH input');
   let closed = false, lastTime = -1, attempts = 0, issued = 0, settled = 0, raw, selected, retained, sequence = 0;
   const handles = new WeakMap(), audit = [], pending = new Set();
-  function record(work, reason) { audit.push(Object.freeze({ operationId: work.context.operationId, outcome: reason, issued: work.issued })); if (audit.length > SCOPED_SSH_LIMITS.auditRows) audit.shift(); }
+  function record(work, reason) { audit.push(Object.freeze({ operationId: work.context.operationId, outcome: reason, issued: work.issued, profile: work.operation.profile, operation: work.operation.operation })); if (audit.length > SCOPED_SSH_LIMITS.auditRows) audit.shift(); }
   function removeAuthorityListeners(work) {
     nativeRemoveListener.call(work.context.signal, 'abort', work.aborted);
     if (work.grant && work.ownerAborted) nativeRemoveListener.call(work.grant.signal, 'abort', work.ownerAborted);
@@ -88,9 +101,9 @@ export function createScopedLoopbackSshConnector(options) {
     if (!onNative) return true;
     try { onNative(Object.freeze({ stage, operationId: work.context.operationId, issued: work.issued })); return true; } catch { cancel(work, 'callback-failed'); return false; }
   }
-  function request(work, phase, nextContext = work.context) { return Object.freeze({ profile: 'loopback-openssh-metadata/1', scope,
-    hostId: port.identity.id, hostKey, credentialId: port.credentialId, operation: 'metadata', phase,
-    operationId: work.context.operationId, resourceId: phase === 'operation' ? 'metadata-command' : 'metadata-result',
+  function request(work, phase, nextContext = work.context) { return Object.freeze({ profile: work.operation.profile, scope,
+    hostId: port.identity.id, hostKey, credentialId: port.credentialId, operation: work.operation.operation, phase,
+    operationId: work.context.operationId, resourceId: work.operation.operation + (phase === 'operation' ? '-command' : '-result'),
     route: Object.freeze({ routeId: nextContext.routeId, generation: nextContext.generation }), expiresAt: Math.min(work.deadline, work.grant?.expiresAt ?? work.deadline) }); }
   function permission(work, phase, nextContext = work.context) {
     const selectedRequest = request(work, phase, nextContext);
@@ -98,9 +111,7 @@ export function createScopedLoopbackSshConnector(options) {
     if (!current(work)) return;
     return grant(value, selectedRequest);
   }
-  return Object.freeze({
-    registrationId: port.identity.id,
-    readMetadata(input) {
+  function execute(input, operation) {
       const selectedContext = context(input);
       if (!selectedContext) return Promise.resolve(fail('invalid'));
       if (closed) return Promise.resolve(fail('closed'));
@@ -109,7 +120,7 @@ export function createScopedLoopbackSshConnector(options) {
       attempts++;
       erase();
       let resolve; const promise = new Promise(value => { resolve = value; });
-      const work = { context: selectedContext, resolve, finished: false, issued: false, child: undefined, bytes: Buffer.alloc(0), stderrBytes: 0,
+      const work = { context: selectedContext, operation, resolve, finished: false, issued: false, child: undefined, bytes: Buffer.alloc(0), stderrBytes: 0,
         timer: undefined, aborted: undefined, ownerAborted: undefined, grant: undefined, deadline: Infinity, wallDeadline: performance.now() + SCOPED_SSH_LIMITS.commandMs };
       // Reserve before clock, route or consent callbacks; replacements share
       // the host port's separate raw child reservation through actual close.
@@ -125,14 +136,14 @@ export function createScopedLoopbackSshConnector(options) {
       const expiryAt = tick();
       if (!current(work)) { cancel(work, 'expired'); raw = undefined; return promise; }
       work.timer = setTimeout(() => cancel(work, 'expired'), Math.max(0, Math.min(work.grant.expiresAt - expiryAt, work.wallDeadline - performance.now())));
-      let child; try { child = port.spawn(hostKey); } catch { cancel(work, 'native-unavailable'); raw = undefined; return promise; }
+      let child; try { child = port.spawn(hostKey, operation.operation); } catch { cancel(work, 'native-unavailable'); raw = undefined; return promise; }
       work.child = child; work.issued = true; issued++;
       const nativeDone = new Promise(done => child.once('close', code => {
         settled++; raw = raw === work ? undefined : raw;
         pending.delete(nativeDone);
         if (work.finished) { work.bytes.fill(0); done(); return; }
         if (!notify('settled', work) || !current(work)) { cancel(work, 'revoked'); work.bytes.fill(0); done(); return; }
-        const value = code === 0 && metadata(work.bytes, port.identity.clockId);
+        const value = code === 0 && operation.decode(work.bytes, port.identity.clockId);
         if (!value) { cancel(work, 'native-failed'); work.bytes.fill(0); done(); return; }
         const handle = Object.freeze({ id: String(++sequence) });
         const retentionAt = tick();
@@ -154,7 +165,11 @@ export function createScopedLoopbackSshConnector(options) {
       child.stdout.on('error', () => cancel(work, 'native-failed')); child.stderr.on('error', () => cancel(work, 'native-failed'));
       if (!notify('spawned', work) || !current(work)) cancel(work, 'revoked');
       return promise;
-    },
+  }
+  return Object.freeze({
+    registrationId: port.identity.id,
+    readMetadata: input => execute(input, metadataOperation),
+    readFixtureSummary: input => execute(input, summaryOperation),
     readResult(handle, input) {
       const saved = handles.get(handle), nextContext = context(input);
       if (!saved || saved !== retained || !nextContext || !current(saved.work)) return fail('stale-result');
@@ -162,7 +177,7 @@ export function createScopedLoopbackSshConnector(options) {
       if (!yes || !current(saved.work) || !activeSignal(nextContext.signal)) return fail('revoked');
       const allowed = permission(saved.work, 'result', nextContext);
       if (!allowed) return fail('denied');
-      const value = metadata(saved.bytes, port.identity.clockId);
+      const value = saved.work.operation.decode(saved.bytes, port.identity.clockId);
       if (!value || !current(saved.work)) return fail('stale-result');
       try { yes = nextContext.isCurrent() === true; } catch { yes = false; }
       const finalAt = tick();

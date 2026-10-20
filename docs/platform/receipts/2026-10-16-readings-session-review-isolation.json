@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-16",
+  "tasks": [
+    "S10"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "nativeReliability": "UNRESOLVED",
+  "classification": "coverage-only actual public readings task cross-session approval replay negative",
+  "sourceSha256": {
+    "app/connections/readings/readings-task.test.ts": "edcc95ba69ec65f64db7d5d0b87201c280e6d59bd8adf58380567b16d95dcf8e",
+    "app/connections/readings/readings-task.ts": "4e192169d7d828dd33c077656bd21e171250e6ab4c67764a1ae6ba66f6d2e9aa"
+  },
+  "appliedCheck": {
+    "sourceSha256": {
+      "app/connections/readings/readings-task.test.ts": "edcc95ba69ec65f64db7d5d0b87201c280e6d59bd8adf58380567b16d95dcf8e",
+      "app/connections/readings/readings-task.ts": "4e192169d7d828dd33c077656bd21e171250e6ab4c67764a1ae6ba66f6d2e9aa"
+    },
+    "command": [
+      "node",
+      "--test",
+      "--test-name-pattern=an admitted display review cannot authorize a different live readings session",
+      "app/connections/readings/readings-task.test.ts"
+    ],
+    "exitCode": 0,
+    "tests": 1,
+    "pass": 1,
+    "fail": 0,
+    "skipped": 0,
+    "commandReturnedAndJoined": true,
+    "productionGuardChange": false,
+    "independentReviewSha256": "5af38719694aef632582b1b9cf6525ccc48e32e51ab854a767bb4c2bb8c78b4f",
+    "baselineOrdinaryCommit": "0ae72107ed9921b36ff30ab369408d7904d3f55e",
+    "wholeTasksClosed": [],
+    "acceptedSupportRows": 0
+  },
+  "map": {
+    "families": 7,
+    "sourcePins": 41,
+    "reportSha256": "3e363ffee0a7da473b3585b91cccec93b91cb724a8bee7a83323f1b3849af348"
+  },
+  "custody": {
+    "ref": "refs/codex/evidence/2026-10-16-local-followon/session",
+    "commit": "609d92a857b6308dd5dc898b9f20f50ef51b61cf",
+    "tree": "55c017a95d026b5a70b44d068dd649696c9341b3",
+    "readBackFiles": 40,
+    "allBytesMatched": true,
+    "realIndexUnchanged": true
+  },
+  "independentReviewSha256": "5af38719694aef632582b1b9cf6525ccc48e32e51ab854a767bb4c2bb8c78b4f",
+  "observed": "A genuine admitted A display review is refused at distinct B session before any B registration, route, row or apply. A continues fresh43 delivery; B accepts only its own explicit review and consumes77. Four tasks close with no owned work.",
+  "productionGuardChange": false,
+  "limits": [
+    "Cooperative RTC ports with actual public task/crypto/transport/binder/runtime effects; not browser DTLS or an on-wire adversarial packet.",
+    "No complete private media, cross-directory/OS-user, physical or whole S10 proof."
+  ]
+}

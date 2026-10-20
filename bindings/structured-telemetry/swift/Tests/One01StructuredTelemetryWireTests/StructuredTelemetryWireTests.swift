@@ -122,6 +122,19 @@ private func sample(_ value: ReadingValue, epoch: String = fixtureEpoch, slot: U
     #expect((StructuredTelemetryWire.decode(bytes, lane: .disposable) != nil) == expectedAccept)
 }
 
+@Test func futureWireRevisionCannotReinterpretSelectedRecordOrTable() throws {
+    let path = try #require(ProcessInfo.processInfo.environment["ONE01_STRUCTURED_NEGATIVE_FIXTURES"])
+    let bytes = try Data(contentsOf: URL(fileURLWithPath: path))
+    try #require(bytes.count <= 16384)
+    let document = try #require(try JSONSerialization.jsonObject(with: bytes) as? [String: Any])
+    let entries = try #require(document["incompatibleRevisions"] as? [[String: Any]])
+    try #require(entries.count == 2)
+    for entry in entries {
+        let wire = try #require(entry["wireUtf8"] as? String)
+        #expect(StructuredTelemetryWire.decode(Data(wire.utf8), lane: .disposable) == nil)
+    }
+}
+
 @Test func selectedRecordAndArraySchemasRejectCoercionNullAndUnboundedRows() throws {
     let base = try packetObject(try #require(actualPackets()["record-absent"]))
     let validRow: [String: Any] = ["step": 0, "mode": "count-up"]

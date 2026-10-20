@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "tasks": [
+    "K09"
+  ],
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "classification": "bounded read-only local author-text triage and selected artifact scope; no license gap promoted",
+  "productionChanges": false,
+  "evidence": {
+    "report.json": {
+      "path": "outputs/controllers/2026-10-18-license-local-triage/report.json",
+      "sha256": "601db5ee28484fc17fe084c6b3a29b4d5717e271967bc207f1d279c6f81d3761"
+    },
+    "selected-release-scope.json": {
+      "path": "outputs/controllers/2026-10-18-license-local-triage/selected-release-scope.json",
+      "sha256": "57d2181959f4ede2e4d72bdd5a3008777be13550cbc75064c95edc95bcfa2a8a"
+    },
+    "missing-classifications.json": {
+      "path": "outputs/controllers/2026-10-18-license-local-triage/missing-classifications.json",
+      "sha256": "efa7b55d161e8cc06a1bf2683fd20e60b582596ee5d4385479f70431e5862cb7"
+    },
+    "seal.json": {
+      "path": "outputs/controllers/2026-10-18-license-local-triage/seal.json",
+      "sha256": "3002f060a504ab3ac19d68f4a61609eae663b834daf5d819a6b77accd0ed59d9"
+    }
+  },
+  "inputPinsVerified": 13,
+  "retainedSourceCustodyFilesVerified": 121,
+  "installedGapsVerified": 59,
+  "classificationCounts": {
+    "readme-present-without-selected-license-body": 37,
+    "no-bounded-root-readme-or-package-legal-body": 11,
+    "readme-declaration-link-or-component-list-without-full-body": 10,
+    "scoped-third-party-inline-body-not-whole-package-license": 1
+  },
+  "safeNewWholePackageCandidates": 0,
+  "scopedBody": {
+    "path": "node_modules/@react-native/js-polyfills/console.js",
+    "bytes": 19889,
+    "sha256": "772bc8bd7568cda8765244ecc2b895acf691e1f69ddd0bb1c88e94167413b7d6",
+    "scope": "Joyent/Node-derived inspect helper only, not whole @react-native/js-polyfills0.86.2 or any sibling",
+    "promoted": false
+  },
+  "selectedArtifacts": {
+    "sdk": {
+      "packages": 7,
+      "files": 411,
+      "manifest": {
+        "path": "outputs/controllers/2026-10-18-processor-scope/sdk-manifest.json",
+        "bytes": 98356,
+        "sha256": "5eca8ddf85da112a8db46819747ddb5d648e379301b79d17bac374f477863dbc"
+      },
+      "sourceTree": "ea4275980a904669c76fefb772a4e6aaa1e4c29a",
+      "sourceEvidenceRevision": "fdd619d518754aa07b1a570ef0963ee563dca68d",
+      "missing59DependencyIntersection": 0,
+      "qualification": "Exact retained consumer dependency closure and selected manifest/content audit; no reinstall or rebuild in this triage."
+    },
+    "console": {
+      "manifest": {
+        "path": "release/console-receiver/source-manifest.json",
+        "bytes": 17025,
+        "sha256": "973d52b51a4adbab1ac355c8405f34bdecb688a7a1d064f59022e062998176ae"
+      },
+      "artifactsVerified": 6,
+      "currentSourcePinsVerified": 139,
+      "missing59CapturedLiteralImportMatches": 0,
+      "qualification": "Captured source excludes node_modules; literal-import absence and artifact equality do not establish complete third-party attribution or absence.",
+      "windowsCompiled": false,
+      "xboxQualified": false
+    },
+    "generalWeb": {
+      "selectedImmutableClosure": null,
+      "reason": "Root confirms no new immutable general web release package selected/accepted in this wave; current dist is a fresh local build. Legacy release/manifest.json is not a fingerprinted current closure. No all59-shipped or none-shipped inference is made."
+    }
+  },
+  "previousEvidenceReused": {
+    "receipt": "docs/platform/receipts/2026-10-16-license-author-source.json",
+    "focusedTests": 65,
+    "rerun": false,
+    "inventoryRegenerated": false
+  },
+  "observerCorrection": "Triage initially treated SDK files array as numeric count. Original source and stderr preserved; corrected .files.length. No product/inventory failure or generator run.",
+  "limits": [
+    "No legal or redistribution approval.",
+    "No network/downloads or new services; no source/vendor/manifest/dependency/artifact/index/remote mutation.",
+    "Bounded source scan does not prove no author text exists anywhere else on disk; it identifies no safe new whole-package candidate in inspected locations.",
+    "Captured console graph intentionally excludes dependency source records; selected artifact equality and literal graph absence are narrower than complete third-party provenance.",
+    "Historical general-web packages and build dependencies do not define current selected distribution scope.",
+    "All59 installed gaps remain open. The116 absent optional/target entries matter only for actual selected distributions; no blanket requirement or exemption.",
+    "No inventory regeneration, new legal text, dependency/source/vendor/manifest edit, download, browser run, publication or ordinary integration."
+  ],
+  "nextAction": "No manifest/vendor/generator edit is supported by the inspected bytes. Keep59gap rows open; for any later selected actual general-web/native distribution, bind its precise input/content attribution, then supply an exact version-bound applicable author body+source proof for each relevant gap. Do not assign the scoped Joyent block or sibling licenses to whole packages.",
+  "custodyRef": "refs/codex/evidence/2026-10-18-firefox-and-storage/final"
+}

@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { registerHooks } from 'node:module';
+import { Worker } from 'node:worker_threads';
 import test from 'node:test';
 import { createAssetReference } from '../../device-model/src/resource.ts';
 import { processorExtensionManifestSha256, processorExtensionSigningBytes } from '../../device-model/src/extension-release.ts';
@@ -152,4 +153,129 @@ test('unsupported and overdeep source is refused before worker construction', as
       finally { await executor.close(); }
     } else await assert.rejects(executorApi().createNodeProcessorExecutor(options), error => error instanceof Error && error.message === 'processor-language');
   }
+});
+
+test('scoped processor admission reserves startup and retains capacity until actual worker exit', async () => {
+  const options = await signed();
+  assert.equal(typeof executorApi().createNodeProcessorHost, 'function', 'host-owned scope admission must exist');
+  const host = executorApi().createNodeProcessorHost(), scope = host.createScope();
+  try {
+    const opening = scope.create(options);
+    assert.equal(scope.status().reservedExecutors, 1);
+    await assert.rejects(scope.create(options), /processor-capacity/);
+    const executor = await opening;
+    assert.deepEqual(await executor.process({ temperature: 31 }), { ok: true, frame: { switch: true } });
+    const closing = executor.close();
+    assert.equal(scope.status().reservedExecutors, 1, 'logical retirement cannot refund native capacity');
+    await assert.rejects(scope.create(options), /processor-capacity/);
+    await closing;
+    assert.equal(scope.status().reservedExecutors, 0);
+    const next = await scope.create(options);
+    await next.close();
+  } finally { await host.close(); }
+  assert.deepEqual(host.status(), { active: false, scopes: 0, reservedExecutors: 0, guestMemoryBytes: 0 });
+});
+
+test('scoped processor compute exhaustion leaves another approved scope responsive', async () => {
+  const expensive = await signed(source, 65536, 100), ordinary = await signed();
+  const host = executorApi().createNodeProcessorHost(), hot = host.createScope(), control = host.createScope();
+  try {
+    const exhausted = await hot.create(expensive);
+    // Construction consumes the declared worst case, even when the actual source returns quickly.
+    assert.deepEqual(await exhausted.process({ temperature: 31 }), { ok: false, reason: 'budget' });
+    await exhausted.close();
+    await assert.rejects(hot.create(expensive), /processor-budget/, 'close cannot refund compute work');
+    const independent = await control.create(ordinary);
+    assert.deepEqual(await independent.process({ temperature: 31 }), { ok: true, frame: { switch: true } });
+    assert.equal(hot.status().reservedExecutors, 0);
+    await independent.close();
+  } finally { await host.close(); }
+});
+
+test('scoped processor profile and scope limits refuse excess without acquiring workers', async () => {
+  const host = executorApi().createNodeProcessorHost();
+  const scopes = Array.from({ length: 4 }, () => host.createScope());
+  try {
+    assert.throws(() => host.createScope(), /processor-capacity/);
+    await assert.rejects(scopes[0]!.create(await signed(source, 1024 * 1024 + 1)), /processor-profile/);
+    await assert.rejects(scopes[0]!.create(await signed(source, 65536, 101)), /processor-profile/);
+    const options = await signed();
+    await assert.rejects(scopes[0]!.create({ ...options, source: new Uint8Array(256 * 1024 + 1) }), /processor-profile/);
+    await assert.rejects(scopes[0]!.create({ ...options, minimumSequence: 2 }), /processor-untrusted/);
+    assert.equal(host.status().reservedExecutors, 0);
+    const executor = await scopes[0]!.create(options);
+    await executor.close();
+    await scopes[0]!.close();
+    assert.throws(() => scopes[0]!.create(options), /processor-inactive/);
+    const replacement = host.createScope();
+    await replacement.close();
+  } finally { await host.close(); }
+});
+
+test('scoped processor host close fences and joins an admitted startup', async () => {
+  const options = await signed(), host = executorApi().createNodeProcessorHost(), scope = host.createScope();
+  const opening = scope.create(options);
+  const rejected = assert.rejects(opening, /processor-inactive|processor-untrusted/);
+  await host.close();
+  await rejected;
+  assert.equal(scope.status().reservedExecutors, 0);
+  assert.throws(() => host.createScope(), /processor-inactive/);
+});
+
+test('scoped processor construction failure joins its worker before returning capacity', async () => {
+  const failing = await signed(script('return { switch: true };', 'let state; while (true) {}'), 65536, 10);
+  const ordinary = await signed(), host = executorApi().createNodeProcessorHost(), scope = host.createScope();
+  try {
+    const opening = scope.create(failing);
+    assert.equal(scope.status().reservedExecutors, 1);
+    await assert.rejects(scope.create(ordinary), /processor-capacity/);
+    await assert.rejects(opening, /processor-timeout/);
+    assert.deepEqual(scope.status(), { active: true, reservedExecutors: 0, guestMemoryBytes: 0 });
+    const recovered = await scope.create(ordinary);
+    assert.deepEqual(await recovered.process({ temperature: 31 }), { ok: true, frame: { switch: true } });
+    await recovered.close();
+  } finally { await host.close(); }
+  assert.deepEqual(host.status(), { active: false, scopes: 0, reservedExecutors: 0, guestMemoryBytes: 0 });
+});
+
+test('scoped processor postMessage failure retains capacity until the actual worker exit', async context => {
+  const options = await signed(), host = executorApi().createNodeProcessorHost(), scope = host.createScope();
+  try {
+    const executor = await scope.create(options);
+    // The native Worker is real; only the failed issuance boundary is injected.
+    const failure = context.mock.method(Worker.prototype, 'postMessage', () => { throw new Error('owned-postMessage-failure'); });
+    const operation = executor.process({ temperature: 31 });
+    assert.deepEqual(executor.status(), { active: false, rawExecutors: 1, pending: false, guestMemoryBytes: 65536 });
+    assert.equal(scope.status().reservedExecutors, 1);
+    await assert.rejects(scope.create(options), /processor-capacity/);
+    assert.deepEqual(await operation, { ok: false, reason: 'unavailable' });
+    failure.mock.restore();
+    await executor.close();
+    assert.deepEqual(scope.status(), { active: true, reservedExecutors: 0, guestMemoryBytes: 0 });
+    const recovered = await scope.create(options);
+    assert.deepEqual(await recovered.process({ temperature: 31 }), { ok: true, frame: { switch: true } });
+    await recovered.close();
+  } finally { await host.close(); }
+});
+
+test('scoped processor turnover cannot refill the aggregate host compute budget', async context => {
+  // Only the admission clock is controlled; the actual Workers and their deadlines remain real.
+  let admissionTime = 0;
+  context.mock.method(performance, 'now', () => admissionTime);
+  const options = await signed(source, 65536, 100), host = executorApi().createNodeProcessorHost();
+  try {
+    for (let index = 0; index < 4; index++) {
+      const scope = host.createScope(), executor = await scope.create(options);
+      await executor.close(); await scope.close();
+    }
+    const scope = host.createScope();
+    await assert.rejects(scope.create(options), /processor-budget/);
+    assert.equal(host.status().reservedExecutors, 0);
+    admissionTime = 1000;
+    const executor = await scope.create(options);
+    assert.deepEqual(await executor.process({ temperature: 31 }), { ok: false, reason: 'budget' });
+    admissionTime = 2000;
+    assert.deepEqual(await executor.process({ temperature: 31 }), { ok: true, frame: { switch: true } });
+    await executor.close();
+  } finally { await host.close(); }
 });

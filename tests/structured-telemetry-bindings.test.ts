@@ -22,3 +22,16 @@ test('selected Swift telemetry fixtures match the actual page schemas and public
   assert.equal(Object.hasOwn(fixtures.positive[0].meaning.value, 'ready'), false);
   assert.equal(fixtures.positive[1].meaning.value.ready, false);
 });
+
+test('future structured wire revisions cannot reinterpret selected record or table bytes', () => {
+  const fixtures = JSON.parse(readFileSync(new URL('../bindings/structured-telemetry/fixtures/structured-telemetry-v1.json', import.meta.url), 'utf8'));
+  const negative = JSON.parse(readFileSync(new URL('../bindings/structured-telemetry/fixtures/structured-telemetry-negative-v1.json', import.meta.url), 'utf8'));
+  assert.deepEqual(negative.incompatibleRevisions.map((entry: { source: string }) => entry.source), ['record-absent', 'one-row']);
+  for (const entry of negative.incompatibleRevisions) {
+    const original = fixtures.positive.find((item: { id: string }) => item.id === entry.source);
+    assert.ok(original);
+    assert.equal(entry.wireUtf8, original.wireUtf8.replace('"version":2,', '"version":3,'));
+    assert.equal(decodePacket(entry.wireUtf8, 'disposable'), undefined);
+    assert.throws(() => encodePacket(JSON.parse(entry.wireUtf8), 'json/2'));
+  }
+});

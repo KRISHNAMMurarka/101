@@ -128,7 +128,11 @@ async function observeTransfer(label) {
     return owned.evaluate(index => ({ index, clock: 'this-page-performance', at: performance.now(),
       visibility: document.visibilityState, focused: document.hasFocus(),
       status: document.querySelector('#connected-sharing-status')?.textContent?.slice(0, 160),
+      padStatus: document.querySelector('#connected-sharing-pad-status')?.textContent?.slice(0, 160),
       pressDisabled: [...document.querySelectorAll('button')].find(button => button.textContent === 'Press')?.disabled,
+      transitions: globalThis.__connectedSharingTransitions?.(),
+      exclusive: { owner: document.querySelector('[data-testid="connected-owner-exclusive"]')?.textContent?.slice(0, 80),
+        held: document.querySelector('[data-testid="connected-output-exclusive"]')?.getAttribute('data-held') },
       events: globalThis.__connectedSharingEvents?.slice(-6), native: globalThis.__connectedSharingNative?.(),
     }), index);
   }));
@@ -149,6 +153,31 @@ async function nativeTracking(ownedContext) {
     observe('initial');
     for (const type of ['focus', 'blur', 'pagehide']) window.addEventListener(type, () => observe(type), { passive: true });
     document.addEventListener('visibilitychange', () => observe('visibilitychange'), { passive: true });
+    const transitions = []; let previous = '', lastRequest;
+    const snapshot = type => {
+      const controls = document.querySelector('[data-testid="connected-participant-controls"]');
+      if (!controls) return;
+      const buttons = [...controls.querySelectorAll('button')], press = buttons.find(button => button.textContent === 'Press');
+      const value = { status: document.querySelector('#connected-sharing-status')?.textContent?.slice(0, 160),
+        padStatus: document.querySelector('#connected-sharing-pad-status')?.textContent?.slice(0, 160), pressDisabled: press?.disabled,
+        requestAction: buttons.find(button => ['Stop my sharing', 'Cancel my request'].includes(button.textContent))?.textContent,
+        visibility: document.visibilityState };
+      const signature = JSON.stringify(value); if (type === 'dom' && signature === previous) return; previous = signature;
+      if (transitions.length === 32) transitions.shift(); transitions.push({ at: performance.now(), type, ...value });
+    };
+    // Observe the original native click and rendered state; never modify input,
+    // focus, visibility, clocks, consent, time bounds or product state.
+    document.addEventListener('click', event => {
+      const button = event.target instanceof Element ? event.target.closest('button') : undefined;
+      if (button && /^Request (?:whole play area|left side|right side)$/.test(button.textContent ?? '')) {
+        const duration = [...document.querySelectorAll('select')].find(select => select.closest('label')?.textContent?.startsWith('Sharing duration'))?.value;
+        lastRequest = { at: performance.now(), durationSeconds: Number(duration) }; snapshot('request-click');
+      }
+    }, { capture: true, passive: true });
+    document.addEventListener('visibilitychange', () => snapshot('visibilitychange'), { passive: true });
+    const observeDOM = () => { snapshot('initial'); new MutationObserver(() => snapshot('dom')).observe(document, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['disabled'] }); };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', observeDOM, { once: true }); else observeDOM();
+    Object.defineProperty(globalThis, '__connectedSharingTransitions', { value: () => ({ clock: 'this-page-performance', lastRequest, recent: transitions.slice(-4) }) });
     Object.defineProperty(globalThis, '__connectedSharingNative', { value: () => ({ issued, closed: [...peers].filter(peer => peer.connectionState === 'closed').length,
       open: [...peers].filter(peer => peer.connectionState !== 'closed').length,
       states: [...peers].map(peer => [peer.connectionState, peer.iceConnectionState]) }) });
@@ -430,13 +459,20 @@ const cleanup = { pageClosed: !page || page.isClosed(), contextPages: context ? 
   qaTimers: 0, qaSignalListeners: Number(process.listeners('SIGINT').includes(cancel)) + Number(process.listeners('SIGTERM').includes(cancel)),
   appServerOwnedByQA: false, errors: cleanupErrors.length };
 const intendedMissing = prefixComplete && missingActionObserved && failure instanceof assert.AssertionError && phase === 'connected-action' && cleanupErrors.length === 0 && !timedOut && !interrupted;
+let transferDiagnostics;
+if (!old) {
+  const bytes = JSON.stringify({ schemaVersion: 1, profile: 'connected-sharing-transfer-observations/1', observations: transferObservations }) + '\n';
+  assert.ok(Buffer.byteLength(bytes) <= 32768, 'Bounded separate read-only transfer observations');
+  const path = join(output, 'transfer-observations.json'); writeFileSync(path, bytes);
+  transferDiagnostics = { path, sha256: digest(bytes), bytes: Buffer.byteLength(bytes), maximumBytes: 32768 };
+}
 const receipt = { schemaVersion: 1, profile: old ? 'connected-sharing-old-action/1' : 'connected-page-sharing-native/1', result: failure || cleanupErrors.length ? 'fail' : 'pass', selector: old ? '--old-red' : '--connected', phase,
   classification: intendedMissing ? 'intended-old-missing-action-red' : failure || cleanupErrors.length ? 'unexpected-prerequisite-or-cleanup-failure' : old ? 'connected-action-present' : 'selected-native-journey-pass',
   prefixComplete, localOutputReleased, localSetupStopped, checks, limits, sourcePins, dependencyPins, sourceRevision, servedBuild,
   toolchain: { node: process.version, playwright, engine: engineName, browserVersion, executable: engine.executablePath() },
   nativeBrowserPid: child?.pid, pageErrors: errors.length, foreignRequests: foreign.length, requests, timedOut, interrupted, cleanup,
   clientReadiness: { entry: clientEntry, entryResponse, clientResponseCount, retainedClientResponses: clientResponseFacts },
-  nativeRTC: old ? undefined : nativeRTC, finalSharingReleased, transferObservations,
+  nativeRTC: old ? undefined : nativeRTC, finalSharingReleased, transferDiagnostics,
   scope: [old ? 'Actual existing same-page public SDK local producer and runtime effects; new connected action is checked only after that prefix.' : 'Actual three isolated browser contexts, native RTC/cryptographic bilateral enrollment and separately approved source/owner page-control effects. Wrapper observes genuine native peer construction/state, never substitutes a data producer.',
     old ? 'No page peer/native RTC enrollment, connected participant authority, observer, phone, OS pointer, hardware or full accessibility qualification.' : 'Selected native software journey only. No account identity, observer distribution, phone, OS pointer, cross-network or hardware/full accessibility claim. SDK-internal native crypto quiescence is not independently observable from this app caller.',
     'Caller owns loopback app server and endpoint-to-build attachment. Literal preserved server/client inventories and successful exact build record are verified; this tool starts no app server.'], published: false };

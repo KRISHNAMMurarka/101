@@ -11,9 +11,9 @@ import ts from 'typescript';
 import { chromium, firefox, webkit } from 'playwright';
 
 const root = resolve(import.meta.dirname, '..'), args = process.argv.slice(2), hash = bytes => createHash('sha256').update(bytes).digest('hex');
-assert.ok(args.length === 1 && args[0] === '--source' || args.length === 2 && ['--sdk-root', '--feature-red'].includes(args[0]), 'Use --source, --sdk-root OWNED_CONSUMER, or --feature-red OWNED_CONSUMER');
+assert.ok(args.length === 1 && ['--source', '--failures-source', '--freshness-source'].includes(args[0]) || args.length === 2 && ['--sdk-root', '--feature-red'].includes(args[0]), 'Use --source, --failures-source, --freshness-source, --sdk-root OWNED_CONSUMER, or --feature-red OWNED_CONSUMER');
 assert.equal(process.env.NODE_OPTIONS, undefined); assert.equal(process.env.NODE_PATH, undefined);
-const sourceMode = args[0] === '--source', feature = args[0] === '--feature-red';
+const sourceMode = ['--source', '--failures-source', '--freshness-source'].includes(args[0]), feature = args[0] === '--feature-red', failuresOnly = args[0] === '--failures-source', freshnessOnly = args[0] === '--freshness-source';
 const names = ['device-model', 'device-runtime', 'transport-webrtc', 'transport-websocket', 'device-web', 'vision', 'connect'];
 const paths = ['packages/device-runtime/src/media-synchronization.ts', 'packages/device-runtime/src/media-synchronization.test.ts',
   'examples/device-pipelines/media-synchronization.ts', 'tools/qa-media-synchronization.mjs'];
@@ -92,9 +92,10 @@ try {
 import * as api from '@101/connect';
 ${feature ? '' : "import {createMediaSynchronizationExample} from '@101/connect/examples/media-synchronization';"}
 const container=document.querySelector('#output'),NativeAudio=globalThis.OfflineAudioContext,NativeRaf=requestAnimationFrame;
-const checks=[],held=[];let owner,example,clockObserver,beforeApproval,beforeEffect,rawAudio=0,audioInstances=0,holdRaf=false,rawRaf=0;
+const checks=[],held=[],scheduleTrace=[];let owner,example,clockObserver,beforeApproval,beforeEffect,rawAudio=0,audioInstances=0,holdRaf=false,rawRaf=0;
 const startedAt=performance.now();function bounded(){if(performance.now()-startedAt>15000)throw Error('owned-software-fixture-deadline');}
-function check(ok,label){bounded();if(!ok||checks.length>=32)throw Error(label);checks.push(label);}
+function traceSchedule(label){if(!${failuresOnly || freshnessOnly})return;if(scheduleTrace.length>=32)throw Error('schedule-trace-bound');const s=example?.snapshot(),v=s?.synchronization;scheduleTrace.push({step:label,t:performance.now(),e:v?.epoch,r:v?.reason,n:v?.recoveryPairs,o:v?.offers,p:s?.painted,c:v?.pendingContexts});}
+function check(ok,label){bounded();if(!ok||checks.length>=32)throw Error(label+' '+JSON.stringify({scheduleTrace,current:example?.snapshot()}));checks.push(label);}
 const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function until(fn,ms=1500){const start=performance.now();while(!fn()){bounded();if(performance.now()-start>ms)throw Error('software-effect-deadline');await wait(10);}}
 if(NativeAudio)globalThis.OfflineAudioContext=class extends NativeAudio{constructor(...args){super(...args);audioInstances++;}startRendering(){rawAudio++;try{return super.startRendering().finally(()=>rawAudio--);}catch(error){rawAudio--;throw error;}}};
@@ -106,7 +107,7 @@ const paint=canvas.getContext('2d');paint.fillStyle='#e6e6e6';paint.fillRect(0,0
 }finally{input.getChannelData(0).fill(0);rendered?.getChannelData(0).fill(0);source.disconnect();source.buffer=null;canvas.width=canvas.height=1;}}
 async function reset(){release();if(example)await example.stop();clockObserver=beforeApproval=beforeEffect=undefined;owner=new AbortController();${feature ? '' : "example=createMediaSynchronizationExample(container,{ownerSignal:owner.signal,now(){const at=performance.now();clockObserver?.();return at;},beforeApproval(request){beforeApproval?.(request);},beforeEffect(){beforeEffect?.();}});"}}
 function consent(){for(const role of ['audio','video'])for(const side of ['source','sink'])example.setConsent(role,side,true);}
-async function samples(count=1,options={}){for(let index=0;index<count;index++){bounded();checkSample(example.sample(options));await wait(45);}}
+async function samples(count=1,options={}){for(let index=0;index<count;index++){bounded();traceSchedule('sample');checkSample(example.sample(options));traceSchedule('offered');await wait(45);traceSchedule('timer45');}}
 function checkSample(value){if(!value)throw Error('sample-admission-refused');}
 function snapshot(){return example.snapshot();}function pixel(){const canvas=container.querySelector('canvas');return canvas?[...canvas.getContext('2d').getImageData(8,8,1,1).data]:[0,0,0,0];}
 globalThis.fixture={prefix,async run(){const producer=await prefix();check(producer.supported&&producer.frames===256&&Math.abs(producer.rms-.25)<.001&&producer.pixel[0]===230,'real-owned-offline-pcm-and-raster-prefix');
@@ -131,6 +132,45 @@ check(snapshot().synchronization.pendingContexts===0&&snapshot().synchronization
 check(container.children.length===1&&container.firstElementChild.textContent==='Borrowed container sentinel'&&snapshot().raf===0&&snapshot().timers===0,'borrowed-children-preserved-owned-ports-timer-raf-retired');
 return{producer,checks,state:snapshot(),rawAudio,rawRaf,audioInstances,softwareImpairment:'owned-RAF-callback-delay',clockAuthentication:false,nativePcmCaptureMapping:'unknown',videoPtsMapping:'unknown',scanoutMapping:'unknown',physicalSynchronization:false};
 `}
+},async heldStop(){
+await reset();consent();check(await example.start(),'held-stop-actual-native-pcm-and-messageport-maps');
+check(snapshot().nativePcm.frames===256&&Math.abs(snapshot().nativePcm.rms-.25)<.001,'held-stop-native-pcm-prerequisite');
+// Verify acknowledgement when the second pair is actually offered. The
+// following cadence wait is a separate freshness precondition for the third.
+await samples(1);traceSchedule('sample2');checkSample(example.sample());traceSchedule('offered2');
+check(snapshot().painted===0&&snapshot().synchronization.recoveryPairs===2,'held-stop-two-pairs-acknowledged');
+await wait(45);traceSchedule('cadence');check(snapshot().synchronization.recoveryPairs===2,'held-stop-prerequisite-expired-during-cadence');
+holdRaf=true;checkSample(example.sample());await until(()=>held.length===1);
+check(snapshot().pendingRenders===1&&snapshot().synchronization.pendingContexts===2&&snapshot().synchronization.pendingEffects===1&&rawRaf===1,'already-issued-native-raf-held-with-final-pair');
+const beforeStop=snapshot(),retiredCanvas=container.querySelector('canvas'),nativeFill=CanvasRenderingContext2D.prototype.fillRect;let latePaintCalls=0,afterStop,afterRelease;
+try{
+ await example.stop();afterStop=snapshot();
+ check(afterStop.stopped&&afterStop.painted===0&&afterStop.pendingRenders===0&&afterStop.synchronization.pendingContexts===0&&afterStop.synchronization.pendingEffects===0&&!container.querySelector('canvas'),'logical-stop-retires-paired-work-and-output');
+ check(rawRaf===1&&held.length===1,'logical-stop-does-not-claim-external-wrapper-callback-settlement');
+ CanvasRenderingContext2D.prototype.fillRect=function(...args){if(this.canvas===retiredCanvas)latePaintCalls++;return nativeFill.apply(this,args);};
+ release();await wait(0);afterRelease=snapshot();
+ check(rawRaf===0&&held.length===0&&latePaintCalls===0&&afterRelease.painted===0&&!container.querySelector('canvas'),'released-final-render-callback-cannot-paint-or-reappend-after-stop');
+ check(afterRelease.pendingRenders===0&&afterRelease.pendingExchanges===0&&afterRelease.pendingAudio===0&&afterRelease.ports===0&&afterRelease.raf===0&&afterRelease.timers===0&&rawAudio===0,'held-stop-issued-callback-joined-and-all-owned-work-zero');
+}finally{CanvasRenderingContext2D.prototype.fillRect=nativeFill;release();await example.stop();}
+await reset();consent();check(await example.start(),'fresh-instance-after-held-stop');await samples(3);await until(()=>snapshot().painted>0);
+check(pixel()[0]===230&&snapshot().synchronization.state==='aligned-software-observations','fresh-native-raster-recovery-after-held-stop');
+await example.stop();check(container.children.length===1&&container.firstElementChild.textContent==='Borrowed container sentinel'&&rawRaf===0&&rawAudio===0&&snapshot().synchronization.pendingContexts===0,'held-stop-recovery-final-cleanup');
+return{scheduleTrace,checks,beforeStop,afterStop,afterRelease,latePaintCalls,final:snapshot(),rawAudio,rawRaf,softwareImpairment:'already-issued-owned-raf-wrapper-callback-held-through-Stop',externalWrapperCallbackAwaitedByStop:false,nativePcmCaptureMapping:'unknown',videoPtsMapping:'unknown',scanoutMapping:'unknown',physicalSynchronization:false};
+},async freshness(){
+await reset();consent();check(await example.start(),'freshness-actual-native-pcm-and-messageport-maps');
+checkSample(example.sample());await wait(45);checkSample(example.sample());traceSchedule('pause');
+const beforePause=snapshot(),pauseStartedAt=performance.now();check(beforePause.painted===0&&beforePause.synchronization.recoveryPairs===2,'freshness-two-pairs-actually-acknowledged');
+// One explicit owned main-thread pause; this is a negative scheduling fixture,
+// not a claim about the unrecorded historical Firefox scheduler interval.
+while(performance.now()-pauseStartedAt<125){}await until(()=>snapshot().synchronization.reason==='age-budget');
+const elapsed=performance.now()-pauseStartedAt,expired=snapshot();traceSchedule('expired');
+check(elapsed>100&&expired.synchronization.epoch>beforePause.synchronization.epoch&&expired.synchronization.recoveryPairs===0,'actual-gap-expires-recovery-history-under-original-100ms-bound');
+check(expired.painted===0&&expired.synchronization.pendingContexts===0&&expired.synchronization.pendingEffects===0&&!container.querySelector('canvas').getContext('2d').getImageData(8,8,1,1).data[3],'expired-prerequisite-has-no-visible-effect-or-retained-pair');
+check(await example.mapClocks(),'freshness-recovery-requires-new-native-messageport-maps');
+await samples(2);check(snapshot().painted===0&&snapshot().synchronization.recoveryPairs===2,'old-pairs-cannot-shortcut-fresh-three-pair-recovery');
+checkSample(example.sample());await until(()=>snapshot().painted>0);check(pixel()[0]===230,'freshness-new-third-pair-produces-real-raster');
+await example.stop();check(rawRaf===0&&rawAudio===0&&snapshot().pendingExchanges===0&&snapshot().synchronization.pendingContexts===0&&snapshot().ports===0&&snapshot().timers===0,'freshness-final-owned-work-joined');
+return{checks,scheduleTrace,beforePause,expired,actualPauseMs:elapsed,final:snapshot(),rawAudio,rawRaf,clock:'native-performance-now',controlledMainThreadPauseMs:125,originalAgeBudgetMs:100,historicalFirefoxCauseProven:false,physicalSynchronization:false};
 },async finish(){release();if(example)await example.stop();owner?.abort();}};globalThis.ready=true;
 </script></html>`;
   const server = createServer((request, response) => {
@@ -148,17 +188,19 @@ return{producer,checks,state:snapshot(),rawAudio,rawRaf,audioInstances,softwareI
       try {
         const page = await browser.newPage(), errors = [], foreign = [];
         page.on('pageerror', error => errors.push(error.message)); page.on('request', request => { if (!request.url().startsWith(origin + '/')) foreign.push(request.url()); });
-        await page.goto(origin); await page.waitForFunction(() => globalThis.ready); const prefix = await page.evaluate(() => globalThis.fixture.prefix());
+        await page.goto(origin); await page.waitForFunction(() => globalThis.ready); const prefix = failuresOnly || freshnessOnly ? undefined : await page.evaluate(() => globalThis.fixture.prefix());
         let result;
         try {
-          if (!prefix.supported) result = { unsupported: prefix.reason, missingFeatureClaim: false };
+          if (freshnessOnly) { result = await page.evaluate(() => globalThis.fixture.freshness()); assert.equal(result.checks.length, 8); assert.equal(result.rawAudio, 0); assert.equal(result.rawRaf, 0); }
+          else if (failuresOnly) { result = await page.evaluate(() => globalThis.fixture.heldStop()); assert.equal(result.checks.length, 12); assert.equal(result.latePaintCalls, 0); assert.equal(result.rawAudio, 0); assert.equal(result.rawRaf, 0); }
+          else if (!prefix.supported) result = { unsupported: prefix.reason, missingFeatureClaim: false };
           else { assert.ok(prefix.frames === 256 && Math.abs(prefix.rms - 0.25) < 0.001 && prefix.pixel[0] === 230, JSON.stringify({ engine: name, prefix }));
             result = await page.evaluate(() => globalThis.fixture.run());
             if (feature) { assert.equal(result.missingApi, true); genuineMissing ||= result.missingApi; }
             else assert.ok(result.checks.length >= 24 && result.rawAudio === 0 && result.rawRaf === 0 && result.state.synchronization.pendingContexts === 0);
           }
         } finally { await page.evaluate(() => globalThis.fixture.finish()); }
-        assert.deepEqual(errors, []); assert.deepEqual(foreign, []); results.push({ engine: name, nativePrefix: prefix, result, pageErrors: 0, foreignRequests: 0 });
+        assert.deepEqual(errors, []); assert.deepEqual(foreign, []); results.push({ engine: name, browserVersion: browser.version(), nativePrefix: prefix, result, pageErrors: 0, foreignRequests: 0 });
       } finally { await browser.close(); }
     }
   } finally { await new Promise(resolve => server.close(resolve)); }
@@ -167,7 +209,7 @@ return{producer,checks,state:snapshot(),rawAudio,rawRaf,audioInstances,softwareI
   for (const [path, pin] of compilerPins) assert.equal(hash(readFileSync(path)), pin);
   const proof = mkdtempSync(join(tmpdir(), '101-media-synchronization-proof-')), receipt = join(proof, 'provenance.json');
   writeFileSync(receipt, JSON.stringify({ pins, provenance, compilerPins: Object.fromEntries(compilerPins), node: process.version }, null, 2)); const bytes = readFileSync(receipt); assert.ok(bytes.length <= 256 * 1024);
-  const output = { result: 'pass', profile: 'software-media-observation-sync/1', results, provenance: { path: receipt, sha256: hash(bytes) }, ownedBrowsers: 0, ownedServers: 0,
+  const output = { result: 'pass', profile: 'software-media-observation-sync/1', selection: freshnessOnly ? 'native-scheduling-gap-refusal-and-fresh-recovery' : failuresOnly ? 'held-final-render-to-stop-only' : 'existing-software-sync-profile', results, provenance: { path: receipt, sha256: hash(bytes) }, ownedBrowsers: 0, ownedServers: 0,
     physicalSynchronization: false, speakerOrCameraPermission: false, nativeInternalQuiescenceClaim: false, fullV10Matrix: false };
   const serialized = JSON.stringify(output) + '\n'; assert.ok(Buffer.byteLength(serialized) <= 16384); process.stdout.write(serialized);
   if (feature) assert.equal(genuineMissing, false, 'actual native software producer works; selected public synchronization controller is missing');

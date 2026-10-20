@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": 32,
+  "revision": 33,
   "contract": "docs/platform/RELEASE-CONTRACT.md",
   "baseline": "32e0e37",
   "rows": [
@@ -3671,8 +3671,8 @@
         "runtimeVersion": "not admitted or qualified; exact installed build required",
         "formFactor": "console",
         "transport": "no console provider qualified",
-        "connector": "UWP receiver not implemented",
-        "connectorVersion": "not admitted or qualified",
+        "connector": "local authored pointer receiver source; UWP compilation unverified",
+        "connectorVersion": "unqualified source candidate; no installed version",
         "profiles": [],
         "resources": [],
         "unavailable": [
@@ -3700,7 +3700,8 @@
         "Release-local access decision checked 9 October 2026; CONSOLE-ACCESS.md defines its exact route.",
         "Empty resources and native evidence grant no usable console capability.",
         "Research does not establish SDK access, an installed receiver or physical support.",
-        "Documented retail Developer Mode/UWP route remains viable candidate work; N11 stays open."
+        "Documented retail Developer Mode/UWP route remains viable candidate work; N11 stays open.",
+        "18 October local authored receiver passes selected desktop browser checks; UWP host/build source exists. No Windows compile, installed Xbox runtime, native lifecycle or console navigation proof."
       ],
       "requiredLevels": [
         "implementation",

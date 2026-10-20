@@ -48,15 +48,15 @@ export async function runExtensionInstallationExample(directory, phase) {
       const stored = take(await store.readRelease(v1.packageId, v1.version)); assert.deepEqual(stored.source, source1);
       assert.equal(await verifyProcessorExtensionRelease(stored.release, stored.source, publicKey), true);
       granted = false;
-      // Import is still fixed reviewed code; the new denied activation cannot execute its factory.
-      const { createTemperatureBand } = await import('../external-processor/processor.mjs');
+      // Import the verified dependency-free bytes; denied activation cannot execute the factory.
+      const { createTemperatureBand } = await import(`data:text/javascript;base64,${Buffer.from(source1).toString('base64')}`);
       const denied = await store.activateReviewed({ packageId: v1.packageId, version: v1.version, codeSha256: v1.source.sha256,
         trusted: { manifest: v1.manifest, source: source1, factory: createTemperatureBand }, fixture: vectors(false), configuration, retireOwned() {} });
       assert.equal(denied.ok, false);
       return { phase, inactiveAfterCleanProcessRestart: true, realBytesAndSignatureReverified: true, deniedFreshApproval: true };
     }
     if (phase === 'activate-and-close') {
-      const { createTemperatureBand } = await import('../external-processor/processor.mjs');
+      const { createTemperatureBand } = await import(`data:text/javascript;base64,${Buffer.from(source1).toString('base64')}`);
       const activation = take(await store.activateReviewed({ packageId: v1.packageId, version: v1.version, codeSha256: v1.source.sha256,
         trusted: { manifest: v1.manifest, source: source1, factory: createTemperatureBand }, fixture: vectors(false), configuration, retireOwned() {} }));
       assert.deepEqual(activation.processor.process({ temperature: 30 }), { switch: true });
@@ -65,9 +65,9 @@ export async function runExtensionInstallationExample(directory, phase) {
       return { phase, realActivation: true, selectedHistoryPersisted: true, ownedAuthorityRetiredBeforeExit: true };
     }
     assert.equal(phase, 'lifecycle');
-    // Both releases have already passed signature, complete manifest pin and actual bytes verification above.
-    const firstFactory = (await import('../external-processor/processor.mjs')).createTemperatureBand;
-    const secondFactory = (await import('./temperature-band-v2.mjs')).createTemperatureBand;
+    // Both dependency-free modules are evaluated from the exact bytes verified above.
+    const firstFactory = (await import(`data:text/javascript;base64,${Buffer.from(source1).toString('base64')}`)).createTemperatureBand;
+    const secondFactory = (await import(`data:text/javascript;base64,${Buffer.from(source2).toString('base64')}`)).createTemperatureBand;
     const scalar = { type: 'scalar', unit: 'Cel', min: -40, max: 125 }, boolean = { type: 'boolean' };
     const device = (id, capabilities) => ({ schemaVersion: 1, id, label: id, revision: 1,
       adapter: { id: 'example:extension-host', version: '1.0.0' }, runtime: { platform: 'node' }, capabilities });

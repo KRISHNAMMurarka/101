@@ -20,6 +20,12 @@ in [task evidence](task-evidence.json), record `threat-model-enrollment-2026-10-
 The exact previous body remains in the same managed collection as
 `artifacts/01_context/threat_model-4af38ec.md`.
 
+The 18 October reconciliation could not retrieve either documented artifact under
+the moved `/Users/km/Dev/101` root; the previous repository directory is absent.
+S01 retains its recorded historical completion, with evidence-pointer recovery
+pending. The model digest is recorded; current body availability is unverified.
+[Exact lookup results](../../outputs/controllers/2026-10-18-reconciliation/completed-audit.json).
+
 The model covers network peers, owner grants, native privilege, package and
 processor execution, directory membership, media/privacy, gateways and operators.
 It separates implemented controls from future requirements and hypothetical
@@ -1703,7 +1709,7 @@ two-child snapshot handoff, expiry, cancellation and teardown. Reproduce with
 --workspace-exports`. This named provider uses public source exports; it is not
 part of the seven packed browser SDK artifacts. Cross-host/network service,
 encoded media, audio, arbitrary applications, OS input, physical display and
-general platform qualification remain unavailable here. R09 remains open.
+general platform qualification remain unavailable here. The later [cross-host workload receipt](receipts/2026-10-07-cross-host-workload.json) completes R09 for its selected local Node software profile; these broader exclusions remain separate qualification work.
 
 ## Sparse runtime load qualification
 
@@ -1985,7 +1991,7 @@ Limits are four package slots, two retained source releases per package, 16 reme
 
 An async deadline retires the operation's authority but keeps its issued promise reserved until that promise actually settles. Further operations return `busy` while storage, approval or other awaited work remains unresolved; after settlement, an explicit new operation may start. Late approval cannot restart the retired operation. `close()` still retires authority synchronously; callers separately close their storage, and this API does not promise native-operation quiescence.
 
-`examples/extension-installation/consumer.mjs` verifies both bytes and signatures before importing its two fixed reviewed local implementations. Its real route-backed caller changes the temperature threshold, exercises update and rollback, cancels queued effects, denies an unapproved route and reloads inactive in fresh processes. This is trusted in-process code: host factory binding, synchronous cleanup and checking `activation.isCurrent()` before effects remain explicit host obligations. Untrusted code isolation, synchronous hang preemption, connector/native/dependency/asset profiles and physical qualification remain open under E10.
+`examples/extension-installation/consumer.mjs` and the direct processor imports in `examples/operator-drills/operator-drills.ts` lazily evaluate the exact signed-verified, dependency-free source bytes using Node data URLs. [The byte-binding regression](receipts/2026-10-16-verified-byte-factories.json) retains a genuine old path-substitution failure, corrected activation and the actual three-drill flow. Its real route-backed caller changes the temperature threshold, exercises update and rollback, cancels queued effects, denies an unapproved route and reloads inactive in fresh processes. This is trusted in-process code: host factory binding, synchronous cleanup and checking `activation.isCurrent()` before effects remain explicit host obligations. Untrusted code isolation, synchronous hang preemption, connector/native/dependency/asset profiles and physical qualification remain open under E10.
 
 ## Durable browser processor installations
 
@@ -3464,15 +3470,24 @@ unverified. This is a cooperative host example, not an OS sandbox.
 `node tools/qa-clipboard-resources.mjs --source` proves the selected native
 source caller. The installed-context helper missed its readiness bound in
 preserved tests, including asynchronous launch; that qualification remains open.
-No warm-up, retry or deadline relaxation establishes support. General clipboard,
-application operations and the full N16 matrix remain open.
+No warm-up, retry or deadline relaxation establishes support. General clipboard
+and the full N16 matrix remain open. The existing fixed hosted application has a
+separate native launch/input/frame/handoff/stop profile; its public-source client
+also checks copied and wrong-scope approvals, unselected program/path/destination
+refusal, pre-aborted calls, frame and launch revocation, and joined cleanup.
+Revocation prevents future provider reads and projections; copies already
+returned to an authorized caller remain that caller's responsibility.
 
-## Scoped loopback SSH metadata example
+## Scoped loopback SSH operations
 
 `examples/terminal-resources` provisions a new disposable non-root loopback
 OpenSSH host with private ephemeral client/server keys and an exact host-key pin.
-Its fixed forced command emits typed platform/architecture metadata and actual
-producer-clock provenance. It offers no arbitrary shell, PTY, forwarding, agent,
+Its fixed dispatcher offers `readMetadata` and `readFixtureSummary`. The latter
+reads only one reviewed, pinned document and returns its actual SHA-256, byte
+count, line count and producer-clock provenance under
+`loopback-openssh-fixture-summary/1`. Command and sensitive-result grants use
+distinct operation resource IDs. The dispatcher and document identity, mode and
+bytes are checked before native dispatch. It offers no arbitrary shell, PTY, forwarding, agent,
 existing account/key access or remote host selector. The host lasts fifteen
 seconds; a command has a 2.5-second deadline and 1,024-byte output ceiling.
 
@@ -3484,7 +3499,9 @@ fresh controller. Mutable delivery revocation propagates through its real signal
 connection or command approval cannot create it. Cancellation fences late data
 while retaining the actual child reservation until close. Reconnect provisions
 fresh host identity and fresh approvals. The installed ordinary public SDK
-caller verifies the selected metadata profile; broader terminal operations,
+caller verifies the selected metadata profile. The summary caller exercises
+separate command/result approval, issued cancellation and fresh-host reconnect;
+broader terminal operations,
 remote hosts, other platforms and the full N15 qualification remain open.
 
 ## Selected browser camera raster
@@ -4255,6 +4272,25 @@ Current owner approval gates output, and `close()` fences authority immediately
 but awaits actual Worker exit. Runtime resource grants remain separate. Generic
 connectors, dependencies/assets, native privileges, total RSS and full S14
 qualification remain open.
+
+`createNodeProcessorHost()` adds a fixed admission profile for hosts that map
+each authorized application/session to one retained opaque scope. `createScope()`
+admits at most four live scopes; a scope's `create(options)` reserves one executor
+through verification, startup and actual Worker exit. Each executor admits at
+most 1 MiB of guest data and 256 KiB of source. Each scope has a 100 ms declared
+compute token bucket, replenished at 100 ms per second; the host has a 400 ms
+bucket replenished at 400 ms per second across scope turnover. Construction,
+process and reset each charge their declared worst case before issuance. Failed
+work and close do not refund charges. Excess work returns `budget` or rejects
+creation with `processor-budget`; capacity is refused without a queue.
+
+The host must retain the same scope across an application's executor restarts.
+Only trusted host approval may create or distribute scopes. The lower-level
+`createNodeProcessorExecutor` remains host-managed. These admission bounds do not
+measure actual CPU or bound parent parsing/validation, total RSS, arbitrary
+trusted factories or transport service capacity. Full S14/F05 acceptance remains
+open. A separate approved source-to-sink control effect is tested after another
+scope exhausts its allowance; host close joins admitted startups and actual exits.
 
 [Scoped four-lane local software evidence](receipts/2026-10-08-local-software.json) retains genuine OLD witnesses, the independent source review and matching public callers from the seven-package SDK (186 inputs, 411 installed files). The final Node-only consumer records seven checks and strict NodeNext/Bundler types. All four checklist rows and broader qualification remain open; final candidate gates have separate retained evidence.
 

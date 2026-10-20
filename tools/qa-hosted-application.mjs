@@ -24,6 +24,16 @@ try {
   const { runHostedApplicationExample } = await import('../examples/hosted-application/consumer.mjs');
   const result = await runHostedApplicationExample(); assert.deepEqual(pins(), before);
   for (const [path, digest] of dependencies) assert.equal(sha(readFileSync(join(root, path))), digest, 'Actual dependency bytes unchanged');
+  function privateFieldsAbsent(value) {
+    if (!value || typeof value !== 'object') return;
+    for (const [key, entry] of Object.entries(value)) {
+      assert.equal(['capability', 'socketPath', 'state', 'target', 'signal', 'request', 'mac'].includes(key), false, 'Receipt omits private application data and authority');
+      if (key === 'bytes') { assert.equal(value, result.nativeRaster); assert.equal(entry, 64); }
+      if (key === 'pixels') { assert.equal(value, result.limits); assert.equal(entry, 16); }
+      privateFieldsAbsent(entry);
+    }
+  }
+  privateFieldsAbsent(result);
   const text = JSON.stringify(result); assert.equal(text.includes('"capability":'), false); assert.equal(text.includes('"socketPath":'), false); assert.equal(text.includes('"pixels":'), true); // only the fixed public pixel count limit
   console.log(JSON.stringify({ ...result, sourceRoot: root, sourcePins: before, publicResolutions: resolutions, dependencyPins: Object.fromEntries([...dependencies].sort(([a], [b]) => a.localeCompare(b))),
     provenance: { ordinaryPublicSourceImports: true, installedSDK: false, separateNativeApplication: true, fixedReviewedChild: true, sourceHashesFrozen: true, nativeRendering: true, physicalRendering: false } }, null, 2));

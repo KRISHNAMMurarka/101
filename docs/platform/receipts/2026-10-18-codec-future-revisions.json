@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-18",
+  "acceptance": false,
+  "integrated": false,
+  "wholeTasksClosed": [],
+  "acceptedSupportRows": 0,
+  "custodyRef": "refs/codex/evidence/2026-10-18-checklist-followthrough/final",
+  "tasks": [
+    "Q02"
+  ],
+  "classification": "selected structured telemetry supported-version map and two shared future-wire negatives",
+  "productionChanges": false,
+  "sourceSha256": {
+    "bindings/structured-telemetry/fixtures/structured-telemetry-negative-v1.json": "7388a982972696f8bbd8d1c4fc26ce7f49c114b64671732132539cd1eb28ad53",
+    "tests/structured-telemetry-bindings.test.ts": "05c63afd582b3ba71d3afaf507c035bf3402d22d26f1abf6e7d80841a9d6578a",
+    "bindings/structured-telemetry/swift/Tests/One01StructuredTelemetryWireTests/StructuredTelemetryWireTests.swift": "b22a9962288b45adc64349c2d88b292834038572361c17186457a3680d60550c",
+    "bindings/structured-telemetry/kotlin/src/test/kotlin/one01/structuredtelemetry/StructuredTelemetryWireTests.kt": "4f81a6df6e0940bddfe7a5c134d1bd9c670fe9c6d1b062e2baf39f245f9639b6",
+    "bindings/structured-telemetry/c/structured_telemetry_wire_test.c": "1a41bc922c9e8efedfc47cf3dfb50b33156665d81a4756c5b4d6d96e4600a1bd",
+    "tools/build-structured-telemetry-bindings.mjs": "36e9610b10779a191974e4667814f5d791b751bb0eeb72f9cbc29d6388b089ae"
+  },
+  "report": {
+    "path": "outputs/controllers/2026-10-18-codec-revision-followthrough/report.json",
+    "sha256": "b030c9221b5cadda06648e29050e78a21d5648ec35abe1f2b2e574ecdb394b59"
+  },
+  "fixtureMap": {
+    "path": "outputs/controllers/2026-10-18-codec-revision-followthrough/fixture-map.json",
+    "sha256": "c4bf54fdffd6f90abe487d3b10b9cb6e025b516ce7bcb4502876eac879aa090c"
+  },
+  "runs": {
+    "path": "outputs/controllers/2026-10-18-codec-revision-followthrough/runs.json",
+    "sha256": "7c447d63d8b117c1ff96ea42d2df6459bc8328b686f973f8edfb37a380696374"
+  },
+  "newExecution": {
+    "sharedNewRevisionFixtures": 2,
+    "executedLanguageCasePairs": 8,
+    "jsTests": 1,
+    "swiftTests": 1,
+    "kotlinAssertions": 4,
+    "cCases": 2
+  },
+  "packaging": "The existing three builders already copy/hash the expanded negative fixture. Swift full test-count assertion moves from 8 to 9; Kotlin future checks join its default suite and C future checks join its existing closed-envelope group. Selective native paths permit only the new cases to run.",
+  "firstFailures": [],
+  "qualification": "All new checks pass existing decoders. Shared raw record/table bytes differ from their actual golden specimens only at wire version2\u21923; eight language/case pairs reject them. Profile /1, wire2, descriptor revisions and artifact versions are distinguished. Prior accepted-version/duplicate-key evidence is reused at exact unchanged producer pins.",
+  "cleanup": {
+    "path": "outputs/controllers/2026-10-18-codec-revision-followthrough/cleanup.json",
+    "sha256": "a3b2bbfc08bde4403699393f5222793590eba00dbf42cbee0bc3012715fb185f"
+  },
+  "review": {
+    "path": "outputs/controllers/2026-10-18-local-checklist-review/codec-review.json",
+    "sha256": "2e9caab83464da7853f3c823737580e5d67f538d9d698017f03b3031b5100e63"
+  },
+  "limits": [
+    "Only the declared /1 selected semantics and envelope 2 exist; no additional format, language target or revision support was added.",
+    "JS general transport validation and native selected schema validation intentionally differ.",
+    "The historic C synthetic record-version-3 check already existed; this change connects C to both shared producer-derived raw revision cases and adds the table specimen.",
+    "No full current immutable artifact builder, full native suite, current SDK pack, startup capture, physical sensor, delivery or cross-host acceptance was run.",
+    "All other codec families, producers, bindings and full Q02/Q03 remain outside this finite inventory.",
+    "No rebuilt native distributable, full current native suite or whole Q02/Q03 acceptance."
+  ]
+}
