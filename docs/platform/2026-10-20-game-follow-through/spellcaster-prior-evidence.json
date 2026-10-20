@@ -1,0 +1,47 @@
+[
+  {
+    "receipt": "docs/platform/receipts/2026-10-18-spellcaster-controls-restart.json",
+    "sha256": "4ff4139ee99bdd3fff4728e9c7806d9433b99da5d49ee0d9d37ef251ca553059",
+    "raw": "outputs/controllers/2026-10-18-spellcaster-control-followthrough/report.json",
+    "controlMatrix": {
+      "path": "outputs/controllers/2026-10-18-spellcaster-control-followthrough/controls-matrix.json",
+      "sha256": "cec9a349454a6a0063e761a06e4006f0210e069da143fa521e14d5ddc8303ae8"
+    },
+    "note": "Reuse completed historical Spellcaster actions/aim scope for planning; shared SDK/local input changed during move, so do not present historical full-runtime proof as a newly run current candidate.",
+    "semanticPinsCompared": {
+      "count": 0,
+      "matches": [],
+      "differs": [],
+      "producerTree": "05f85cebf8b4860e5e6c907c855db65fdddd6d6d"
+    }
+  },
+  {
+    "receipt": "docs/platform/receipts/2026-10-18-spellcaster-aim.json",
+    "sha256": "aadcaf620aec1a81d4a6b4856d8de4ba25634961145fea45569f72a52fa5cd1c",
+    "raw": "outputs/controllers/2026-10-18-spellcaster-aim/report.json",
+    "controlMatrix": {
+      "path": "outputs/controllers/2026-10-18-spellcaster-aim/controls-matrix.json",
+      "sha256": "b9cafbb7e47565a09a6c1271729fa4054eab20275b987549252daefdec88e351"
+    },
+    "note": "Reuse completed historical Spellcaster actions/aim scope for planning; shared SDK/local input changed during move, so do not present historical full-runtime proof as a newly run current candidate.",
+    "semanticPinsCompared": {
+      "count": 7,
+      "matches": [
+        "games/spellcaster/input.manifest.json",
+        "games/spellcaster/manifest.json",
+        "games/spellcaster/src/director.test.ts",
+        "games/spellcaster/src/director.ts",
+        "games/spellcaster/src/game.ts"
+      ],
+      "differs": [
+        "games/spellcaster/package.json",
+        "games/spellcaster/src/roles.ts"
+      ],
+      "producerTree": "90864e18a0b09063b4505e5295c62c4e94edfc72",
+      "differenceExplanation": {
+        "games/spellcaster/package.json": "Session dependency renamed to game-host during approved split.",
+        "games/spellcaster/src/roles.ts": "Only type-only SessionRole import path changed; declared layout content unchanged."
+      }
+    }
+  }
+]

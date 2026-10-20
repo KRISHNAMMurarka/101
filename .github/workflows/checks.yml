@@ -13,22 +13,28 @@ jobs:
         with:
           path: 101
           fetch-depth: 0
-      # The sibling repository is private. Its read credential is an external
+      # The sibling repositories are private. Their read credential is an external
       # integration requirement; an absent credential must not produce a green gate.
-      - name: Require access to the platform dependency
+      - name: Require access to the platform and shared kit
         env:
           CONNECT_READ_TOKEN: ${{ secrets.CONNECT_READ_TOKEN }}
         run: |
           if [ -z "$CONNECT_READ_TOKEN" ]; then
-            echo 'Connect checkout requires the repository CONNECT_READ_TOKEN secret. External integration remains deferred until configured.'
+            echo 'Connect and kit checkout require the repository CONNECT_READ_TOKEN secret with read access to both. External integration remains deferred until configured.'
             exit 1
           fi
       - uses: actions/checkout@v4
         with:
           repository: edilec-global/uynis-connect
-          ref: 65c1aa59e1f5ee6cc7aa7c1857a69b11afb51134
+          ref: 3a8b43f9fc846a9a5590cb8032f4d31c5d6abd46
           token: ${{ secrets.CONNECT_READ_TOKEN }}
           path: uynis-connect
+      - uses: actions/checkout@v4
+        with:
+          repository: edilec-global/uynis-kit
+          ref: 4e2446293a495813e53cd89c0844a5bd071c114f
+          token: ${{ secrets.CONNECT_READ_TOKEN }}
+          path: uynis-kit
       - uses: actions/setup-node@v4
         with:
           node-version: 24

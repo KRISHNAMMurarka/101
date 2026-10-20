@@ -1,0 +1,6324 @@
+{
+  "task": "G06",
+  "wholeTaskClosed": false,
+  "report": "outputs/controllers/conventional-game-journeys-2026-10-20T12-44-29.228Z/report.json",
+  "reportSha256": "58a29d20faa257efd5ad067de1e6721375f5c97dd52167113023fb57a03f9f06",
+  "scope": "One desktop 1280x800 dark real-time native-RAF journey per game in Chromium and WebKit. Actual keyboard and local role controls; natural game end, result semantics/focus, Space restart and fresh-run input effects. No clock/game-state/render overrides, retries, camera, physical controller, phone or assistive-technology qualification.",
+  "sourcePinsUnchanged": true,
+  "buildPinsUnchanged": true,
+  "finishedAt": "2026-10-20T13:01:07.125Z",
+  "counts": {
+    "attempted": 20,
+    "fullSelectedJourneys": 20,
+    "lifecycleWithControlGaps": 0,
+    "failed": 0,
+    "running": 0,
+    "observedCells": 82,
+    "listedCells": 512,
+    "offeredCells": 488,
+    "unobservedOfferedCells": 406
+  },
+  "cleanup": {
+    "contextsClosed": true,
+    "browsersClosed": true,
+    "serverClosed": true
+  },
+  "failures": [],
+  "limits": [
+    "Conventional controls are offered when the input manifest declares keyboard support or an on-page role layout declares the control; other cells are explicitly not-offered.",
+    "Gamepad/phone physical paths, heard assistive-technology announcements and complete neutral-release qualification remain unverified.",
+    "Prior completed Spellcaster action/aim evidence is separately retained; not relabeled as a current-SDK rerun."
+  ],
+  "cells": [
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "armsRaised",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "armsRaised",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "dodgeX",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "dodgeX",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "lean",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "lean",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "body.move",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "body.move",
+          "via": "keyboard ArrowLeft; fresh LEFT gate",
+          "consumerEffectObserved": true,
+          "observation": {
+            "event": "LEFT CLEAR",
+            "comboBefore": 1,
+            "comboAfter": "\u00d72"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "body.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "armsRaised",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "armsRaised",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "dodgeX",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "dodgeX",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "lean",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "lean",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "body.move",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "body.move",
+          "via": "keyboard ArrowRight; fresh RIGHT gate",
+          "consumerEffectObserved": true,
+          "observation": {
+            "event": "RIGHT CLEAR",
+            "comboBefore": 0,
+            "comboAfter": "\u00d71"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "body.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "armsRaised",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "armsRaised",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "dodgeX",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "dodgeX",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "lean",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "lean",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "body.move",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "body.move",
+          "via": "keyboard ArrowLeft; fresh LEFT gate",
+          "consumerEffectObserved": true,
+          "observation": {
+            "event": "LEFT CLEAR",
+            "comboBefore": 1,
+            "comboAfter": "\u00d72"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "body.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "armsRaised",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "armsRaised",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "dodgeX",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "dodgeX",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "lean",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "lean",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "body.move",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "body.move",
+          "via": "keyboard ArrowRight; fresh RIGHT gate",
+          "consumerEffectObserved": true,
+          "observation": {
+            "event": "RIGHT CLEAR",
+            "comboBefore": 0,
+            "comboAfter": "\u00d71"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "bodydodge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "body.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "boost",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "boost",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "BOOST BURN"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "boost",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "brake",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "brake",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "brake",
+          "via": "local Driver BRAKE native range held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "speedBefore": 164,
+            "speedAfter": 68
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "drift",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "drift",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "steer",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "steer",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "boost",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "boost",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "BOOST BURN"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "boost",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "brake",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "brake",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "brake",
+          "via": "local Driver BRAKE native range held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "speedBefore": 164,
+            "speedAfter": 68
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "drift",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "drift",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "steer",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "steer",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "boost",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "boost",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "BOOST BURN"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "boost",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "brake",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "brake",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "brake",
+          "via": "local Driver BRAKE native range held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "speedBefore": 159,
+            "speedAfter": 69
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "drift",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "drift",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "steer",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "steer",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "boost",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "boost",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "BOOST BURN"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "boost",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "brake",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "brake",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "brake",
+          "via": "local Driver BRAKE native range held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "speedBefore": 156,
+            "speedAfter": 68
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "drift",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "drift",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "steer",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "tiltdrift",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "steer",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "fire",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "fire",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "fortify",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "fortify",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "vent",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "vent",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "overdrive",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "overdrive",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "overdrive",
+          "via": "local role reactor/OVERDRIVE, held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "heatBefore": 12,
+            "heatAfter": 14
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "emergency",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "emergency",
+          "via": "keyboard KeyR (also requests power1)",
+          "consumerEffectObserved": true,
+          "observation": "SHIP STATUS\nEMERGENCY RECALL DEPLOYED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "emergency",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "power",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "power",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "flight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "flight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "target",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "target",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "fire",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "fire",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "fortify",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "fortify",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "vent",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "vent",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "overdrive",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "overdrive",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "overdrive",
+          "via": "local role reactor/OVERDRIVE, held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "heatBefore": 12,
+            "heatAfter": 14
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "emergency",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "emergency",
+          "via": "keyboard KeyR (also requests power1)",
+          "consumerEffectObserved": true,
+          "observation": "SHIP STATUS\nEMERGENCY RECALL DEPLOYED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "emergency",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "power",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "power",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "flight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "flight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "target",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "target",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "fire",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "fire",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "fortify",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "fortify",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "vent",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "vent",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "overdrive",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "overdrive",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "overdrive",
+          "via": "local role reactor/OVERDRIVE, held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "heatBefore": 12,
+            "heatAfter": 14
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "emergency",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "emergency",
+          "via": "keyboard KeyR (also requests power1)",
+          "consumerEffectObserved": true,
+          "observation": "SHIP STATUS\nEMERGENCY RECALL DEPLOYED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "emergency",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "power",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "power",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "flight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "flight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "target",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "target",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "fire",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "fire",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "fortify",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "fortify",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "vent",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "vent",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "overdrive",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "overdrive",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "overdrive",
+          "via": "local role reactor/OVERDRIVE, held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "heatBefore": 12,
+            "heatAfter": 14
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "emergency",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "emergency",
+          "via": "keyboard KeyR (also requests power1)",
+          "consumerEffectObserved": true,
+          "observation": "SHIP STATUS\nEMERGENCY RECALL DEPLOYED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "emergency",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "power",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "power",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "flight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "flight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "target",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "orbitalcrew",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "target",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.punchLeft",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "combat.punchLeft",
+          "via": "keyboard KeyJ",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nLEFT PUNCH CUT THE AIR\nLEFT PUNCH"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.punchLeft",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.punchRight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.punchRight",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "combat.punchRight",
+          "via": "local role fighter/RIGHT PUNCH, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nRIGHT PUNCH CUT THE AIR\nRIGHT PUNCH"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.block",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.block",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.special",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.special",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "combat.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "combat.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.punchLeft",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "combat.punchLeft",
+          "via": "keyboard KeyJ",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nLEFT PUNCH CUT THE AIR\nLEFT PUNCH"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.punchLeft",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.punchRight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.punchRight",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "combat.punchRight",
+          "via": "local role fighter/RIGHT PUNCH, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nRIGHT PUNCH CUT THE AIR\nRIGHT PUNCH"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.block",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.block",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.special",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.special",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "combat.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "combat.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.punchLeft",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "combat.punchLeft",
+          "via": "keyboard KeyJ",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nLEFT PUNCH CUT THE AIR\nLEFT PUNCH"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.punchLeft",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.punchRight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.punchRight",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "combat.punchRight",
+          "via": "local role fighter/RIGHT PUNCH, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nRIGHT PUNCH CUT THE AIR\nRIGHT PUNCH"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.block",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.block",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.special",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.special",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "combat.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "combat.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.punchLeft",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "combat.punchLeft",
+          "via": "keyboard KeyJ",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nLEFT PUNCH CUT THE AIR\nLEFT PUNCH"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.punchLeft",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.punchRight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.punchRight",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "combat.punchRight",
+          "via": "local role fighter/RIGHT PUNCH, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nRIGHT PUNCH CUT THE AIR\nRIGHT PUNCH"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.block",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.block",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.jump",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "combat.special",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "combat.special",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "combat.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "shadowarena",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "combat.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.grab",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.grab",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.projectile",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.projectile",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.charge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "spell.cast.charge",
+          "via": "keyboard KeyC",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 1/3\nLAST CAST \u00b7 CHARGE"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.charge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "spell.cast.charge",
+          "via": "local role sorcerer/CHARGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 2/3\nLAST CAST \u00b7 CHARGE"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.blade",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.blade",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.vortex",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.vortex",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "spell.aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "spell.aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.grab",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.grab",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.projectile",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.projectile",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.charge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "spell.cast.charge",
+          "via": "keyboard KeyC",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 1/3\nLAST CAST \u00b7 CHARGE"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.charge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "spell.cast.charge",
+          "via": "local role sorcerer/CHARGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 2/3\nLAST CAST \u00b7 CHARGE"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.blade",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.blade",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.vortex",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.vortex",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "spell.aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "spell.aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.grab",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.grab",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.projectile",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.projectile",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.charge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "spell.cast.charge",
+          "via": "keyboard KeyC",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 1/3\nLAST CAST \u00b7 CHARGE"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.charge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "spell.cast.charge",
+          "via": "local role sorcerer/CHARGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 2/3\nLAST CAST \u00b7 CHARGE"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.blade",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.blade",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.vortex",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.vortex",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "spell.aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "spell.aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.grab",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.grab",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.projectile",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.projectile",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.charge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "spell.cast.charge",
+          "via": "keyboard KeyC",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 1/3\nLAST CAST \u00b7 CHARGE"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.charge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "spell.cast.charge",
+          "via": "local role sorcerer/CHARGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 2/3\nLAST CAST \u00b7 CHARGE"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.blade",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.blade",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "spell.cast.vortex",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "spell.cast.vortex",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "spell.aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "spellcaster",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "spell.aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.select",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.select",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.cluster",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.cluster",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.line",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "swarm.formation.line",
+          "via": "keyboard Digit2",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nLINE FORMATION LOCKED\nLINE \u00b7 ALL ASSIGNED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.line",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.wedge",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.wedge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "swarm.formation.wedge",
+          "via": "local role tactician/WEDGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nWEDGE FORMATION LOCKED\nWEDGE \u00b7 ALL ASSIGNED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.ring",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.ring",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.grid",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.grid",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.pulse",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.pulse",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.recall",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.recall",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "swarm.direction",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "swarm.direction",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "swarm.command",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "swarm.command",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.select",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.select",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.cluster",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.cluster",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.line",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "swarm.formation.line",
+          "via": "keyboard Digit2",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nLINE FORMATION LOCKED\nLINE \u00b7 ALL ASSIGNED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.line",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.wedge",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.wedge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "swarm.formation.wedge",
+          "via": "local role tactician/WEDGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nWEDGE FORMATION LOCKED\nWEDGE \u00b7 ALL ASSIGNED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.ring",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.ring",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.grid",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.grid",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.pulse",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.pulse",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.recall",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.recall",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "swarm.direction",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "swarm.direction",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "swarm.command",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "swarm.command",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.select",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.select",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.cluster",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.cluster",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.line",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "swarm.formation.line",
+          "via": "keyboard Digit2",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nLINE FORMATION LOCKED\nLINE \u00b7 ALL ASSIGNED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.line",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.wedge",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.wedge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "swarm.formation.wedge",
+          "via": "local role tactician/WEDGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nWEDGE FORMATION LOCKED\nWEDGE \u00b7 ALL ASSIGNED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.ring",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.ring",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.grid",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.grid",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.pulse",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.pulse",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.recall",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.recall",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "swarm.direction",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "swarm.direction",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "swarm.command",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "swarm.command",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.select",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.select",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.cluster",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.cluster",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.line",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "swarm.formation.line",
+          "via": "keyboard Digit2",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nLINE FORMATION LOCKED\nLINE \u00b7 ALL ASSIGNED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.line",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.wedge",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.wedge",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "swarm.formation.wedge",
+          "via": "local role tactician/WEDGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nWEDGE FORMATION LOCKED\nWEDGE \u00b7 ALL ASSIGNED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.ring",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.ring",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.formation.grid",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.formation.grid",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.pulse",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.pulse",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.shield",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "swarm.ability.recall",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "swarm.ability.recall",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "swarm.direction",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "swarm.direction",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "swarm.command",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "swarmcommander",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "swarm.command",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.left",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.left",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.right",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.right",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.punch",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "beat.punch",
+          "via": "keyboard Space timed to visible native countdown",
+          "consumerEffectObserved": true,
+          "observation": {
+            "scoreBefore": 0,
+            "scoreAfter": 80
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.punch",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.raise",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.raise",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.swing",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.swing",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "gesture",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "gesture",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.left",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.left",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.right",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.right",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.punch",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "beat.punch",
+          "via": "keyboard Space timed to visible native countdown",
+          "consumerEffectObserved": true,
+          "observation": {
+            "scoreBefore": 0,
+            "scoreAfter": 106
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.punch",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.raise",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.raise",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.swing",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.swing",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "gesture",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "gesture",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.left",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.left",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.right",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.right",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.punch",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "beat.punch",
+          "via": "keyboard Space timed to visible native countdown",
+          "consumerEffectObserved": true,
+          "observation": {
+            "scoreBefore": 0,
+            "scoreAfter": 80
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.punch",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.raise",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.raise",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.swing",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.swing",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "gesture",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "gesture",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.left",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.left",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.right",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.right",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.punch",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "beat.punch",
+          "via": "keyboard Space timed to visible native countdown",
+          "consumerEffectObserved": true,
+          "observation": {
+            "scoreBefore": 0,
+            "scoreAfter": 80
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.punch",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.raise",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.raise",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.duck",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "beat.swing",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "beat.swing",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "gesture",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "beatforge",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "gesture",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "slash",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "slash",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "trigger",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "trigger",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "pause",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "pause",
+          "via": "keyboard Escape",
+          "consumerEffectObserved": true,
+          "observation": "Resume and Paused status visible"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "pause",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "pause",
+          "via": "local role sword-one/Pause / resume, Space",
+          "consumerEffectObserved": true,
+          "observation": "Pause button visible after resume"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "move",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "slash",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "slash",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "trigger",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "trigger",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "pause",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "pause",
+          "via": "keyboard Escape",
+          "consumerEffectObserved": true,
+          "observation": "Resume and Paused status visible"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "pause",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "pause",
+          "via": "local role sword-one/Pause / resume, Space",
+          "consumerEffectObserved": true,
+          "observation": "Pause button visible after resume"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "move",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "slash",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "slash",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "trigger",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "trigger",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "pause",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "pause",
+          "via": "keyboard Escape",
+          "consumerEffectObserved": true,
+          "observation": "Resume and Paused status visible"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "pause",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "pause",
+          "via": "local role sword-one/Pause / resume, Space",
+          "consumerEffectObserved": true,
+          "observation": "Pause button visible after resume"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "move",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "slash",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "slash",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "trigger",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "trigger",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "pause",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "pause",
+          "via": "keyboard Escape",
+          "consumerEffectObserved": true,
+          "observation": "Resume and Paused status visible"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "pause",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "pause",
+          "via": "local role sword-one/Pause / resume, Space",
+          "consumerEffectObserved": true,
+          "observation": "Pause button visible after resume"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "aim",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "slashstorm",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "move",
+      "status": "not-offered",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "drop",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "drop",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES1 and actual dropped event"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "drop",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "drop",
+          "via": "local role builder/DROP SHAPE, Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES2"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "placeX",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "placeX",
+          "via": "keyboard KeyD",
+          "consumerEffectObserved": true,
+          "observation": {
+            "beforeGuide": "left: 50%;",
+            "afterGuide": "left: 89.0465%;"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "placeX",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "gravity",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "gravity",
+          "via": "keyboard ArrowRight",
+          "consumerEffectObserved": true,
+          "observation": {
+            "vectorBefore": "transform: rotate(0deg);",
+            "vectorAfter": "transform: rotate(-81.7074deg);"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "gravity",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "drop",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "drop",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES1 and actual dropped event"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "drop",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "drop",
+          "via": "local role builder/DROP SHAPE, Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES2"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "placeX",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "placeX",
+          "via": "keyboard KeyD",
+          "consumerEffectObserved": true,
+          "observation": {
+            "beforeGuide": "left: 50%;",
+            "afterGuide": "left: 82.4119%;"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "placeX",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "gravity",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "gravity",
+          "via": "keyboard ArrowRight",
+          "consumerEffectObserved": true,
+          "observation": {
+            "vectorBefore": "transform: rotate(0deg);",
+            "vectorAfter": "transform: rotate(-80.3876deg);"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "gravity",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "drop",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "drop",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES1 and actual dropped event"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "drop",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "drop",
+          "via": "local role builder/DROP SHAPE, Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES2"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "placeX",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "placeX",
+          "via": "keyboard KeyD",
+          "consumerEffectObserved": true,
+          "observation": {
+            "beforeGuide": "left: 50%;",
+            "afterGuide": "left: 89.976449%;"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "placeX",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "gravity",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "gravity",
+          "via": "keyboard ArrowRight",
+          "consumerEffectObserved": true,
+          "observation": {
+            "vectorBefore": "transform: rotate(0deg);",
+            "vectorAfter": "transform: rotate(-81.435178deg);"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "gravity",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "drop",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "drop",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES1 and actual dropped event"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "drop",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "drop",
+          "via": "local role builder/DROP SHAPE, Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES2"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "axes",
+      "control": "placeX",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "placeX",
+          "via": "keyboard KeyD",
+          "consumerEffectObserved": true,
+          "observation": {
+            "beforeGuide": "left: 50%;",
+            "afterGuide": "left: 89.951589%;"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "axes",
+      "control": "placeX",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "gravity",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "gravity",
+          "via": "keyboard ArrowRight",
+          "consumerEffectObserved": true,
+          "observation": {
+            "vectorBefore": "transform: rotate(0deg);",
+            "vectorAfter": "transform: rotate(-82.218295deg);"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "gravitystack",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "gravity",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.scan",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.scan",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.flashlight",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "maze.flashlight",
+          "via": "keyboard KeyF",
+          "consumerEffectObserved": true,
+          "observation": "FLASHLIGHT CLOSED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.flashlight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.mark",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.mark",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "maze.mark",
+          "via": "local role scanner/MARK, Space",
+          "consumerEffectObserved": true,
+          "observation": "FIELD LOG\nPLACE MARKED\n1 place marked"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "maze.move",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "maze.move",
+          "via": "actual keyboard walking; source model route plan/public clue verified after each step",
+          "consumerEffectObserved": true,
+          "observation": {
+            "steps": 561,
+            "floorNumber": 6,
+            "health": "0%"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "maze.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "maze.scanDirection",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "maze.scanDirection",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.scan",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.scan",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.flashlight",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "maze.flashlight",
+          "via": "keyboard KeyF",
+          "consumerEffectObserved": true,
+          "observation": "FLASHLIGHT CLOSED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.flashlight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.mark",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.mark",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "maze.mark",
+          "via": "local role scanner/MARK, Space",
+          "consumerEffectObserved": true,
+          "observation": "FIELD LOG\nPLACE MARKED\n1 place marked"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "maze.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "maze.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "maze.scanDirection",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "chromium",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "maze.scanDirection",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.scan",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.scan",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.flashlight",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "maze.flashlight",
+          "via": "keyboard KeyF",
+          "consumerEffectObserved": true,
+          "observation": "FLASHLIGHT CLOSED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.flashlight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.mark",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.mark",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "maze.mark",
+          "via": "local role scanner/MARK, Space",
+          "consumerEffectObserved": true,
+          "observation": "FIELD LOG\nPLACE MARKED\n1 place marked"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "maze.move",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "maze.move",
+          "via": "actual keyboard walking; source model route plan/public clue verified after each step",
+          "consumerEffectObserved": true,
+          "observation": {
+            "steps": 561,
+            "floorNumber": 6,
+            "health": "0%"
+          }
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "maze.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "maze.scanDirection",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "initial",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "maze.scanDirection",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.scan",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.scan",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.flashlight",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "maze.flashlight",
+          "via": "keyboard KeyF",
+          "consumerEffectObserved": true,
+          "observation": "FLASHLIGHT CLOSED"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.flashlight",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "actions",
+      "control": "maze.mark",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "actions",
+      "control": "maze.mark",
+      "status": "observed",
+      "observations": [
+        {
+          "action": "maze.mark",
+          "via": "local role scanner/MARK, Space",
+          "consumerEffectObserved": true,
+          "observation": "FIELD LOG\nPLACE MARKED\n1 place marked"
+        }
+      ],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "maze.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "maze.move",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "keyboard",
+      "kind": "vectors",
+      "control": "maze.scanDirection",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    },
+    {
+      "game": "echomaze",
+      "engine": "webkit",
+      "phase": "after-restart",
+      "mode": "local-role",
+      "kind": "vectors",
+      "control": "maze.scanDirection",
+      "status": "unobserved",
+      "observations": [],
+      "attemptStatus": "pass"
+    }
+  ]
+}

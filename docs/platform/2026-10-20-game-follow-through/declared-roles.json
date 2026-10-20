@@ -1,0 +1,707 @@
+{
+  "bodydodge": [
+    {
+      "id": "mover",
+      "label": "Movement Panel",
+      "playerId": "player-1",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "haptics"
+      ],
+      "layout": {
+        "title": "Body Movement",
+        "accent": "#b5ff66",
+        "layout": [
+          {
+            "type": "dpad",
+            "action": "body.move",
+            "label": "STEP / LEAN"
+          },
+          {
+            "type": "button",
+            "action": "duck",
+            "label": "DUCK"
+          },
+          {
+            "type": "button",
+            "action": "jump",
+            "label": "JUMP",
+            "emphasis": "primary"
+          },
+          {
+            "type": "button",
+            "action": "armsRaised",
+            "label": "ARMS UP"
+          }
+        ]
+      }
+    }
+  ],
+  "tiltdrift": [
+    {
+      "id": "driver",
+      "label": "Driver",
+      "playerId": "player-1",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "gyroscope",
+        "haptics"
+      ],
+      "layout": {
+        "title": "Steering Wheel",
+        "accent": "#50e3ff",
+        "handedness": "right",
+        "motion": {
+          "action": "steer",
+          "mode": "tilt",
+          "label": "Phone tilt"
+        },
+        "layout": [
+          {
+            "type": "joystick",
+            "action": "steer",
+            "label": "WHEEL",
+            "side": "left",
+            "zone": "thumb",
+            "size": "large",
+            "span": 2,
+            "priority": 100,
+            "deadZone": 0.14,
+            "responseCurve": 1.35
+          },
+          {
+            "type": "trigger",
+            "action": "boost",
+            "label": "BOOST",
+            "side": "right",
+            "zone": "index",
+            "size": "large",
+            "priority": 100
+          },
+          {
+            "type": "analog-button",
+            "action": "brake",
+            "label": "BRAKE",
+            "side": "right",
+            "zone": "thumb",
+            "size": "large",
+            "priority": 90
+          },
+          {
+            "type": "shoulder",
+            "action": "drift",
+            "label": "DRIFT",
+            "side": "right",
+            "zone": "shoulder",
+            "size": "medium",
+            "priority": 80
+          }
+        ]
+      }
+    }
+  ],
+  "orbitalcrew": [
+    {
+      "id": "pilot",
+      "label": "Pilot",
+      "playerId": "role-pilot",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "gyroscope"
+      ],
+      "layout": {
+        "title": "Flight Control",
+        "accent": "#50e3ff",
+        "motion": {
+          "action": "flight",
+          "mode": "tilt",
+          "label": "Phone tilt"
+        },
+        "layout": [
+          {
+            "type": "joystick",
+            "action": "flight",
+            "label": "FLIGHT VECTOR"
+          },
+          {
+            "type": "button",
+            "action": "overdrive",
+            "label": "EVASIVE BOOST",
+            "emphasis": "primary"
+          }
+        ]
+      }
+    },
+    {
+      "id": "weapons",
+      "label": "Weapons",
+      "playerId": "role-weapons",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "layout": {
+        "title": "Weapons Array",
+        "accent": "#ff5c35",
+        "layout": [
+          {
+            "type": "touch-surface",
+            "action": "target",
+            "label": "TARGET VECTOR"
+          },
+          {
+            "type": "button",
+            "action": "fire",
+            "label": "FIRE",
+            "emphasis": "danger"
+          }
+        ]
+      }
+    },
+    {
+      "id": "shields",
+      "label": "Shield Orientation",
+      "playerId": "role-shields",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "layout": {
+        "title": "Shield Control",
+        "accent": "#b5ff66",
+        "layout": [
+          {
+            "type": "slider",
+            "action": "shield",
+            "label": "ORIENTATION",
+            "min": -1,
+            "max": 1,
+            "step": 0.01
+          },
+          {
+            "type": "button",
+            "action": "fortify",
+            "label": "FORTIFY",
+            "emphasis": "primary"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reactor",
+      "label": "Reactor",
+      "playerId": "role-reactor",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "layout": {
+        "title": "Reactor Routing",
+        "accent": "#f8d96a",
+        "layout": [
+          {
+            "type": "slider",
+            "action": "power",
+            "label": "OUTPUT",
+            "min": 0.2,
+            "max": 1,
+            "step": 0.01
+          },
+          {
+            "type": "button",
+            "action": "vent",
+            "label": "VENT HEAT",
+            "emphasis": "normal"
+          },
+          {
+            "type": "button",
+            "action": "overdrive",
+            "label": "OVERDRIVE",
+            "emphasis": "danger"
+          }
+        ]
+      }
+    },
+    {
+      "id": "emergency",
+      "label": "Emergency Response",
+      "playerId": "role-emergency",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "haptics"
+      ],
+      "layout": {
+        "title": "Emergency Station",
+        "accent": "#d368ff",
+        "layout": [
+          {
+            "type": "button",
+            "action": "emergency",
+            "label": "RECALL + SHIELD",
+            "emphasis": "danger"
+          }
+        ]
+      }
+    }
+  ],
+  "shadowarena": [
+    {
+      "id": "fighter",
+      "label": "Arena Fighter",
+      "playerId": "role-fighter",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "haptics"
+      ],
+      "layout": {
+        "title": "Shadow Fighter",
+        "accent": "#f98b70",
+        "layout": [
+          {
+            "type": "dpad",
+            "action": "combat.move",
+            "label": "MOVE / EVADE"
+          },
+          {
+            "type": "button",
+            "action": "combat.punchLeft",
+            "label": "LEFT PUNCH"
+          },
+          {
+            "type": "button",
+            "action": "combat.punchRight",
+            "label": "RIGHT PUNCH",
+            "emphasis": "primary"
+          },
+          {
+            "type": "button",
+            "action": "combat.block",
+            "label": "BLOCK"
+          },
+          {
+            "type": "button",
+            "action": "combat.jump",
+            "label": "JUMP"
+          },
+          {
+            "type": "button",
+            "action": "combat.duck",
+            "label": "DUCK"
+          },
+          {
+            "type": "button",
+            "action": "combat.special",
+            "label": "SHADOW BURST",
+            "emphasis": "danger"
+          }
+        ]
+      }
+    }
+  ],
+  "spellcaster": [
+    {
+      "id": "sorcerer",
+      "label": "Arcane Caster",
+      "playerId": "role-sorcerer",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "gyroscope",
+        "haptics"
+      ],
+      "layout": {
+        "title": "Arcane Focus",
+        "accent": "#7dfbd7",
+        "motion": {
+          "action": "spell.aim",
+          "mode": "wand",
+          "label": "Aim + physical casting",
+          "gestures": {
+            "swing": "spell.cast.blade",
+            "shake": "spell.cast.shield",
+            "spin": "spell.cast.vortex"
+          }
+        },
+        "layout": [
+          {
+            "type": "touch-surface",
+            "action": "spell.aim",
+            "label": "ARCANE AIM"
+          },
+          {
+            "type": "button",
+            "action": "spell.cast.projectile",
+            "label": "PROJECTILE",
+            "emphasis": "primary"
+          },
+          {
+            "type": "button",
+            "action": "spell.cast.shield",
+            "label": "SHIELD"
+          },
+          {
+            "type": "button",
+            "action": "spell.cast.grab",
+            "label": "GRAB"
+          },
+          {
+            "type": "button",
+            "action": "spell.cast.blade",
+            "label": "BLADE"
+          },
+          {
+            "type": "button",
+            "action": "spell.cast.charge",
+            "label": "CHARGE"
+          },
+          {
+            "type": "button",
+            "action": "spell.cast.vortex",
+            "label": "VORTEX",
+            "emphasis": "danger"
+          }
+        ]
+      }
+    }
+  ],
+  "swarmcommander": [
+    {
+      "id": "navigator",
+      "label": "Swarm Navigator",
+      "playerId": "role-navigator",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "gyroscope",
+        "haptics"
+      ],
+      "layout": {
+        "title": "Swarm Vector",
+        "accent": "#f6c15c",
+        "motion": {
+          "action": "swarm.direction",
+          "mode": "tilt",
+          "label": "Tilt collective direction"
+        },
+        "layout": [
+          {
+            "type": "joystick",
+            "action": "swarm.direction",
+            "label": "COLLECTIVE VECTOR"
+          },
+          {
+            "type": "button",
+            "action": "swarm.ability.recall",
+            "label": "INSTANT RECALL",
+            "emphasis": "danger"
+          },
+          {
+            "type": "button",
+            "action": "swarm.ability.shield",
+            "label": "EMERGENCY SHIELD",
+            "emphasis": "primary"
+          }
+        ]
+      }
+    },
+    {
+      "id": "tactician",
+      "label": "Formation Tactician",
+      "playerId": "role-tactician",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "haptics"
+      ],
+      "layout": {
+        "title": "Formation Command",
+        "accent": "#50e3ff",
+        "layout": [
+          {
+            "type": "touch-surface",
+            "action": "swarm.command",
+            "label": "COMMAND TARGET"
+          },
+          {
+            "type": "button",
+            "action": "swarm.select",
+            "label": "SELECT REGION"
+          },
+          {
+            "type": "button",
+            "action": "swarm.formation.cluster",
+            "label": "CLUSTER"
+          },
+          {
+            "type": "button",
+            "action": "swarm.formation.line",
+            "label": "LINE"
+          },
+          {
+            "type": "button",
+            "action": "swarm.formation.wedge",
+            "label": "WEDGE",
+            "emphasis": "primary"
+          },
+          {
+            "type": "button",
+            "action": "swarm.formation.ring",
+            "label": "RING"
+          },
+          {
+            "type": "button",
+            "action": "swarm.formation.grid",
+            "label": "GRID"
+          },
+          {
+            "type": "button",
+            "action": "swarm.ability.pulse",
+            "label": "ION PULSE",
+            "emphasis": "danger"
+          }
+        ]
+      }
+    }
+  ],
+  "beatforge": [
+    {
+      "id": "performer",
+      "label": "Movement Performer",
+      "playerId": "role-performer",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "gyroscope",
+        "haptics"
+      ],
+      "layout": {
+        "title": "Beat Performer",
+        "accent": "#ff73c9",
+        "motion": {
+          "action": "gesture",
+          "mode": "wand",
+          "label": "Swing direction",
+          "gestures": {
+            "swing": "beat.swing"
+          }
+        },
+        "layout": [
+          {
+            "type": "touch-surface",
+            "action": "gesture",
+            "pressAction": "beat.swing",
+            "label": "SWING DIRECTION"
+          },
+          {
+            "type": "button",
+            "action": "beat.left",
+            "label": "LEFT SLASH"
+          },
+          {
+            "type": "button",
+            "action": "beat.right",
+            "label": "RIGHT SLASH"
+          },
+          {
+            "type": "button",
+            "action": "beat.punch",
+            "label": "PUNCH",
+            "emphasis": "primary"
+          },
+          {
+            "type": "button",
+            "action": "beat.raise",
+            "label": "RAISE"
+          },
+          {
+            "type": "button",
+            "action": "beat.duck",
+            "label": "DUCK"
+          }
+        ]
+      }
+    }
+  ],
+  "slashstorm": [
+    {
+      "id": "sword-one",
+      "label": "Sword One",
+      "playerId": "player-1",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "gyroscope",
+        "haptics"
+      ],
+      "layout": {
+        "title": "Sword One",
+        "accent": "#ff5c35",
+        "layout": [
+          {
+            "type": "touch-surface",
+            "action": "aim",
+            "pressAction": "trigger",
+            "label": "Swipe to slice",
+            "size": "large"
+          },
+          {
+            "type": "button",
+            "action": "pause",
+            "label": "Pause / resume"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sword-two",
+      "label": "Sword Two",
+      "playerId": "player-2",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "gyroscope",
+        "haptics"
+      ],
+      "layout": {
+        "title": "Sword Two",
+        "accent": "#50e3ff",
+        "layout": [
+          {
+            "type": "touch-surface",
+            "action": "aim",
+            "pressAction": "trigger",
+            "label": "Swipe to slice",
+            "size": "large"
+          },
+          {
+            "type": "button",
+            "action": "pause",
+            "label": "Pause / resume"
+          }
+        ]
+      }
+    }
+  ],
+  "gravitystack": [
+    {
+      "id": "gravity",
+      "label": "Gravity Controller",
+      "playerId": "role-gravity",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "gyroscope"
+      ],
+      "layout": {
+        "title": "Gravity Vector",
+        "accent": "#9e8cff",
+        "motion": {
+          "action": "gravity",
+          "mode": "tilt",
+          "label": "Phone tilt"
+        },
+        "layout": [
+          {
+            "type": "touch-surface",
+            "action": "gravity",
+            "label": "DOWN VECTOR"
+          }
+        ]
+      }
+    },
+    {
+      "id": "builder",
+      "label": "Shape Builder",
+      "playerId": "role-builder",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "layout": {
+        "title": "Builder Crane",
+        "accent": "#f8d96a",
+        "layout": [
+          {
+            "type": "slider",
+            "action": "placeX",
+            "label": "DROP POSITION",
+            "min": -1,
+            "max": 1,
+            "step": 0.01
+          },
+          {
+            "type": "button",
+            "action": "drop",
+            "label": "DROP SHAPE",
+            "emphasis": "primary"
+          }
+        ]
+      }
+    }
+  ],
+  "echomaze": [
+    {
+      "id": "scanner",
+      "label": "Echo Scanner",
+      "playerId": "role-scanner",
+      "requiredCapabilities": [
+        "touch"
+      ],
+      "preferredCapabilities": [
+        "gyroscope",
+        "haptics",
+        "speaker"
+      ],
+      "layout": {
+        "title": "Echo Scanner",
+        "accent": "#80a8ff",
+        "motion": {
+          "action": "maze.scanDirection",
+          "mode": "tilt",
+          "label": "Rotate to sweep the dark"
+        },
+        "layout": [
+          {
+            "type": "dpad",
+            "action": "maze.move",
+            "label": "NAVIGATE"
+          },
+          {
+            "type": "touch-surface",
+            "action": "maze.scanDirection",
+            "label": "SCANNER BEARING"
+          },
+          {
+            "type": "button",
+            "action": "maze.scan",
+            "label": "PING",
+            "emphasis": "primary"
+          },
+          {
+            "type": "button",
+            "action": "maze.flashlight",
+            "label": "LIGHT"
+          },
+          {
+            "type": "button",
+            "action": "maze.mark",
+            "label": "MARK"
+          }
+        ]
+      }
+    }
+  ]
+}

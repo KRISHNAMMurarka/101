@@ -20,7 +20,8 @@ const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const games = ['bodydodge', 'tiltdrift', 'orbitalcrew', 'shadowarena', 'spellcaster', 'swarmcommander', 'beatforge', 'slashstorm', 'gravitystack', 'echomaze'];
 const walk = path => readdirSync(resolve(root, path), { withFileTypes: true }).flatMap(entry => entry.isDirectory()
   ? walk(`${path}/${entry.name}`) : [`${path}/${entry.name}`]);
-const sourcePaths = [...walk('games').filter(path => !path.includes('/node_modules/') && /\.(ts|json)$/.test(path)),
+const sourcePaths = [...walk('packages/game-host/src'), ...walk('app/games').filter(path => path.endsWith('Standalone.tsx')),
+  'app/lib/session-id.ts', 'app/lib/use-game-host.ts', ...walk('games').filter(path => !path.includes('/node_modules/') && /\.(ts|json)$/.test(path)),
   ...walk('app/components').filter(path => /\.(tsx?|css)$/.test(path)), ...connectSdkFiles(root),
   ...walk('packages/input/src'), ...walk('packages/sdk/src'), ...walk('packages/maze/src'), ...walk('packages/core/src'),
   'app/controller/Controller.tsx', 'app/globals.css', 'tools/qa-conventional-game-journeys.mjs'];
@@ -36,7 +37,7 @@ for (const game of games) {
   assert.ok(roles[game]);
 }
 const report = { schemaVersion: 1, startedAt: new Date().toISOString(), expectedBuild, sourceSha256, buildSha256,
-  scope: 'One desktop 1280x800 dark real-time native-RAF journey per game in Chromium and WebKit. Actual keyboard and local role controls; natural game end, result semantics/focus and Space restart. No clock/game-state/render overrides, retries, camera, physical controller, phone or assistive-technology qualification.',
+  scope: 'One desktop 1280x800 dark real-time native-RAF journey per game in Chromium and WebKit. Actual keyboard and local role controls; natural game end, result semantics/focus, Space restart and fresh-run input effects. No clock/game-state/render overrides, retries, camera, physical controller, phone or assistive-technology qualification.',
   boundsMs: { ordinaryGame: 180000, swarmcommander: 300000, echomaze: 480000, browser: 2100000 }, results: [],
   priorComplementaryEvidence: 'outputs/controllers/2026-10-16-game-control-repair/browser-final.json covers54 selected Echo/Beat controls on prior combined build6de; not substituted for current journey results.',
   cleanup: { contextsClosed: false, browsersClosed: false, serverClosed: false } };
@@ -84,7 +85,12 @@ async function controls(page, game, field, row) {
     const c = await roleButton(page, game, 'maze.mark'); await pulse(page, 'Space'); await waitText(page, '.echo-event [role="status"]', /^1 place marked$/); effect(c.action, `local role ${c.role}/${c.label}, Space`, await page.locator('.echo-event').innerText());
   } else if (game === 'orbitalcrew') {
     await pulse(page, 'KeyR'); await waitText(page, '.orbital-alert strong', /EMERGENCY RECALL DEPLOYED/); effect('emergency', 'keyboard KeyR (also requests power1)', await page.locator('.orbital-alert').innerText());
-    row.controls.push({ action: 'emergency', via: 'local emergency role', consumerEffectObserved: false, reason: 'Recall cooldown prevents immediate independent second activation; no second attempt made.' });
+    const heatBefore = parseFloat(await page.locator('.vital-heat strong').textContent());
+    const c = await roleButton(page, game, 'overdrive', 'reactor');
+    await page.keyboard.down('Space');
+    try { await page.waitForFunction(before => parseFloat(document.querySelector('.vital-heat strong')?.textContent) > before + 1, heatBefore, { timeout: 4000 }); }
+    finally { await page.keyboard.up('Space'); }
+    effect(c.action, `local role ${c.role}/${c.label}, held Space`, { heatBefore, heatAfter: parseFloat(await page.locator('.vital-heat strong').textContent()) });
   } else if (game === 'tiltdrift') {
     await pulse(page, 'Space', 350); await waitText(page, '.drift-event', /BOOST BURN/); effect('boost', 'keyboard Space', await page.locator('.drift-event').innerText());
     // Driver analog brake is represented by a native range, not a button role.
@@ -104,17 +110,21 @@ async function controls(page, game, field, row) {
     await pulse(page, 'Space');
     const after = Number(await page.locator('.beat-stats strong').nth(1).textContent()); assert.ok(after > before); effect('beat.punch', 'keyboard Space timed to visible native countdown', { scoreBefore: before, scoreAfter: after });
   } else if (game === 'bodydodge') {
+    // Wait for an actionable gate and a fresh combo judgment; CENTER is not input evidence.
+    await page.waitForFunction(() => document.querySelector('.body-next strong')?.textContent !== 'CENTER' && parseFloat(document.querySelector('.body-next small')?.textContent ?? '') > 4, null, { timeout: 7000 });
     const label = (await page.locator('.body-next strong').textContent()).trim();
-    const key = { LEFT: 'ArrowLeft', RIGHT: 'ArrowRight', DUCK: 'ArrowDown', JUMP: 'Space', 'ARMS UP': 'KeyE', 'LEAN LEFT': 'ArrowLeft', 'LEAN RIGHT': 'ArrowRight' }[label];
-    if (key) await page.keyboard.down(key);
-    await waitText(page, '.body-event', /CLEAR$/, 6000);
-    if (key) await page.keyboard.up(key);
-    effect(key ? `first gate ${label}` : 'first center gate', key ? `keyboard ${key}` : 'neutral conventional position', await page.locator('.body-event').innerText());
-    row.controls.push({ action: 'other body controls', consumerEffectObserved: false, reason: 'No body state exposed in public HUD; this journey verifies only the first gate judgment.' });
+    const key = { LEFT: 'ArrowLeft', RIGHT: 'ArrowRight', DUCK: 'ArrowDown', JUMP: 'Space', ARMS: 'KeyE', 'ARMS UP': 'KeyE', 'LEAN LEFT': 'ArrowLeft', 'LEAN RIGHT': 'ArrowRight' }[label];
+    assert.ok(key, `declared gate key ${label}`);
+    const before = Number((await page.locator('.body-stats strong').nth(3).textContent()).replace('×', ''));
+    await page.keyboard.down(key);
+    try { await page.waitForFunction(({ before, label }) => Number(document.querySelectorAll('.body-stats strong')[3]?.textContent.replace('×', '')) > before && document.querySelector('.body-event')?.textContent === `${label} CLEAR`, { before, label }, { timeout: 5000 }); }
+    finally { await page.keyboard.up(key); }
+    const action = label === 'JUMP' ? 'jump' : label === 'DUCK' ? 'duck' : label.startsWith('ARMS') ? 'armsRaised' : /LEAN/.test(label) ? 'lean' : 'body.move';
+    effect(action, `keyboard ${key}; fresh ${label} gate`, { event: await page.locator('.body-event').innerText(), comboBefore: before, comboAfter: await page.locator('.body-stats strong').nth(3).textContent() });
   }
   await closeDeck(page, field);
 }
-async function gravityEnd(page, row, result) {
+async function gravityControls(page, row) {
   await page.waitForFunction(() => /Ready to play/.test(document.querySelector('.gravity-statusbar')?.textContent ?? ''), null, { timeout: 10000 });
   const beforeGuide = await page.locator('.gravity-drop-guide').getAttribute('style');
   await pulse(page, 'KeyD', 400);
@@ -130,6 +140,9 @@ async function gravityEnd(page, row, result) {
   await page.keyboard.down('ArrowRight'); await page.waitForTimeout(800); await page.keyboard.up('ArrowRight');
   const vectorAfter = await page.locator('.gravity-vector').getAttribute('style'); assert.notEqual(vectorBefore, vectorAfter);
   row.controls.push({ action: 'gravity', via: 'keyboard ArrowRight', consumerEffectObserved: true, observation: { vectorBefore, vectorAfter } });
+}
+async function gravityEnd(page, row, result) {
+  await gravityControls(page, row);
   for (let drop = 0; drop < 4 && !(await result.count()); drop++) { await pulse(page, 'Space'); await page.waitForTimeout(500); }
   await result.waitFor({ timeout: 15000 });
   row.endEvidence = await page.locator('.gravity-vitals').innerText();
@@ -207,7 +220,12 @@ try {
           }
           if (game === 'gravitystack') await gravityEnd(page, row, result);
           else if (game === 'echomaze') await echoEnd(page, row, result, began + bound - 10000);
-          else await result.waitFor({ timeout: Math.max(1, bound - (performance.now() - began) - 10000) });
+          else if (game === 'orbitalcrew') {
+            await page.keyboard.down('KeyF'); await page.keyboard.down('Space');
+            try { await result.waitFor({ timeout: Math.max(1, bound - (performance.now() - began) - 10000) }); }
+            finally { await page.keyboard.up('Space'); await page.keyboard.up('KeyF'); }
+            row.endEvidence = { via: 'ordinary held keyboard F+Space heat/hull loss; combined fire not independently attributed', vitals: await page.locator('.ship-vitals').innerText() };
+          } else await result.waitFor({ timeout: Math.max(1, bound - (performance.now() - began) - 10000) });
           row.naturalEndMs = performance.now() - began; row.checks.push('natural run end');
           const again = result.getByRole('button', { name: 'Play again' });
           assert.equal(await again.evaluate(element => element === document.activeElement), true, 'result owns actual keyboard focus');
@@ -218,10 +236,17 @@ try {
           await page.keyboard.press('Space'); await result.waitFor({ state: 'detached' });
           await page.waitForFunction(() => document.activeElement?.matches('canvas[tabindex="0"],.gravity-stage'));
           row.checks.push('native Space restarts and returns field focus');
+          const fresh = { controls: [] };
+          try {
+            if (game === 'gravitystack') await gravityControls(page, fresh);
+            else await controls(page, game, field, fresh);
+            row.checks.push('fresh-run actual declared input effects');
+          } catch (error) { row.restartControlFailure = { message: error.message, snapshot: await publicSnapshot(page) }; await closeDeck(page, field); }
+          row.restartControls = fresh.controls;
           await page.getByRole('button', { name: 'Back', exact: true }).click(); await page.waitForURL(origin + `/games/${game}`);
           row.checks.push('Back returns to chooser');
           assert.deepEqual(row.errors, []);
-          row.status = row.controlFailure ? 'journey-pass-control-gap' : 'pass';
+          row.status = row.controlFailure || row.restartControlFailure ? 'journey-pass-control-gap' : 'pass';
         } catch (error) {
           row.status = 'fail'; row.failure = { message: error.message, stack: error.stack };
           try { row.failure.snapshot = await publicSnapshot(page); await page.screenshot({ path: resolve(output, `${engineName}-${game}-failure.png`) }); } catch { /* A closed failed context may no longer yield a diagnostic image. */ }
@@ -242,6 +267,7 @@ finally {
   report.journeysPassed = report.results.filter(row => row.status === 'pass' || row.status === 'journey-pass-control-gap').length;
   report.allTenJourneysBothEnginesPassed = report.results.length === 20 && report.journeysPassed === 20;
   report.allDeclaredControlsQualified = false;
+  report.initialAndFreshInputPairs = report.results.filter(row => row.status === 'pass' && row.controls.some(item => item.consumerEffectObserved) && row.restartControls?.some(item => item.consumerEffectObserved)).length;
   report.unobservedControls = Object.fromEntries(games.map(game => [game, Object.keys({ ...manifests[game].actions, ...manifests[game].axes, ...manifests[game].vectors }).filter(action => !report.results.filter(row => row.game === game).every(row => row.controls.some(control => control.action === action && control.consumerEffectObserved)))]));
   report.pass = report.allTenJourneysBothEnginesPassed && report.sourcePinsUnchanged && report.buildPinsUnchanged && !report.fatal && !interrupted;
   save();

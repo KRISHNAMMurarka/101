@@ -1,0 +1,2251 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-20T12:44:29.309Z",
+  "expectedBuild": "f8ccb8b7cfe8bb5a5a5878bcd4afd55fb97147ce24e1b0823936b0d1120d2834",
+  "sourceSha256": {
+    "packages/game-host/src/browser-controller-link.ts": "41f547d2854d0d2150db42aa0514768afa7103a0cbdce467a91d9f9904c8214f",
+    "packages/game-host/src/game-application-channel.test.ts": "ea811db2a8c8b82f0fe0a163bb320737d8a2cacafb57ff329b4fa8f3541ba720",
+    "packages/game-host/src/game-application-channel.ts": "09aee5c5fdc9dc65e71fd686bb9b829b2aded945c7b20494e666d1db966d02a2",
+    "packages/game-host/src/game-protocol.test.ts": "6a5da1e5cac8d036dbe0c8af4e74589f80b40d4b769fdb60ff84ccdb2d9724ae",
+    "packages/game-host/src/game-protocol.ts": "483150afbff4dd72f3c127a947172b45b41e7c1d65be7cba612b28b403978b6d",
+    "packages/game-host/src/game-session.test.ts": "8c71dbd831cb9321819f30db54b2b75c05eafd78b4f00a514be85aa600fcdbed",
+    "packages/game-host/src/game-session.ts": "50eec9848b0fdebaf1a3d6acca19a3444b822e5341464b2e65c365454cedc91b",
+    "packages/game-host/src/host.test.ts": "49d0025b5f687716fbe9e8daff760ae80290f098fb54790fa594fb21147fb09f",
+    "packages/game-host/src/index.ts": "18643710c1ba98ad344d7888d5cbba651dd083dbaf400efc3f0f0701778676c6",
+    "packages/game-host/src/local-input.test.ts": "16084ccb8d6eba4518baee0cc13398b3de1702bf662ee85f003656eddde4de9e",
+    "packages/game-host/src/local-input.ts": "155b0ba223614b9a5da6de8c98e30ea6763ff384903c2b5aa55301d975578ab6",
+    "app/games/beatforge/BeatForgeStandalone.tsx": "f66fddb5b1d04479a9d687ea1a5556d659a6a68bdbddb98e6efc47e1e41e342e",
+    "app/games/bodydodge/BodyDodgeStandalone.tsx": "86b606dd5a2f477f115a01a3d213e8cc1437404ebf95f483965838faa7b9f7eb",
+    "app/games/echomaze/EchoMazeStandalone.tsx": "bedb8285e7e362d150969d29b96c43bcde27341614669bc3768be6b6bd3943a9",
+    "app/games/gravitystack/GravityStackStandalone.tsx": "05a47f80dc39da5777da73f227528d7d42cf898174b5410ded08579ad9cff2c5",
+    "app/games/orbitalcrew/OrbitalCrewStandalone.tsx": "d4ffe89c260aef9c7b532b4e440689e64bf3fb6bcdb6a2293c26f2a8b1e4138d",
+    "app/games/shadowarena/ShadowArenaStandalone.tsx": "5d02284455aad576f9c0d5f27bd8465bf456822ccd8338a17fd67d8f0062289e",
+    "app/games/slashstorm/SlashstormStandalone.tsx": "1eab2a8ed30be175e1d4ba2a9a2c116092a0115475f699feeb06c9fea9078855",
+    "app/games/spellcaster/SpellcasterStandalone.tsx": "819a91b1bd4d2399383853f4f5e87ec815c1d51d98e997089cb78729ed6904b5",
+    "app/games/swarmcommander/SwarmCommanderStandalone.tsx": "1245d5af3ecbd73259a6a976c8cf53d9bf6abb55d758699eb390428206b7eddf",
+    "app/games/tiltdrift/TiltDriftStandalone.tsx": "425cca82618e32a2106967f89e9af8511332adc6310b1a5740baa19c9cf0e16f",
+    "app/lib/session-id.ts": "07a46104b13577469869414775a4912a2281d0929c689c0c7e2b603a94d68496",
+    "app/lib/use-game-host.ts": "04a673ac6d779845e5141e5501c8ddee307fe4798fe50d98eb5665b435630961",
+    "games/beatforge/input.manifest.json": "dc0587cfaebb381e56542c7ba7e935968e7cea5729f73922d28f06a8dc4fa648",
+    "games/beatforge/manifest.json": "34e165103af821a01979f8fefa4908a3e713ca9af0600fc1c85107ee4ae36566",
+    "games/beatforge/package.json": "41a406562b24571e61eec180455638227e1384662ea9aeccc93dbc8c18db6b4c",
+    "games/beatforge/src/cue-scheduler.test.ts": "f813c0893adad8b763669f6218654b474ad51a73c4bed784c4b9bed3c0e6f500",
+    "games/beatforge/src/cue-scheduler.ts": "b74899f4335934c8cb6ecac652dd8ed086a7a0e94582462d6c83fcf75cd49fec",
+    "games/beatforge/src/director.test.ts": "fa5b7a292195ea682ce8eb7a481320155f7699934f29bddf89f987ee99438814",
+    "games/beatforge/src/director.ts": "4336b8112fe9e2e8532031893952b6d6f78118f41c9b02c933e36eeff3ccfeba",
+    "games/beatforge/src/game.ts": "5a331fdd6c3c35deffac1d27654acb38e987a3d642bbc53de41c8d3be640b33b",
+    "games/beatforge/src/roles.ts": "80301cb3a9c12352f25225efffdf676e8036ffdc278352850e45a5c93f8182d1",
+    "games/bodydodge/input.manifest.json": "063047585e4c94ef37b3584cbe2729d8a025c0e9c435210e2283fa21aa40b120",
+    "games/bodydodge/manifest.json": "bea890507a14f842a2ff86dd08d172b4b0161fc67d208ff27111dba265083771",
+    "games/bodydodge/package.json": "41cf959f9dbe101ba5712b2d4a7b18f3afeb8df5b67963d2c8560f5490c3c32b",
+    "games/bodydodge/src/director.test.ts": "b18ceba839ce04c527b87aef1463e76233dbdde1161cc63d702ee91565e2fee5",
+    "games/bodydodge/src/director.ts": "4855332c483dad1a83956fcdef669a86867fdfd53f71afe17fa6e7e293085a87",
+    "games/bodydodge/src/game.ts": "74735f181f5e8c8c22b2c4a12c241ce3dc0db2e25f04edf430679db6f8876b8d",
+    "games/bodydodge/src/roles.ts": "2e4e2a0f21829e223528e696c436d5d3c9a36a5a8133344417628b5c403c3794",
+    "games/echomaze/input.manifest.json": "0a8e3102817b28deb8ec14871424734d4fe7e8e93c9c81d78c1927c92f659b61",
+    "games/echomaze/manifest.json": "51370ef71d0999e5f6aa842fbde3a9652e7b9afb5a3d0a7d65ec32ffcd2f38ef",
+    "games/echomaze/package.json": "417f482c34bb060c2f06d8d470baf3cde6664fe0f5f73cc3907792f79dd633a9",
+    "games/echomaze/src/director.test.ts": "d73c92e742b9ad7a11c1aa77104f793ad94ea3d7f9126fae5339fe9996b0b684",
+    "games/echomaze/src/director.ts": "e1a6405a0aa720c24f90becef2c25ed7a2a9ef73a4d660242f0f7483b0165cb8",
+    "games/echomaze/src/game.ts": "ee209fc1119db03e7a56bf3873c055d7f987d146545ecc20a7dc769d4af407b4",
+    "games/echomaze/src/roles.ts": "67bc345398026594416d37a79c921229baf50599fc2668e5c5ff59cffb20fc66",
+    "games/gravitystack/input.manifest.json": "c42f0478711534aa1035e812f2f9fa14f8bcaff9338a4304952a3a1dfa62e1cd",
+    "games/gravitystack/manifest.json": "fe83627311a716a7d2e62c8677bc3d711819d088968e6afb1a15deca49374a41",
+    "games/gravitystack/package.json": "f966df9cdd2e64b262287c7e0081a6b0dfacaee59e38db344952788f620f48ac",
+    "games/gravitystack/src/director.test.ts": "cd11a4f0dcbe48fd9aaa85a0993b891bfb65b3d324c2c9cf43e1fb0f9a5e9308",
+    "games/gravitystack/src/director.ts": "bcc4ea5e43fe091485d6627561f1edeba3fb20e690e0a9ef901f5dd2ac1bf9be",
+    "games/gravitystack/src/game.ts": "87296fc3bb7e5e132b19ecc1022376961f25d436afd4b19f0000c5be91452b6e",
+    "games/gravitystack/src/roles.ts": "aed7a6ce275b3fa37955e5d473ef13c560a5002993ace5727a814dca01fa7ebf",
+    "games/input-lab/manifest.json": "f026db345c7a43dd988ce00498d68d50492b5b43a48e2a58df9532ecf0ebeacb",
+    "games/input-lab/package.json": "17b1c770e721a9ab6a83e0f75413aa4cee01c03fb8cd820ce03d427c0fe1a561",
+    "games/input-lab/src/game.ts": "9a1d3282dcba8774d243ded58f176b2cd89ef0485c12578043b19f6c5584145a",
+    "games/orbitalcrew/input.manifest.json": "bed66e162818e85b993d157b0978ced17c628fb1ca54abc51f0a67be3e3148be",
+    "games/orbitalcrew/manifest.json": "ef671bcab1f516e2ddde8aa873246283c695a7c2bcfcc0636df5a02fcd7f1b92",
+    "games/orbitalcrew/package.json": "e1e5ca7297ffddde7c54d567601a0a90c519f7a727dad08501411ab3b23d425f",
+    "games/orbitalcrew/src/director.test.ts": "3277a208a5ef08b2eddbd88c893a3a6d6bb4656c464ff1d9626722c0f04de8d9",
+    "games/orbitalcrew/src/director.ts": "ff189b740495dc952bed1a68fbe4d2ea952e48e5256873f32f9bb68647172b6f",
+    "games/orbitalcrew/src/game.ts": "f17016dac473589763a423c89a4d75fb6e130f04411bf91312dd9dfbae4d3132",
+    "games/orbitalcrew/src/roles.ts": "dbb392cfd42ef4b89e5277af0982951f65fe336a7e205faf60fa0edc1792698f",
+    "games/shadowarena/input.manifest.json": "6c05b79909532ff296e1f734430ec4f175b438c3d8263824ddfa0beaaf68b06c",
+    "games/shadowarena/manifest.json": "67a07f488c72bf4b23531b8834b38f3534a3733fe0fec7096a8bc41c75231404",
+    "games/shadowarena/package.json": "de84e0e50305ee524684f54fd6225f6fd0835fce30814a5fdcf06e28216fc179",
+    "games/shadowarena/src/director.test.ts": "5781c501e7b0f676be638778495f8823b567175e76b7d17fbac289b6afa387b3",
+    "games/shadowarena/src/director.ts": "7700a3da08a64f407636b6f7742658e663181bcdc6377874a55b121586fd5fdf",
+    "games/shadowarena/src/game.ts": "317ad5e2ceb430a631cef200d8d327a0aa6cec469a263672d80c645a8f743442",
+    "games/shadowarena/src/roles.ts": "a2e1c8c92e1a5a7e189d54330524a8d6ba57e2d84db40ddb878fc0eaa8abf2c5",
+    "games/slashstorm/input.manifest.json": "75f6f1641491b7c301512751dc6b1469b458116bd4d304937aaee3c181381c69",
+    "games/slashstorm/manifest.json": "8f5b48ca3e1dfebfdb3518b3e9a01a16ff50f52ef169a5a2b8dbf24e7b2a79cc",
+    "games/slashstorm/package.json": "797e3d25c71682df220ba473fa86aaee630a9db9763ff70fa05cc7fd3c581955",
+    "games/slashstorm/src/director.test.ts": "d0639406e81338f402188556dd69ca3dd8d8e6820fca79903d8dc8c8959e5a33",
+    "games/slashstorm/src/director.ts": "5c1a0076dba4fde03b9409c3bbeee6aaf24e26bf922384c42635043e75eaea7b",
+    "games/slashstorm/src/game.ts": "bdd2e1aca219ebb1968afaef39e05770f1a75b01eb5dac03893d51dff82fd4e1",
+    "games/slashstorm/src/roles.ts": "e62b3ecc8154e1fb8de1bf3ae225966824e77f3d314e391030a2be233a29cd10",
+    "games/spellcaster/input.manifest.json": "09670cbc27216ef4c400523137228dfa0495dbdb0e30f6be86d3001420ada014",
+    "games/spellcaster/manifest.json": "0d074cf8fae3079492ba7e2ac88b164a77f60601d2394d3569d83bb8e5a854b7",
+    "games/spellcaster/package.json": "9bb768079c9cb102698a7958f712c2c21daf13e9062fa7b74207c0071e693985",
+    "games/spellcaster/src/director.test.ts": "0010fadc1836ee492fef08469e09051845401e82ac1c115db17b9c5e37b48d90",
+    "games/spellcaster/src/director.ts": "603039fb3a65c168bb610e1f23debe0e0687105f9f84e5b1b57c02e48cf123f4",
+    "games/spellcaster/src/game.ts": "db4e51e6ab777a4b48c3a66eac49f4c80b70a0ce0174013f5351ca1b656de506",
+    "games/spellcaster/src/roles.ts": "8f643b10bed22ae3c6a1ed1fa4bc1322fff110e257bd8a4d55283b87e63b554a",
+    "games/swarmcommander/input.manifest.json": "431dee46e7e799a6d677ec1a6dcd4f60fc04adc996489f019135e73c3c28ffcc",
+    "games/swarmcommander/manifest.json": "223db6a1f7c513947aabf6f4af159f4684267b5bc5c199ccfb32d5314fadb219",
+    "games/swarmcommander/package.json": "fc2947b9b4d3ad10204e548b8887fa5098557dec3549a0af775c8ce4986c9eb1",
+    "games/swarmcommander/src/director.test.ts": "7945636be62054fd69f5b0dcd5a3cf0ce26e2d043d0a4d800379590161467097",
+    "games/swarmcommander/src/director.ts": "dd1bfb9b0250fa1c824c188511a0ac01eb131b34425df3d1703aef3ce2c2c958",
+    "games/swarmcommander/src/game.ts": "458c7e6fcd97310b552cb03498e4e6e3402f86b6db48a1a7553e737d5d3143bc",
+    "games/swarmcommander/src/roles.ts": "b787d3fd18f4feee53128a68b0d6cd3aec3e6f6567450e77e3cecae615678cb6",
+    "games/tiltdrift/input.manifest.json": "ad9631ea9486ea049fdf618caccdc0c2c239b9f3f0f31ad950236c3bce5d9186",
+    "games/tiltdrift/manifest.json": "aa63179665a65000b4d7c205853376b90a9dad0097cff17020d31f11acd452dd",
+    "games/tiltdrift/package.json": "2716797b09a0c0c8477543ef099cd58572a6aed701bd5bdf17287710b717cf9e",
+    "games/tiltdrift/src/director.test.ts": "e28b9a6210d2d4ba6980fb6e46e1200cf1736046b480ce877d0cf24f2b31aeb5",
+    "games/tiltdrift/src/director.ts": "3e64dd2c7a0806fc79958ee0c3206d4adcda54431c301222b59671a61dec55c6",
+    "games/tiltdrift/src/game.ts": "58f36299a5e1407c98efa9d9d280802018ecfa279f8b43a6f1a941e8963d2a0d",
+    "games/tiltdrift/src/roles.ts": "2e61ea914112d043eb74c8835f7b1e4543c183d3b82e42bcbda14cceaa7a722d",
+    "app/components/AppShell.tsx": "b7cbe5bc7be6df6237776dce9b11709c45ec4f3dab275b48f20cdd337810e066",
+    "app/components/BeatForgeGame.tsx": "cc7196067b89ce996f77d6d70a81d9cd8a61d39e7b6f4f24eafb396a6d36bb59",
+    "app/components/BodyDodgeGame.tsx": "73dfcb375ebd13a598f97327073eea024c5c244f0e734417f58ece60e4cc37f0",
+    "app/components/EchoMazeGame.tsx": "7ca86add654ff0eb78277cab7f16414e77e0b841e9be34eff95f6d7d2ac68c8c",
+    "app/components/FullscreenButton.tsx": "ae2328777ab378fa8613fd41751cd82378a7cf0fd1ca2a7c252ab69ecda396cf",
+    "app/components/GameControllerOverlay.module.css": "818dbca6809c13a9a76aa468c367d0337044bcb651c1aa1c8765c18fde87e5e7",
+    "app/components/GameControllerOverlay.tsx": "233acedc2656b476adf802982aaead544283b2ecbf76601b7e7e9f83560a7ea2",
+    "app/components/GameOverPanel.tsx": "e2cbe5bd3e69eb363d917057cdb670456a816eeb584567bbde98922a1ed99cd2",
+    "app/components/GamePoster.tsx": "1ccdd1ccbcf73b711caab9a3e26d6b2dfe8789bdfa481dbdb60afbf2b0823801",
+    "app/components/GravityStackGame.tsx": "bb3b446d1c6fd8a9b3faf54817f8bf88f8a775ee132d73c2ca0c53275ecc6fb9",
+    "app/components/HostConnectionReview.tsx": "8cb6d0c020854ba7461fba703f810fa90623eb136a6496c2e32379cdd08b85c2",
+    "app/components/Icon.tsx": "461eef4e570691f1eb75ef2e4de2022697f2c52ba5ea67d1d9325ed617241ca5",
+    "app/components/InputLab.tsx": "69866a664664d7e85767cdfbca437d1209f0c84f8fe9cdc97ae5dd01791feb2b",
+    "app/components/OrbitalCrewGame.tsx": "46a4bd5d8a3671cdeb5bad781a6ea59c85c8cb68f69705b03e51114177aa0ac2",
+    "app/components/PairingLink.tsx": "6d8254e53b6d6311bedc16308137d95193768d5a7f2b7f986ccbe1424d276900",
+    "app/components/PreGame.tsx": "0b3cf5b5e1f5b2643b00d405debdb7939adca56ce8b501379d7e9992c486f7e6",
+    "app/components/RemotePointerPanel.tsx": "93d350752fe5e4673581c255ed02e9f014350c7c3d87eee382b455486e26fa51",
+    "app/components/ShadowArenaGame.tsx": "7bb1eacaa5ab77c7404b7f25da8fe8000bf8c22c3f43e01e8a625932c3048b66",
+    "app/components/SlashstormGame.tsx": "162f02b6951e4edb707d6524a24c3f42dd4ec61919de5fe0888a88a037f04a47",
+    "app/components/SpellcasterGame.tsx": "1c6922843c2f7a037ddbbf73913d4af4a2bfc072ba9911bb9946e40b372b4e67",
+    "app/components/SwarmCommanderGame.tsx": "44bf6bdfe28b485edde24a151d81ce4fa75b2589907d8e5ac2735adedc5d237f",
+    "app/components/TiltDriftGame.tsx": "138f9e6912b1846eba46dafab8c5faf33260bb093ad9dc5cd6985175fc88a558",
+    "app/components/camera/CameraPlacementFigure.tsx": "533ea551a8a2fa2249a4f93bc4a6d6798e4dba4548d25e6e22f74f26650331f5",
+    "app/components/camera/CameraSetup.tsx": "37d31822aad21caff62214844a85ce38aa648c83cba44f160936a8dbac6fae5c",
+    "app/components/camera/canvas-viewport.ts": "6fd88b42b5783db69d5690466c93ae826376d496fdd5894634bdc2413cd60247",
+    "app/components/game-controller-input.ts": "4897535666e29223af22be1dcedd8bf27c83b702bb7056d2ce8aa33e1138e333",
+    "app/components/use-endpoint-identity.ts": "d5b469c7d671fb3ee99c5fee9f1fdab5a2b77a7a1d2a0c582f15a08be2e68278",
+    "node_modules/@uynis-connect/connect/assets/licenses/APACHE-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "node_modules/@uynis-connect/connect/assets/manifest.json": "5be028c5471fa7bcae726e483a2038b2186b41d2e13e4f85329c8ad9b4155358",
+    "node_modules/@uynis-connect/connect/assets/mediapipe/wasm/vision_wasm_internal.js": "e170ee67dd4e16c1a6fcd8840a206687e5a59b22c20e4a902bc445b095454d73",
+    "node_modules/@uynis-connect/connect/assets/mediapipe/wasm/vision_wasm_internal.wasm": "8da277a733926eacd0474b8704b36742d6ec3231c57a860c5b889dff8f1df886",
+    "node_modules/@uynis-connect/connect/assets/mediapipe/wasm/vision_wasm_nosimd_internal.js": "e81d715a3d42cc3373602eb2f7aff795d164934db680e32496b65dab537f9658",
+    "node_modules/@uynis-connect/connect/assets/mediapipe/wasm/vision_wasm_nosimd_internal.wasm": "a28483cd42e74e855bf5ebdb6b40d9b66a5b49e35e95020bc97669e6822a3192",
+    "node_modules/@uynis-connect/connect/assets/models/hand_landmarker.task": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+    "node_modules/@uynis-connect/connect/assets/models/pose_landmarker_lite.task": "59929e1d1ee95287735ddd833b19cf4ac46d29bc7afddbbf6753c459690d574a",
+    "node_modules/@uynis-connect/connect/dist/adapters/camera/src/acquire.d.ts": "25aa52f0be197d5a518d78a7dfd83bde15886f348e4057802a0e2158ae680184",
+    "node_modules/@uynis-connect/connect/dist/adapters/camera/src/acquire.js": "a15dbf8ed2413358b9fbbfd675ae4254cf7a559e167270edeb58e9c7a7103674",
+    "node_modules/@uynis-connect/connect/dist/adapters/camera/src/cameras.d.ts": "a7282b0c6d4964b696c833062b7e8b98876bdf6bf348ac7e1fd59750d22e232a",
+    "node_modules/@uynis-connect/connect/dist/adapters/camera/src/cameras.js": "434bb5207de10273e647632fb71b3a33766167e5561a8f9b4df4b3a65f9dbf91",
+    "node_modules/@uynis-connect/connect/dist/adapters/camera/src/errors.d.ts": "eb7029481372c29f90d4f7876db6e304cf655c293fe4a1bf1db0fc8a1cce1b91",
+    "node_modules/@uynis-connect/connect/dist/adapters/camera/src/errors.js": "2d7f60feb45e3e4b52eece076d731a1eab3d3ecef152ba42765912b95167b891",
+    "node_modules/@uynis-connect/connect/dist/adapters/camera/src/index.d.ts": "b1e315ec60955dec1a857669a9b01132d06a774355f81780bd1567cce41cb247",
+    "node_modules/@uynis-connect/connect/dist/adapters/camera/src/index.js": "97a3d04fec49b476cd0457c1169fb7047605106725ec4fe41ac8a8fe66b57fde",
+    "node_modules/@uynis-connect/connect/dist/adapters/camera/src/luma.d.ts": "dedc8e6920d7341df4be7e38f4ab302430cdb7f4678c430cb4ff7aff1eb2c0bc",
+    "node_modules/@uynis-connect/connect/dist/adapters/camera/src/luma.js": "de84b34355b38ef6dabf47a3c9f9e9797ee753d0fc795dcd15e28e8ecec48f1d",
+    "node_modules/@uynis-connect/connect/dist/adapters/gamepad/src/index.d.ts": "66df4806af410ef31a14ed4619dbbd665f10b7a1e8c6378c703a3fdf3514c8e6",
+    "node_modules/@uynis-connect/connect/dist/adapters/gamepad/src/index.js": "c343d604cb06aa8a7c277ab2aa7c53052eab855437181acf70fdb6670eb18b47",
+    "node_modules/@uynis-connect/connect/dist/adapters/keyboard/src/index.d.ts": "60eb011735d05223eb3a526b79aba34195dea14c38d1b220e797031d6adaa136",
+    "node_modules/@uynis-connect/connect/dist/adapters/keyboard/src/index.js": "c587544b3915d5eed4e6fff03c4588431a20ada1be511769242fbeaf24691e99",
+    "node_modules/@uynis-connect/connect/dist/adapters/motion/src/index.d.ts": "2c0167c498112b1a66d0eb2d5d44c1edaf2180e1ea8c8ebd5fdeed0817cb5480",
+    "node_modules/@uynis-connect/connect/dist/adapters/motion/src/index.js": "cd6fcffb54099987f1012d3cdeb320c6e83e9d0569307b13ed5a7660b6a068dd",
+    "node_modules/@uynis-connect/connect/dist/adapters/pointer/src/index.d.ts": "2a01c82516c178c3d4a1aec4d6994c17c9c731dfd5520f26758cfe0dee390b1c",
+    "node_modules/@uynis-connect/connect/dist/adapters/pointer/src/index.js": "68394ad3307f6dc2e7738ae8437ca2253cb324c61cb2b1fb2a3cc54f45e1b5af",
+    "node_modules/@uynis-connect/connect/dist/build.json": "bf90853b9bf735fbf59ba0c0ab78a3d00f8e7e50603a593a0f82225f8f5b95d4",
+    "node_modules/@uynis-connect/connect/dist/connect/src/application-channel.d.ts": "40cefe6f84fd1b704002857b4e78ef8b91b4974c4de2ee3bb1e659640c997e7b",
+    "node_modules/@uynis-connect/connect/dist/connect/src/application-channel.js": "37d9038c46b1e6b50b2e28b9511c206ebe8df16417ab11a7e8f7e662614c2dc0",
+    "node_modules/@uynis-connect/connect/dist/connect/src/camera-session.d.ts": "e5b60fe02c978b8d28ee2b1eadaaf85027e2afea4b091da6c088c3ded8d51fd4",
+    "node_modules/@uynis-connect/connect/dist/connect/src/camera-session.js": "31fd68d89d6f2c471da4635235f7957238c7c3ba470c19e433c934d89b3592f7",
+    "node_modules/@uynis-connect/connect/dist/connect/src/control-application.d.ts": "94ad6833560996a3b0dd3a9dbd66a28466103e813d43d11300a98cf94699af29",
+    "node_modules/@uynis-connect/connect/dist/connect/src/control-application.js": "c83f7deba3d1825358e144198365c7d476bc624b3ae3e60f539a47aec48ee9ac",
+    "node_modules/@uynis-connect/connect/dist/connect/src/index.d.ts": "ee462ba907f7a9b6be07077459f579888a362b65330c1dc25e58c281cf8a1230",
+    "node_modules/@uynis-connect/connect/dist/connect/src/index.js": "0607d27b8ef70f37cba43e01f16992092e621609efd2dfd2ed7f4b5d91ec9013",
+    "node_modules/@uynis-connect/connect/dist/connect/src/local-input.d.ts": "2635a76e0e94436418da9b7aee5c945bdfb080b55c166e1afd6757b638541c5b",
+    "node_modules/@uynis-connect/connect/dist/connect/src/local-input.js": "a788c72eec06434765e31014d451f89a52b67eaa1c514efa227a57fbc3a78984",
+    "node_modules/@uynis-connect/connect/dist/connect/src/motion-session.d.ts": "b7f332b8b934d6dc3df2a5bc6b461b819892194a273ff008e577d4dcba4e1128",
+    "node_modules/@uynis-connect/connect/dist/connect/src/motion-session.js": "698d8705a7679e25902c7987a33037da6b4416b83b406e38f836fae7a33f0e99",
+    "node_modules/@uynis-connect/connect/dist/connect/src/pointer-connection.d.ts": "7440ff69900c4980829fafa89ba46884dabfcbb0cbd34ede69c967c94e8d4b85",
+    "node_modules/@uynis-connect/connect/dist/connect/src/pointer-connection.js": "664a4b184689223e0380009c021f3473af7393fe65aa43c7d5eaec223a8a7c48",
+    "node_modules/@uynis-connect/connect/dist/connect/src/source-subscription.d.ts": "60918edc9de5cdaff9cae976fbd4b5967191a85a419e2345c815569b4128d1b2",
+    "node_modules/@uynis-connect/connect/dist/connect/src/source-subscription.js": "dd80619c9f7d1820b12e7d6e6978d9e43efce7c625b97e60b01305726d53cd20",
+    "node_modules/@uynis-connect/connect/dist/consumer-check.json": "ef99c4cb947e312ffd9d4785c1d9bbebd35329ca73453f15467ce5b1dc03ed9e",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/connector-profile.d.ts": "c4d7e98543bab9e4bc6bbe40f42b857153eea44a32b2421e0bb3f718d76b6c30",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/connector-profile.js": "9ed25f6f93a7d0a4d62c9f150ae861919237ecdd1ca87064a873bdb80421d0b1",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/control-surface.d.ts": "5c54f863f81ee57ab421aa86ee3b1a59f7da175bc7a39649ef580bf9a5380348",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/control-surface.js": "d7bb88cf0f6dc147a03d0b6c8e2bf2c80544e3a9ec4524da29ab1025660f175d",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/descriptor-schema.d.ts": "51d31276a175d108345f75c745dd9c1a43fd4990998944dad15f8bbb9f982b92",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/descriptor-schema.js": "535705ed76be926b816d856600d0db75a9b39af11135444e1c313948777a5a79",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/descriptor.d.ts": "2ffa2dc657dfbb52eb0a9ed53d917e50c501ae4aa510cde290c857f40d6a650d",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/descriptor.js": "e14c9599750838b1e7c1e241d3fa51fbe4c0c7827669437b0658e17f6bfe8990",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/discovery.d.ts": "c59d3a0fb86d77314a553b15f1242fa3bbc5c58c75928652c5e948c007b2a798",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/discovery.js": "4a3ccbdf8744ff56af7e01874017db87e08b616388f9a8de86e1f3e33a8f37c2",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/evolution.d.ts": "2987200bf3310910fa1c1cf694326162d53f85b61b5ade6189abe505e240674a",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/evolution.js": "a49b25452877d574c3a665b465f6f8fe65bb8427801b04c7d63de7e02811eb28",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/extension-release.d.ts": "f53e757e408cf990f4962e02d5be994dbdc2c2695a726c7b5d4f534dea92e623",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/extension-release.js": "1039dcfc6e0a15636320850ae7d9717bfe23ea3d088baa0aea663784fc7388f0",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/generic-processors.d.ts": "491c5f9d2d3cbf77337c294552b7615cc01f16c86430dcf599a7eb216e7fb0f7",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/generic-processors.js": "c7e1368950cd5dc4c153c8be3d823b45e3f6c948da49b7e61cd4b82229cd59ea",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/haptic-profile.d.ts": "fd8338a0113950fdd37730a485a0a86cc007d19458e7e4273871519ff626de9d",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/haptic-profile.js": "98c27f62cc327645ec9441f4c7a9dbdeb2ec78a59f9879bf349503c80b72178e",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/health.d.ts": "bb79765c4c009c0403b7aab0108b9916c0334106b7706e560302778a3f0003ac",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/health.js": "0d9ce75d403bfa85cbb81157e476a36746674af7bf013fde899ad534f38c0bc8",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/impulse-fusion.d.ts": "1318a1547b9cce31b601b8beb1cc184e90fc9e46249da69424a09bd41b3ee709",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/impulse-fusion.js": "c5a1a41f379b0865956e8eb83a56e64da1d687a419935f8018f556ec201cf15c",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/index.d.ts": "c3e89e1b28c8067c81bd845dc4906772104f9666909c71b2bb5bc79afa9a7d7a",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/index.js": "523546fcc66afaeac76aabbc7e1c63136bf3eaa5a0c9497ca06b17a697ec271e",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/input-details.d.ts": "3b19e2a3ef8457a1d913a046394db14e94018954fe51dbca96bfbbcf35ef1ebc",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/input-details.js": "6f8efbb97a883e3d68bb897df63e87e4fb960ee35f6160444621173a66ce1ec2",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/input-profile.d.ts": "39d2e6b2e1ffb53e325e63f9245b1d501e734f034d0c198aaf0caa5b997cba3b",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/input-profile.js": "c1a36abac09d5ab06cbbfb56b8c906d6d6aa45e154b2652fd890762e75064d0b",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/measurement-processors.d.ts": "edfbfeeebb59f017f14c158f51a925d4afbf5f229488bf5cedd1c34d646ad8d2",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/measurement-processors.js": "06e755db7b656fd63d4383721011fb53ca48a8d181e3be1c28fe93d79c19c5ba",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/media.d.ts": "35e9165e0fbd5ccefe551fc3e8b96359914386bdc35e257cae9984a6a494b6a2",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/media.js": "d8db21eef297561a500a4614d7d8dd489479b68caf26b79c1e3da4e99a8bc4d5",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/motion-math.d.ts": "fb6443d754b65f33f595cdd2f0bee463fb7d01a8e1b754dfae547e9f4d902c6f",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/motion-math.js": "4a6b7635d2e135b383ab9fee0bbbefe41182073d22d329b5638154db3f55bf60",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/motion-processors.d.ts": "69e01a714827629be7aa194fcd781956122a889c50ae223ecf054008577815aa",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/motion-processors.js": "f9585f35b5031042850433acd60691a3fbad044524077b1c1f39f9e7820c29d5",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/observation-timing.d.ts": "cedb0c132b64f19baab0d6b17acc6d87eb4ed5bd05140cd425ce0cf772d1d2f3",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/observation-timing.js": "28dbbbf1b846e597c002af9f85a5d5f50675825eeeb49a212ae58232a9ba53b8",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/package-catalog.d.ts": "acab8224efd8213ccde9fae6c0a2bdb77fed679dc11616520dd7a03d03fd8f83",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/package-catalog.js": "9a2b978c021143044c5d4063e0a0e989745bc9b65e949e279817fc0d551dd7e4",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/pipeline-timing.d.ts": "9aea1baf84ec1edf0fa458aa86e129d48b14a636c892e94cd1f200b91fa786e9",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/pipeline-timing.js": "7177397502ffc27d0a3ee9c543481847ae0eae01d249906d8e21f079499dc964",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/private-directory.d.ts": "fd5f46e03a84d1d3badc110e64bcfde334f1452d1c9f991839b2a8a4f31fb52c",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/private-directory.js": "1a8af7c6388587d66394b7cedfb346327dc114b11957f1c71ef7956b8ee49d0b",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/processor-graph.d.ts": "74dcd2928c660b9022fd32d771efdb49dd096a9ba596899d0f404150a46b3c7e",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/processor-graph.js": "c9564728e6f625f35b789aca13497f6378c47ba38abf3e06fd02e55689c43c04",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/processor-manifest.d.ts": "7990cb1f40a915b8b47f37cf2d44b27eaade7104f363cb0fc1dbf4f57814f524",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/processor-manifest.js": "8782bbbb2250423a05ced79799bdbdb1edfefe003e3c27279cfdd84ac205dc52",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/quality.d.ts": "dfe4626d0d5cbf23cd7f1547b79d9c8d1de643f69a8cb796fb7de944e64f9b54",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/quality.js": "299904bf947aa5a9a25f6a2cbcea0cd08fb9478e3f51e3c919331baf6f64f69c",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/recipe-resolver.d.ts": "f5295d412c57ee521a7a37a87e4eb8f7b36e626128450225091e25854e480858",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/recipe-resolver.js": "071e21af14dd1fc2228e04ff6fe818d0867f6643e08d194cdbf327d927498b3f",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/recipe.d.ts": "b348f7ba6490215487c1150d7b0850d92e0d27aa17f5bebba6bfcc03047ce8b1",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/recipe.js": "693a50558d1c3ac1cee345563543f22007e6bb9cec9c2c61631d5e72cdc24cc8",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/remote-clock.d.ts": "56af79eca909f9d3e6ee3f33f01e52aef8fbf57486012f1aaa30ecf3a7b50c7b",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/remote-clock.js": "467aa9104421d953cbc7aab2ca2e97dbc47aabfba04af4fdec45cebdf214dd8c",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/resource.d.ts": "37dae09fec9b1caf7eb6cc9e10e4cd7a6c3de12bbec9db762ba6cafccf35065a",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/resource.js": "95b0e15dff6713cb166cf82b2781b4d1d8e7f876f44cdff7fb452d93c4ed91ea",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/route-group.d.ts": "cf7cf36878e06012b055a027fb16c8d87c53b8f5735db658ab1d2fed59d308ed",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/route-group.js": "dfa7895e905d7e030649a4d79a718d4bdb660e2f6c7ad7dd267588be765730aa",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/sample.d.ts": "822eb2e6d5c06d24f436c15dda3d47879bd9859184a67b729cc61c2dde8602b5",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/sample.js": "9d891374f30c2fc7586b4b86ac0223326f01948d4e19e70b0f65e342e11d4110",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/source-frame.d.ts": "a516ef9fe8db274cda007c2471395b58ff8e0963d0ac01ded995df70a5caab25",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/source-frame.js": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/spatial.d.ts": "08bb798556790d4c5454f587db3f763bf0776e3ff762fb7403b71b7759ccb5e2",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/spatial.js": "2a8333262ef2d38510a8fc460017dbc57d292b3af023e0d6d6307f7912623481",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/units.d.ts": "cb926e8904ea7828cae4e76b53227d977d04d3aa69a5d0c4a85c9cb7a252f5b0",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/units.js": "ed0c2c863eab11af0922d4e6c2e1b00a413fbdfcf784452ffcd715a42f9fd687",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/watch-companion-report.d.ts": "530231374645464cbf8ea6017931faab3bdba4d4372818eee2bb64db4a1e6520",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/watch-companion-report.js": "c4473584ef295ede1cf57a2de624571d9e8bb754640bafd291bc6508ab21504c",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/workload.d.ts": "f2a3676d4d121bd90820c66a336a3d629df5376f019b09136d52dc64eb9ff20d",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/workload.js": "1b5900c15fd3501ffcb3b3596b461013d5cd7be1629de7eca8500ab08a0c9a77",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/wot.d.ts": "7f0cccc22db03052de4e5cc34792639f8f682062142656deeda81cae1f5b7885",
+    "node_modules/@uynis-connect/connect/dist/device-model/src/wot.js": "d85408a3b1b896f39b38c51ff00ac03b798a40bd591b425ab168e8bd1bc99a99",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/application-snapshot.d.ts": "6e36dde37d6625a39d0e6bb22b3d662c86a25d5eb115c8a585e7969b09a2c9a3",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/application-snapshot.js": "a82edc7ec97eef38bf41d9a62df637ff18582f881f2d202c9171cd39de172f83",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/application-views.d.ts": "3be3442189438fd009e539011938d70575e8c38cbfee9242409048064011aa2c",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/application-views.js": "24122fcc728f273bc8ec9b7fd17cd74512a588c95055b6191b1f3cf268bf0bff",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/capability-inventory.d.ts": "4edb6eaf8c5bc4dffe988474434a12f60f0114d7450b9d3384e89165747f875e",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/capability-inventory.js": "740dcf1db224ff2d690e634590065b2cba2e9f88c16a3725e4838397eed4234c",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/conformance.d.ts": "86b21722efb43acaafef65374b70c6ca1b1aa3eb129b42fee13c42f6fef05ba2",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/conformance.js": "106e8c5efa8c26f52eeee5699fb9c602d3faa3c3165be6242da9ebbc9d2825cb",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/durable-artifact-jobs.d.ts": "e722e7c11f92a1a39037fc6ffd78b6d78d81b2e85b76e2c84447dc55a559653b",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/durable-artifact-jobs.js": "7a0f6e2174fabf1397f3b50a59eb6f0a9976b1f9a08059becc2627a3863ca6c2",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/haptic-output.d.ts": "a779aa401fef525f7be90cf35ab505c8c057dfb86d3fdabb309ab357de430577",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/haptic-output.js": "da0806f3e53cc87a8146065af9ae52cf521b1ad2c664158c17fc308ccb0ebea6",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/index.d.ts": "24dec6e1b7ee96da1e0f7b7260c250c6efbeddd39e7259a5b85fd638336c29a8",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/index.js": "11edb0d69455e3c2bbabb19c9fdc609fd9071c0b2b45aad1bc0d42afb5dc4c9b",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/input-ownership.d.ts": "6c9e969baa965afe2418d61d61d83c79ef75c62335695bc9c56265d284564392",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/input-ownership.js": "dfe0eba95e81dfddb294f0c62746b7ba37ea1b264ebbcbd66343f80d09f25721",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/inspector.d.ts": "d5dfd30cf9c1e23064d6df0ff28748ebca06f8cbc9222ef7e5952ecb62669173",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/inspector.js": "9059a7b34c4be7a6fedaecaf7174d34b027790d120dc9cb80ec703355391be8d",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/lease.d.ts": "c145d2d3f6fe9416f8bb458bedd628ea02faa7fe2af7681680edddf586c62b0e",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/lease.js": "3cbfbc21d551cb0a6fc3a1358d2f3e850d315b3a8285176ca119890bd2f6f376",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/media-grants.d.ts": "1213d5a1c6e5b79051e5f4d6d09d3f4ced295e526f526b6b94be0dc64e802bbf",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/media-grants.js": "19f8f515e772c1dbc05302f0572cd2874bce8e7d81990f70db37942756a6091c",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/media-recording.d.ts": "e8dad50c9b52a6e0fd1b53430162ee04ac035fcc290544a0934c7f2ef064546c",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/media-recording.js": "c85990331867b5e3bf2897f7379e3feffba977bcb56f73acad8f4e347bc082dc",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/media-synchronization.d.ts": "c6342047747a6dc82231674bffa889152e540686b289c414613c6ef90b974145",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/media-synchronization.js": "3bc013f82bfa38ff1d7471be4f17f7b38d958cab3464f54799793a562f7da560",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/native-discovery.d.ts": "9d7413f765c693891c2dd5422a1b0f8c44f6c2eac78ee8b55e6468ade5afe88e",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/native-discovery.js": "d756cd91ee84f37dc7341d637f8849cf2788e243cb17cbd0542d368f008c5dc2",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/operator-health.d.ts": "5fd57cff076c6aa207a30b7c2febfdec37adf8f1c7ba0c7aa325d591bbcf1bae",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/operator-health.js": "c041baea5a658d402a53822963e0d6952ad6023c45eafd7f244bbf0a45358a20",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/output-sharing.d.ts": "68e446b89e0b75055138b6e4854d6c25b27663f3400fe699f6d01a1b5eddf2d5",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/output-sharing.js": "ad4845c1260f81723e79c574f221068706e9a33a24a5fe759d408578602981be",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/owner-backup.d.ts": "4a83d0ed97cdec74790c361b8f82ef2f5550b309a760dd0d0e0dc66790c3100e",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/owner-backup.js": "5a52a81e2f467887586f2c2c370e753b75ab7fe8f3af0ee14c929c3bba62c550",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/owner-data-storage.d.ts": "d7cb9db144dfb6c4dc0112a9722087cf8dff974809af9a9bb0eed3e6debd33b6",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/owner-data-storage.js": "75afd3f8130c6692f4b63e158150e7e2f75b1363acac64234fb0b2d8be592653",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/owner-data.d.ts": "eaddf949f99277e25b98a52e81be2c47f693eb537b68924843aba5b38ed09d15",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/owner-data.js": "da59c681079516c445db965371bfb552f8b5f5c314957005987c5c86f604c948",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/package-catalog.d.ts": "a15f969f8c476d230db96f76703084bf455f4d76b8aaa13aa31f35c3094acf98",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/package-catalog.js": "2495ad065700cc46a6e54db4cb666bfb2caea9ddaa87cc4e9e8b474d626fc2c9",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/placement.d.ts": "179367891f6c6e0d71b29cc255cf8a21dab5cf494e9fe185fea60fdadb4673d0",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/placement.js": "145e37f957796f284424c6f48e638b685a37ccffc0667de0a3c3fe34786185fd",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/processor-failure.d.ts": "21786add9f27443e18f858a264554d5dd61b0cb215b391a958d8cb9b86963d00",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/processor-failure.js": "28e4476c11f27f77026fd2e3212fc2ff0298e5cee453507c48cf0ba12863c457",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/processor-installation.d.ts": "b480b2f30a47fa45722fc5072e0956c1733b6f2a65a878bdc998aaa0e2e339a0",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/processor-installation.js": "cee8342f9485f4158ec6647aa0f4066e80ee6c3e686636adeccd8cd9e7b71dcd",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/processor-language.d.ts": "712f980cad5926317412a7ecdc447e4450b1c4f95db7e5f4cb03cabbe879982c",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/processor-language.js": "247ddd7b6017b0d64acb966b2538416266a069124ec8671eebd03f63746dfe8f",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/processor-registry.d.ts": "e57b7a2b8c366bea424db4d4c1c507731cb34cb843dedcd8b41264681136cdce",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/processor-registry.js": "68db2a31080ff697c4a14b99f9499c8700e187c2bd2c91d26a80fccb28164a9e",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/processor-worker.d.ts": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/processor-worker.js": "f0ecc64202a5e5ac2e27c52808eebe30e8a94f6af37cf744c4b4ca6ac0e61ef5",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/profile-connector.d.ts": "f49a759f137dd88ce2f41b1f7af48249f1d302418d4c3611db97a185ae6c8eb6",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/profile-connector.js": "abdd5f7d3e36946fba34ba7075ec9a0fb081a387ad83c724166f8fd382beddf8",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/profile-resolution.d.ts": "6bfcd029b662cec5eb9f7d356c0abdacac00e6ea30c4a537566bccc3ad71214a",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/profile-resolution.js": "2543c3f169d6d9d9aeeb48de28a8f63f7701355fa60d560d80c1d568511061ea",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/recipe-session.d.ts": "356f73e3795d8e5bc7d9fecc8ed4c630ef9e741fc4e72a1ba06f41d8766bdaae",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/recipe-session.js": "12e4c7bfea96ce1107cfb2237d1be09525116b5c218b5eaef100c0b4a3fe421a",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/recording-owner-data.d.ts": "7be22d60628f429733d70f5907ab985e976cf17500fbcd58a291ef9e5cb515cb",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/recording-owner-data.js": "a8a5229b9df7d5da895598130e1c17d9122c528c1322ce5f4ffada62940b454c",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/resource.d.ts": "f0aec5cfb9a8b7a747a3dad33c75ae3072d394b70b937f5dbdf17aae451e726c",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/resource.js": "d7306f5a00129868a5215590b0c23a19adcb1df7320d36135e2d462e8cc4a13a",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/route-group-runtime.d.ts": "04572dbde1b8919478a751cf8e17f6efd89d29f603f84d334bf524fbf667eaf9",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/route-group-runtime.js": "0e4d476efa2e41cb58e3819b31ceb8e6d24c069cd8ab2fc76874530d3cea6622",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/runtime.d.ts": "d6e0f820407240d91e2913509973c84e48dfd2e5ec73d5e8e4696144104ca410",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/runtime.js": "77bcbddee66a16bef6103d5e3ca0d132ccade5616437e6e9da203b40589c2c39",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/scheduler.d.ts": "25a4648d9e61e1ffc26b15dfcf71ad5cdcd51c8c814dec0348f35bc16e4ee611",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/scheduler.js": "ca5f7a65799c59a18c39f73115aa0ddcb1b364bc4a4feab464526667a8037c02",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/settings-store.d.ts": "3c4045f05236bd902afdce26c78744fda8ad516f71edf6d5299ee0b2551e0cdb",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/settings-store.js": "6c2c60b1c936f0a1d863217509746a54fe14c94adb67ecfbe4b8675cf2ab12d4",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/simulator.d.ts": "3978d1ce7065281dceecb64f0dbe47d84edbce930f5b2df138506eb68487cbb6",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/simulator.js": "416b82934c3b7ba688554ea8ffbb6de90d55ecf7a2310e908d285086099bb759",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/telemetry-history.d.ts": "c7dfe435d5bb101887b57bf28305ef27d86d274faf69b4c1f24e2b7ccbc033e1",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/telemetry-history.js": "ae575a18b00cda59d0dc5fc1e76ed747299b001e8281b03cfe7ead29fde7be12",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/telemetry-storage.d.ts": "6b4d8df09ab8296863bd5b775f13abc4d5ba72e674fc8f76de5dd4ed2b0f91e7",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/telemetry-storage.js": "10ae3fd5fabef215c060bd080abe449e1ec1b5f3b763209db9975cc706f4758c",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/types.d.ts": "d5eb71a131cfdb7e9db0134a7e6ecc3a99d972f0291d86be648353121a3764f6",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/types.js": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/watch-companion.d.ts": "147ef8bd46515c89fa756f819bdfcee5be283d11d116613755ad0218f8db5aa4",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/watch-companion.js": "dfe734c807244fa35b31ff8e5c04595dcd6b9ce86c23b6fbae01a838da4b50c3",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/wearable-calibration.d.ts": "808ee55cc74632c664f94bff1cab226597b318f74cdc3eed344f2ce2320af903",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/wearable-calibration.js": "0628b15adcb6b6da236aa8e087d61f6b2cfdf7c5b759c389392c834f7ba6e15e",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/workload-handoff.d.ts": "b4e5390704377fd7f30a1ed5516490ee1ff62650f495596945fdc89379cf81a2",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/workload-handoff.js": "e8d87146cde832e5934d9da7997d8a5291e2be2460f0255b6582a562784b6a7f",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/workspace-administration.d.ts": "5b7816778eee5d481aac30bc0c0dc7c87724dcba5db3f8a2aeea4c66331479ce",
+    "node_modules/@uynis-connect/connect/dist/device-runtime/src/workspace-administration.js": "e7014e98453b8e13fba33eaf31424e7c03d60c1955f8d257e0d2a91124446421",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/application-audio.d.ts": "ced85b3c864401ab3cb9b89271128cca91228276cb27fc7994a68c8a37678856",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/application-audio.js": "a38ed1c3624f978413515af3d8df39f6cf0a4b0af797a05467d4c8ee54813191",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/application-media.d.ts": "22f185458cbf47203ce7e66bfcd4cc14106c94481ac46387b096fd7c79a38c6c",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/application-media.js": "273e44eb3963652651c1510e73b56b53133492ed0ae186126058f56f4b5e849e",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/application-video-codec.d.ts": "3ebd887eed0cdcc9471d1823b00e6f1dd212138efc9a783637b890c7e7c5df3f",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/application-video-codec.js": "b90671acccd8b4158f9cd03058d358cf1ad4005681656939aea023c291d7bb18",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/application-view-canvas.d.ts": "0ffd2d27da39d9612b9c373d53a416c8db7c052279ab1ab07ea145c44b2c7629",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/application-view-canvas.js": "5819ff392c5901bc9e65f55422fa4e40fc9c67808ef4c61aa68fbef1c55cf696",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/authenticated-peer.d.ts": "9f24460277db659c0331d0c4f499225a674e149e5e9576b3fbfb2e58ac0cc46d",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/authenticated-peer.js": "83e9334073570595f5eee812635e181ab1f165645dc2e4b471c005fa65df6974",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/binding.d.ts": "a566802311154336baaa5c6826323643fd1c2522313335572575d0b78499448e",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/binding.js": "109af0cd9ae01242d6f4cb9b92b97860a5b20a2253a849d0c9a701d1c7c743c1",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-ble-switch.d.ts": "0de729ff61bfad29ca91d3eceb31e12270d974b0f891863558cd883ed8399c49",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-ble-switch.js": "f9a4bbe64ef92e733816152b1594514069a1e31772fe431a65550118241df967",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-camera.d.ts": "23bb60780394d15e9d8e86f8bfec131eef16109e0d759d8c82d6cecc7bed5ce6",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-camera.js": "e602ee56b315c021669afc34292ae901412f2ed112348a1bf03d1560040f0562",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-chooser.d.ts": "b6f40554c383c4891f5b36566dbdd910b41a099f6e2bc712127b3bca52ac2c14",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-chooser.js": "219cafd00abfdf7ef04f1deb408593a5f7058844e8bc97c62f9fca00eab1be91",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-gamepad.d.ts": "e42a43d10d11ec14407ffa9e24b146cbdd1d83087fdfd7f587cd10649070d63b",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-gamepad.js": "f572c0b5e6d9831ec997d06ea2ef4c258cdc6945449b37b1de2193b05619a14f",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-hid-switch.d.ts": "e09d94c4d5e16aa9acd05458c87421d9d4a35a07ec29a22f25fcfd2a48574ce9",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-hid-switch.js": "3428098b3d362088540b42c746e35e4eef0b642dbf23a28b1988a839c773562e",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-link.d.ts": "f0c38147114ab75c347b93237c084e500176e40376d81afcc9e1f4343c1ad81b",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-link.js": "da77fff3df2460c4b9f58e6b0e6b74001562e9363a57765b55be7b8f40d8a665",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-microphone.d.ts": "9b6b8a909f07a84fef5f16f7c122da4836cd23e082faadf166b5ac86f0238e7c",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-microphone.js": "bf03eb4c554e17fc6e1b28de97c69912adad0dcfd487c0a64535b7d4a2b3ee53",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-screen-preview.d.ts": "4a03a160489f992672124de9e8d1812bb3c3eeea08f47ddce901f2399f7aa0d6",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-screen-preview.js": "705600b07333d8844e6d460acabe1c91ea1985a6f0ff432b5930e6e46452455d",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-serial-switch.d.ts": "9594a5db42b996c778285a8a0106b3c782df4fb84bc16d90ea134005197d14b2",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/browser-serial-switch.js": "631d677ce3f1a754993ee69f7f60456e57f9413a17dd04a4f38f17a0dd83734d",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/control-input.d.ts": "6e7e06d30a700ed0e5ff9d215bdb1289d843a8a51b8f65699809e1acd1374d16",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/control-input.js": "2db2a0536a808ab53f2e0f436b166ab332d64a26af2a44503f49ee4512244946",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/control-surface.d.ts": "4f5f48e7eab3ab6fdfe4cbd362ae05a016a5a008c7754b0f5233b55cf163daa4",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/control-surface.js": "1ff025689cc375c9f801878edd1b0f9d6c36c16535eb9b20f7e213237aec3d10",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/gesture-driver.d.ts": "7ece8a51e04c8af1e01eb74b4dd2efd7dcac40f02c6e86d5feadf8cd4efc3514",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/gesture-driver.js": "d9882f1ed14b7ad5c78d514087f032d2a2c426d4bf2201e0f6e823d55ab6abf0",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/gesture-source.d.ts": "23148ed66733987fd3037a6017cb9fb1a89ba41afbc21f719c4f8e8a9f12f122",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/gesture-source.js": "2fdebed5e594b3482cee56ee7156af363afc2b5aeb896b45a9016479f6315246",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/host-endpoint-review.d.ts": "9f41912bf21311d7ba9c6fc007e5de62fdb064d748b11b38bcddee46dc448e36",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/host-endpoint-review.js": "69e802ce9c0b784a1d08eb3d72932650d2f21423119c6f028aa5dd440e9bc416",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/identity-format.d.ts": "d1ecf4fd510739f384f52e01e8d0d9bac2fa255fd94b2d20fa43309392fdc23e",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/identity-format.js": "cb8544fddaf3f523904382fea41b532551ed45d0898d7c0f45e79d0d4bc6d25a",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/identity-types.d.ts": "d319bfe6410d55220bbc437b1130c8780867f711c2bc8223b8771d991108d0a0",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/identity-types.js": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/index.d.ts": "e3605852ddcc05474c5d144021bbf91d92dce2091e62d6f9c882f1c0e37cb854",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/index.js": "119eb867d1e868b16d7606d30b7e396b6da8780f85df661e04ac5ce381036061",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/invitation-connection.d.ts": "4c41d25ef9ed69c6bf8417f1dd4ea972e938621cb3e135df48560417a827f9db",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/invitation-connection.js": "7f3e9b27a3c9d2d7c58de01bcbde3b33dd22a9768d8e749ceee637f030d1a1ce",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/invitation.d.ts": "c6ccf0226aaac5193f5702858eedfa4b6157e25522d977981288779e22baddda",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/invitation.js": "9c2e8010464f560807c966748a88a5de599a38ebe132e31f2a3eab2f5a94403f",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/keyboard-text-driver.d.ts": "a9cfa34550cc151e359514a44652ccb6341e445d4470337fac8378652b51a9da",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/keyboard-text-driver.js": "f53ed3275ae0f19c979f592edcef6c1ef1e4ce69f6ddcb15579839f1d0fd62a9",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/local-capabilities.d.ts": "faa97928d2be1f60c18fe6937436b8bbea50eac414d6a9b4dc4cd338994195ea",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/local-capabilities.js": "35c2f95605719d6c5fce0aa3d0a86b0f21792401120d424cd9950b639921adde",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/manual-peer.d.ts": "b81ba7f069c533fdf32d1e570b80d887f98902e5bce71d1d0bc6f3e73b5fc0e9",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/manual-peer.js": "fb3855e0b5f29b2a76f70a89cea2d8c44374473f253dc15689cbd8133717c318",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/native-peer.d.ts": "964534497e22d5ad13e55ba3502b24945005e3886904976c5f38984d446acb8b",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/native-peer.js": "8856c6595fa79f8babc15bee248256ee928d9725119ce03a4141e11bd26141df",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/output-sharing.d.ts": "67ae243b91da3bcffb74261a13bdcd893bc5f0b56c25105dedbb82f315ee6530",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/output-sharing.js": "a5feaa19c8d6989d0569820db38abd60f76a330b302673b11b8ad8fdfde1fd21",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/pointer-driver.d.ts": "9dd9d5ec4a5159988b0fdf6fc752e40d9b6c9bbfd16c92db5c391d76d4cf009a",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/pointer-driver.js": "c160c55b2624bc9e2143aa415f7cb484251b07b42112b8f934d2eb067b97e9bc",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/pointer-provider.d.ts": "3c844972cba23680819d17a48d625287625e8f53d56a8ffe08787fcd46d66149",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/pointer-provider.js": "2c4117fd72b0622987b2f537884b4530b32646f993c68202f0bfaaabfd190dff",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/processor-installation-storage.d.ts": "e5ec21c1ca6a3a67a7634d1535b94492d3ce8edabaa131bc3abdaf45653e1345",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/processor-installation-storage.js": "9960548bc454ba7c7f5991a6a49a4676dd7e612d099e72f610f344c24749f2c6",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/touch-contact-driver.d.ts": "bdd32f979eb0fa3a279e7eca91052477c9199fbcb0a4759697bbfc09539e8c15",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/touch-contact-driver.js": "c6c2642a1e2a7c56db33671dc7433851d7563db64abd040c320edbf54da66651",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/web-identity.d.ts": "b1489c4b544f485a6df768770048f3fca7010224f1333a219df68ce4abd203c1",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/web-identity.js": "7a14c9f90606a2b668a6385118cce91065c5f48234cd97a47ab950e66a3a2afc",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/wire.d.ts": "e9a518f97822b3e88b4c96c7d6bb8214a378a19f91adf949ef2d3cb7649fec74",
+    "node_modules/@uynis-connect/connect/dist/device-web/src/wire.js": "cc2a3829c1258bb68efefb45dc51747546b3df6b9aa74ac3cc551d6b0240b9e1",
+    "node_modules/@uynis-connect/connect/dist/diagnostics/src/index.d.ts": "2d33c02c5c744e279fa0b70a64dcac235ca08ac389cb9023bcfbe670ef477abd",
+    "node_modules/@uynis-connect/connect/dist/diagnostics/src/index.js": "b7525abb42d56e3c52df44552917c2e2f287950f17c1d0644d746ce1e5fce0cd",
+    "node_modules/@uynis-connect/connect/dist/pairing/src/http-signaling.d.ts": "57c517f100e5e6095549ecc04937112bae1fe013518cc3b308796352d9ec2a19",
+    "node_modules/@uynis-connect/connect/dist/pairing/src/http-signaling.js": "1d7a622347b3f547c88dab3587b0d7b9bd73fe0eed90628b96cc9551ffc727d8",
+    "node_modules/@uynis-connect/connect/dist/pairing/src/index.d.ts": "7075fea41862aeca900f77a9567c1bcc8b3d2b3900ed81e2a0e40d1922d1157c",
+    "node_modules/@uynis-connect/connect/dist/pairing/src/index.js": "facc1af39665397262ab91becf8085883b1c08686abe1db320432622822b6924",
+    "node_modules/@uynis-connect/connect/dist/pairing/src/intake.d.ts": "59231d67f08f749bb1b2b3079c02f861e8fb0c00e78248e7cfd01c475a0bc7a0",
+    "node_modules/@uynis-connect/connect/dist/pairing/src/intake.js": "c59e66106da2d3ff612544c7ad91c24f0049448f29187d12dc77e2da59f7f04f",
+    "node_modules/@uynis-connect/connect/dist/processors/audio/src/index.d.ts": "2d73e5d610d4d0c71007a6905a533ca1923b050604150aa1e1e663a10384b5aa",
+    "node_modules/@uynis-connect/connect/dist/processors/audio/src/index.js": "4ac20ad8a3a0c5a27e1df42ac25e6b72e114a25c4c5010500d16106e6d53b74e",
+    "node_modules/@uynis-connect/connect/dist/processors/audio/src/timeline.d.ts": "69ff7a6c818b4a807974c346c5bc2305e5b3ea6a065db4b708eda41172a6c492",
+    "node_modules/@uynis-connect/connect/dist/processors/audio/src/timeline.js": "ef8dd3601215346b17b359d96a7a6d76e2c5e701e2cd84ee0dced826724b6882",
+    "node_modules/@uynis-connect/connect/dist/processors/motion/src/index.d.ts": "76c3574059216c605f924073843f76de8bef8e0d6ba00f9ef658737d4acb5367",
+    "node_modules/@uynis-connect/connect/dist/processors/motion/src/index.js": "647bb73a1c08f7df7089449d1d8e6902912d968af1e5c8feae671e2d382b3e0d",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/face.d.ts": "aed6f489e84b7e94947e695b14a719f82cb09a98d8ad063e5419b6d4e08b7265",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/face.js": "5196abe72f556de590d052e603ec4a65eb1e5f52672864792a455f3b0317accc",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/index.d.ts": "53fe78b926b08d4192f61afb8736652b6f8fa7586ebd6a4c2f66d59ab97c1e08",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/index.js": "f68c7208fc02f8eeb8b53a01aee715175f19c48f9a895f14fd70e5ce42fa87c7",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/overlay.d.ts": "936d6860f89c057d2ad472b0d36549d332e18880157d2afcdf6cb250616965b2",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/overlay.js": "9b5f0e7556f99936b32ed7090974484cb77f36f495836744e2b1aa06b70cbb97",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/people.d.ts": "7fae82ed045df30ceb7fd7a40fb86bd1c94829aaf98b073f6eef2a4617afb822",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/people.js": "6ff7ae5e937b966a68a9d4f675609821121790e776ffe00d36cede78a65efd98",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/placement.d.ts": "19e1d7fee88dbee81af6051e237f2001d86f873451abc52b12e5651b95945bda",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/placement.js": "21202e8e2ebf1f901413b07d5b54146cf139e545bd0f1b0d6c43ccd30739e419",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/processors.d.ts": "451221c2236a1deca1b1fb441b208a439e4aa64f291fbc62a38984b192664a81",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/processors.js": "05c46d4d55cc414bc648c68b4d49a4612c02de2d90a0b104d91512711f8db396",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/quality.d.ts": "9827df384e227431ab3cedb678102425486e0ad4a9f6a1408baddc2b21a0f685",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/quality.js": "bdea19dbadfce93d3a54fc30313d90c9118afa456b8203d0f009978d3950a333",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/skeleton.d.ts": "39b7f10c61f0ac617f670ef711c69c21fa536476d75c1840030ed818341b6956",
+    "node_modules/@uynis-connect/connect/dist/processors/vision/src/skeleton.js": "bf321e5821ba0ecda6d6bb447e310474125cea4d8962658d9ed11d372f5bf274",
+    "node_modules/@uynis-connect/connect/dist/protocol/src/application-wire.d.ts": "41dd75494b87bb2b51978d835abd9565c01a800e883a95ce978210b78cccfe6d",
+    "node_modules/@uynis-connect/connect/dist/protocol/src/application-wire.js": "d29d0ff94f4190379558d6f01765f774fbba4d0902f6fdabe1982fdf21d33235",
+    "node_modules/@uynis-connect/connect/dist/protocol/src/index.d.ts": "6e7d198f4983b4adc0174aa7f734425e78d0294cbea45c338db7454a53f794f0",
+    "node_modules/@uynis-connect/connect/dist/protocol/src/index.js": "a8ffa763ab343e5c01908541e418b9a5e415a66167319082d97375847518a855",
+    "node_modules/@uynis-connect/connect/dist/protocol/src/transports.d.ts": "3e92e43bc387b072b8d37a1a29181cf6bbe272fbb58ec8da044de159d3013111",
+    "node_modules/@uynis-connect/connect/dist/protocol/src/transports.js": "4e70e52ee5ddefd6c3b4c02854def39c2a305a2cca6f971e288d7ba580c3777f",
+    "node_modules/@uynis-connect/connect/dist/transports/webrtc/src/index.d.ts": "1cefab5ad8438424025b175e3ffe7f7e25a5aa432b43e347141e03575abbcb0f",
+    "node_modules/@uynis-connect/connect/dist/transports/webrtc/src/index.js": "0eeccfc0275aee3f23d09f3adf18c2a720ed57aaa771d588404805d8ff7f613c",
+    "node_modules/@uynis-connect/connect/dist/transports/webrtc/src/peer.d.ts": "2323982bfa4bb1dc3cf51e2e00803057f5a20dc4cdbf56b585c8618282062274",
+    "node_modules/@uynis-connect/connect/dist/transports/webrtc/src/peer.js": "d76d9a4067b68ab60205058dfef6ba2d28202f309523e04b6adec42a09dceea6",
+    "node_modules/@uynis-connect/connect/dist/transports/webrtc/src/ports.d.ts": "2e265404c5b3d297b2c1f7a743313ebeeed003d0ba32a7d3567531f347b2f186",
+    "node_modules/@uynis-connect/connect/dist/transports/webrtc/src/ports.js": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+    "node_modules/@uynis-connect/connect/dist/transports/websocket/src/index.d.ts": "d527306369584cf49f10fb5752dea82bbff97faa2eab31e639137433b4081491",
+    "node_modules/@uynis-connect/connect/dist/transports/websocket/src/index.js": "165168bb0be292cbcfe646060f560c1142e8f15b55a94e36b13cd34bd269dad1",
+    "node_modules/@uynis-connect/connect/dist/transports/websocket/src/peer.d.ts": "e36fa66c0853c8e03f0cc8203615edff6ea1dcf954ca1f14c2e8fff6ef89da78",
+    "node_modules/@uynis-connect/connect/dist/transports/websocket/src/peer.js": "960efc66953e0436865425483c00debc3ba77c5e92a08fa68e03c5689237ef95",
+    "node_modules/@uynis-connect/connect/dist/transports/websocket/src/ports.d.ts": "7c4a44413c785029cb074ee78f93337d3d325468857bdc1d1e64952ab4dc5974",
+    "node_modules/@uynis-connect/connect/dist/transports/websocket/src/ports.js": "8e609bb71c20b858c77f0e9f90bb1319db8477b13f9f965f1a1e18524bf50881",
+    "node_modules/@uynis-connect/connect/package.json": "dff201004433abbad0744d845c83b1a8d8f2553f5e67e831aa02335ffe91c088",
+    "packages/input/src/device-mapping.test.ts": "5c8cf4fe3787139bb244af2526438f13e32656f7194e9bb338885788dc8f91ce",
+    "packages/input/src/device-mapping.ts": "4ac7b099b3249860f2e853815dbf98b4fa9f4e7dc96a6a196bb421b64f00499c",
+    "packages/input/src/index.ts": "d9640d2ede9b7726e947311d6baabb2946e18cb322f0b530ceb6efbbb26effad",
+    "packages/input/src/input.test.ts": "4ae60bbd06b9d75d67a7bdbc5bec1615e9a6fed661a2c19a729c642ef6a1a999",
+    "packages/input/src/sensor-mapping.test.ts": "9c18891f3b92794af26cbae9bc05c4f55ed2f179f41c0e44116a8dea50bde3c6",
+    "packages/input/src/sensor-mapping.ts": "0dc06eb9668ae8e70f494ab07156cc4f23abb8a3bfec7b3a2c90d12e3411ae6e",
+    "packages/sdk/src/index.ts": "62cbaee91752ee9669b1064913ea8e4e4e00bed1dfbd2d6994fa7b6e1c25c5cd",
+    "packages/sdk/src/replay.ts": "6de00ca242a294fff2f78adc082ca7d3a7dbb608ae54b5f80a213d0412ede7bd",
+    "packages/sdk/src/scaffold.test.ts": "f16217381953c360adffec3165d6b526d10626432c15dfdb628a3468fb40496e",
+    "packages/sdk/src/scaffold.ts": "f330f6ecc8aead6dd70824417e063e5c4e16e94cd2f89f5268fb73a91443aaa7",
+    "packages/sdk/src/sdk.test.ts": "77c3d04fc1690bcb26dadba2cbbf6cbc136f930be7cb9d5d508dcecdcb0310a3",
+    "packages/maze/src/index.ts": "80ee8ef2a629144c8de23145446600e2d7ec9155bab338a9acba4effe0e59ffb",
+    "packages/maze/src/maze.test.ts": "5e542989c8b38ed95ed2d0eb224fb2467ea159427e52051172fb129acf0d8f7a",
+    "packages/core/src/index.ts": "cda6c920664d4cc6988bc8123e652e525807ef35338ecf9709dc44e63c493d2a",
+    "packages/core/src/random.test.ts": "19dc778909dc1f32d4d98984125c8ff57c82d5f7aaa30085fc57bfdc78d13491",
+    "packages/core/src/random.ts": "522afb91a3e9941b9d7101b187e0d02720f0c75f8a1fe8456689d9e794764df1",
+    "app/controller/Controller.tsx": "405a1d57f180ac3735a531f990b94b3f243e70b6341918c2a5a07833a5171110",
+    "app/globals.css": "2c087fa5a146895a9fed2edd4760c82d6e115c6cebeeaec536a5ff26a5d08ab7",
+    "tools/qa-conventional-game-journeys.mjs": "549e51a9580c4da484a8029edc93c3c3d12fcce0f6239a742203279fa32cadac"
+  },
+  "buildSha256": {
+    "dist/client/.assetsignore": "14ce8d5101f6d8f172242053466d44f5e2cd622dee81db53c14bd445c25d1942",
+    "dist/client/.vite/manifest.json": "21607f2f893ccd35cfe18efb1d945c01cae98fcd685e60a0b4a1f1252cda6168",
+    "dist/client/_headers": "2148fb62669525f5091532d36d4a48a8da95b08a5a797bacde75d2fe981351bb",
+    "dist/client/_next/static/8bb90918a47adb2d3d1f14e21f075ba3/_buildManifest.js": "47f02b34be6dc481257b6efce4c19e19111f37ef5c437f8ffed44f0da97fa9bb",
+    "dist/client/_next/static/8bb90918a47adb2d3d1f14e21f075ba3/_ssgManifest.js": "653f3e53e89b4f8548ff86c19e92bb3c6b84b6be7485a320b1e00893ed877479",
+    "dist/client/_next/static/_vinext_fonts/geist-8ac0455e797f/geist-001175b1.woff2": "58a6b173d5ca1dec92166ea3c6cb1a84a4144556d10928ac14e8e6b40e4787bd",
+    "dist/client/_next/static/_vinext_fonts/geist-8ac0455e797f/geist-52306abf.woff2": "f689f638f29fff460a2d5749edb5d5c38d7bef0389f32032d871f23fc6ebb008",
+    "dist/client/_next/static/_vinext_fonts/geist-8ac0455e797f/geist-875ccdd4.woff2": "6129fc8571c3e0cb0a4c41f5160c974a843b055009dc4ad8858bd808e18a2d86",
+    "dist/client/_next/static/_vinext_fonts/geist-8ac0455e797f/geist-98bbbccb.woff2": "9b6f5ff45b278c744b5f379a2c4ecbaf858a842b8eaf82ac8d21b699ca16c608",
+    "dist/client/_next/static/_vinext_fonts/geist-8ac0455e797f/geist-ff2310f5.woff2": "b7a545bbb08256bd809f11cfe66d88da3e22d169ea4407737b1ef0ec1ed3d791",
+    "dist/client/_next/static/_vinext_fonts/geist-mono-00e989178794/geist-mono-013b2f2f.woff2": "5f3d6ad60f29d6cb708414ec6887163d63bf197377ef5417d2483ff31ace6c3b",
+    "dist/client/_next/static/_vinext_fonts/geist-mono-00e989178794/geist-mono-0638449e.woff2": "d67e4a94ba498635f764ddca7d1ec4271f5642f032eb24b426764480f66f8497",
+    "dist/client/_next/static/_vinext_fonts/geist-mono-00e989178794/geist-mono-44745446.woff2": "745994b5cd950ec201b66526375f057d540847cccfc70f4f24f5f571d26d3923",
+    "dist/client/_next/static/_vinext_fonts/geist-mono-00e989178794/geist-mono-44e03052.woff2": "75b3bedbebc35f347c0ae3b416aa871941555357e7b0f83767eb5987875589ed",
+    "dist/client/_next/static/_vinext_fonts/geist-mono-00e989178794/geist-mono-971fb274.woff2": "16e1d48b6dd29eb240aec5db36184eb182933c082cd43de7f35af686d58087d2",
+    "dist/client/_next/static/_vinext_fonts/geist-mono-00e989178794/geist-mono-f6b33328.woff2": "e27f657e38d52887baa3b6b2f812bef93dfdd356f0810e40edd4ee284cc7e9f6",
+    "dist/client/_next/static/chunks/AppShell-DYmcVAd9.js": "ba36a8fd8c1cc531401c1ddb4a160ecbbb1efb0cbd419b50847e4e451a05f90d",
+    "dist/client/_next/static/chunks/AppShell-DYmcVAd9.js.br": "65a04943d42c252fc5c4352da8475d1295fdcd5e802c09e6f8470ed36d2a086d",
+    "dist/client/_next/static/chunks/AppShell-DYmcVAd9.js.gz": "f7c8bd4f42f5d9c4c78dffac5bc016d6c4a44c459f6503dc6dda0f88cb38d319",
+    "dist/client/_next/static/chunks/AppShell-DYmcVAd9.js.zst": "0796830c546db68d55fb08a671d1636685a9dd9d511376f87622aa05de605f00",
+    "dist/client/_next/static/chunks/BeatForgeStandalone-C1V2wPM5.js": "e6bc7a6c62b2f113ed6943e057ca2520f96e4ed22308c87ce5235df773758634",
+    "dist/client/_next/static/chunks/BeatForgeStandalone-C1V2wPM5.js.br": "5d994bd26cd14b52fb9279ce705f2ea581b4f13dc61432b02913d1dbf6cf1e97",
+    "dist/client/_next/static/chunks/BeatForgeStandalone-C1V2wPM5.js.gz": "e1fcc132b722b173bad71e3ea8f99bc8539b56d6f21a181c221867485fce9eeb",
+    "dist/client/_next/static/chunks/BeatForgeStandalone-C1V2wPM5.js.zst": "cd488b906afdc1a757d3ed76a8edd18c14077f72d96c5432ec8dd6e26a48401e",
+    "dist/client/_next/static/chunks/BodyDodgeStandalone-B-BgVjsB.js": "a1b7a89547549e98bced482320bde2df498599dfd8206971de023c58250b483c",
+    "dist/client/_next/static/chunks/BodyDodgeStandalone-B-BgVjsB.js.br": "c12901df4a0a1962d4d49d4ab7e6a04c1d0908f02ad422dc525298672fcfd489",
+    "dist/client/_next/static/chunks/BodyDodgeStandalone-B-BgVjsB.js.gz": "65504f3afc92c247cf09150394693a387a91f046c62ec028709c29478b873cba",
+    "dist/client/_next/static/chunks/BodyDodgeStandalone-B-BgVjsB.js.zst": "f93244b2be0e00cb529fd8f4d76146dd4b57066456be92ffbf251eb103d072ab",
+    "dist/client/_next/static/chunks/Controller-BSpztBnB.js": "907199152c765d549eb62d9e9bd52d582a2f971ac474aa7b20423e4cac104aab",
+    "dist/client/_next/static/chunks/Controller-BSpztBnB.js.br": "838381928832527eafaf52d718974946006130d7203c8801e533d239af569ca7",
+    "dist/client/_next/static/chunks/Controller-BSpztBnB.js.gz": "a2b39497e61a7d53e941bfa9e4c822dd360b9f9e53b0ddb074ac7d5548a4d9d9",
+    "dist/client/_next/static/chunks/Controller-BSpztBnB.js.zst": "3148de2792a22ac84525fd701a6917c095835a6a27505b5e5cc053cde588fa5f",
+    "dist/client/_next/static/chunks/ControllerLab-D3zrM5-_.js": "4d1ad8e4c7b731b5986b4200a90aedd214a3beb73b61d23a8fc9a59fd2d66b13",
+    "dist/client/_next/static/chunks/ControllerLab-D3zrM5-_.js.br": "ddf49de695209aeec9ca691f5e03aa38f1a3cc0293f92a3a18370a2bfe748a4c",
+    "dist/client/_next/static/chunks/ControllerLab-D3zrM5-_.js.gz": "130879f148272ee4afc006517a77368f06927f71051b76f70f6742241516e01f",
+    "dist/client/_next/static/chunks/ControllerLab-D3zrM5-_.js.zst": "7ed845242d6395cf12f7a56164377d2981fad1d91cf819c9b9aa3716f1fe7ca8",
+    "dist/client/_next/static/chunks/EchoMazeStandalone-gZ3s6i0J.js": "fb262f300ed5933f2f95a1e25316ffd6b04ef6a55dfb10f658575cd743398918",
+    "dist/client/_next/static/chunks/EchoMazeStandalone-gZ3s6i0J.js.br": "6bbaf0a1fe9a842c095bc7e8eb050d8fa9f0d5a87d6f8d581b82f819445c30f3",
+    "dist/client/_next/static/chunks/EchoMazeStandalone-gZ3s6i0J.js.gz": "a0075d1e611b8800020d38516f3c968872b94d3f7f62e32de0e85b56389b04db",
+    "dist/client/_next/static/chunks/EchoMazeStandalone-gZ3s6i0J.js.zst": "1e690d31f783a3497fcc8328ffbf1bf3504396aaab2c47b5f127ee010e50af77",
+    "dist/client/_next/static/chunks/GravityStackStandalone-CDZxOcLz.js": "02311c5ff7781f37361ea6106200674726a85a8e311bff9773ac2cf1926d6e05",
+    "dist/client/_next/static/chunks/GravityStackStandalone-CDZxOcLz.js.br": "fff72a89c75a940cb5aed4bca41fe2fb885b5cc7824cfff1f52dae92fb1280ae",
+    "dist/client/_next/static/chunks/GravityStackStandalone-CDZxOcLz.js.gz": "f06548af4133481ec9c5c9d9761aa375bbff93406d5267c6550a8ebbaeefc3ca",
+    "dist/client/_next/static/chunks/GravityStackStandalone-CDZxOcLz.js.zst": "923a8bc531fd1f567ce63f60496476ab00879757065db30715f07c4ca9fb4528",
+    "dist/client/_next/static/chunks/Icon-uVYRK8Ed.js": "255647959f1d9b9d524484400c8b010a2ef8dbfaed726539488583d98c047b45",
+    "dist/client/_next/static/chunks/Icon-uVYRK8Ed.js.br": "0f9d680d6394c71caa7ac819a36b779fba982e5bd86691fe3df22d11e7b4ca9a",
+    "dist/client/_next/static/chunks/Icon-uVYRK8Ed.js.gz": "8c37cb07098acc19b8412b8b407ffa34d6273452be9265e9ea2eeb262225b576",
+    "dist/client/_next/static/chunks/Icon-uVYRK8Ed.js.zst": "922a6add4442962269fc5ac4a255c50bc95e33088126aeb6a6f517953ca31817",
+    "dist/client/_next/static/chunks/InputLabRoute-CSm_lD4R.js": "b7ef6f0b8f7f4e82329e6ae7d37696d0714cd0747873869dd4cd9a72d2a767ab",
+    "dist/client/_next/static/chunks/InputLabRoute-CSm_lD4R.js.br": "354fcbb6c392b8754a2c4494a98c89dbbbaf28536676b8ebaea802ad55bb396d",
+    "dist/client/_next/static/chunks/InputLabRoute-CSm_lD4R.js.gz": "3b6367ed104b46f9c8b4d6528c5222d0e22fa89596081dd830dc1aedb176c242",
+    "dist/client/_next/static/chunks/InputLabRoute-CSm_lD4R.js.zst": "513137d8d8bd6949bb269067457b7d44d437da757e0fbc11831eb67e550d8329",
+    "dist/client/_next/static/chunks/Launcher-nOuFMHbE.js": "c4a377f9cafbe80776ad35434628ea3a98276aead9aa4416e79c182da6256cfd",
+    "dist/client/_next/static/chunks/Launcher-nOuFMHbE.js.br": "405f8984a9dc4be15b423a77d7dd68d9165e3b54576347544fa094088d5d79cd",
+    "dist/client/_next/static/chunks/Launcher-nOuFMHbE.js.gz": "521f22baaa1748671b9a86b09ca4faca272b8a304757a72abe210939096db531",
+    "dist/client/_next/static/chunks/Launcher-nOuFMHbE.js.zst": "5086372a17eb2a0cd589132487b1194e13d724a4262337fca3e1822a6b04f2a2",
+    "dist/client/_next/static/chunks/OrbitalCrewStandalone-B4Xstehu.js": "4eadc852dce1fc993580b83a2200e85aa2a4abb76ca0955ad723cd0b3fb7fa11",
+    "dist/client/_next/static/chunks/OrbitalCrewStandalone-B4Xstehu.js.br": "ba65f1d3977dbe398ca09862a234bb40d394f94af7fdbd0b7dec8f2903018e6b",
+    "dist/client/_next/static/chunks/OrbitalCrewStandalone-B4Xstehu.js.gz": "b012601df346173510ed1806709b1ae927943cdf5731003df2d204e66f650d3f",
+    "dist/client/_next/static/chunks/OrbitalCrewStandalone-B4Xstehu.js.zst": "d40717d5395f6c66954c0f031d9cdae3cb9b511cc1b4ed12be524cde040bec26",
+    "dist/client/_next/static/chunks/PreGame-v-qmL330.js": "3c70fddb9ef364ef9e6ac41869d460226f7d7cbe8c09c6ce08dfc07223b04c01",
+    "dist/client/_next/static/chunks/PreGame-v-qmL330.js.br": "d4816bd49544037a48090162638d410da1988260ed4ac7f04f8e5c0f4a271bea",
+    "dist/client/_next/static/chunks/PreGame-v-qmL330.js.gz": "e7cef9db2b71b8d5a99427e03576b4b0c0d85ad5f13b6ecc257baa31236de756",
+    "dist/client/_next/static/chunks/PreGame-v-qmL330.js.zst": "dbf31c6a1e4c8a9f10da732d2878f8352b448129ac418394b2cb7878aeaa51ef",
+    "dist/client/_next/static/chunks/SettingsView-BpTNMdQL.js": "68c25dd10b975081f762e89944315501bc12c2848471fc9c1f15bb66ea8bb6c7",
+    "dist/client/_next/static/chunks/SettingsView-BpTNMdQL.js.br": "78badc0797a158bc05be5f9d2ff34c99c886244e5f313dad46ebe5458bcf4cb9",
+    "dist/client/_next/static/chunks/SettingsView-BpTNMdQL.js.gz": "5b8e4c26621971a3fda8c412b370d49dd047b9ce2af86f67c4f071e2aa7126e3",
+    "dist/client/_next/static/chunks/SettingsView-BpTNMdQL.js.zst": "45cbcd55ae0765f999fd64f9a7ddb3cdb5c82d6bcb8b8abc8189316097c7c1cd",
+    "dist/client/_next/static/chunks/ShadowArenaStandalone-B6AHWmAn.js": "a361040043772ed4a7ee40d4d7956c9b0fbdaa29fdae1b86b0671931e08ea4a7",
+    "dist/client/_next/static/chunks/ShadowArenaStandalone-B6AHWmAn.js.br": "6ed8f4d055d4f5283df5067acdb594dd2eb09bf0ed68c68e2153524ab60ca441",
+    "dist/client/_next/static/chunks/ShadowArenaStandalone-B6AHWmAn.js.gz": "3b4baf75c6d053e3c74d89b0b9091582c8dba17be131aac181f1de5ef973a1d7",
+    "dist/client/_next/static/chunks/ShadowArenaStandalone-B6AHWmAn.js.zst": "3239b783c0c31a63ca8eb1bd2fc1629d27214159df1fc031c169a594f319cccd",
+    "dist/client/_next/static/chunks/SlashstormStandalone-BeQ7x6Ow.js": "143e255831f979e89469c0c81de80af03ab9bc86b9a1073b6917266d7e1a59cb",
+    "dist/client/_next/static/chunks/SlashstormStandalone-BeQ7x6Ow.js.br": "a87f4f3fa83e7042c1fd2d9664b399f283cc7e6619601610a9a1a6be6500784c",
+    "dist/client/_next/static/chunks/SlashstormStandalone-BeQ7x6Ow.js.gz": "2b55e83647c32f29b570c75e47fd60dbf76b3df7da6cad5de12a5c9b0e275297",
+    "dist/client/_next/static/chunks/SlashstormStandalone-BeQ7x6Ow.js.zst": "2604085145ca5e1f371afb6ebd3b2a3b1268c6471c741dd9c50bd681858da478",
+    "dist/client/_next/static/chunks/SpellcasterStandalone-N686RdNM.js": "5bcffcf40a5339b0069856bb60bca901f22bcaf3c91c6b5238f9747508270f59",
+    "dist/client/_next/static/chunks/SpellcasterStandalone-N686RdNM.js.br": "b1b0746d6e336763ac91c98481b43660d974a9ef55c83ec86346f79f99057d2c",
+    "dist/client/_next/static/chunks/SpellcasterStandalone-N686RdNM.js.gz": "7fdd8c0ed63856b87a4b098f7da265aa93e5c50b030a2049ee54d2f73bb31648",
+    "dist/client/_next/static/chunks/SpellcasterStandalone-N686RdNM.js.zst": "efb260015adc6905390e9f808f424d0a35add67b85ad0541d89f2383b9dd1b1a",
+    "dist/client/_next/static/chunks/StudioRail-CuQ3H88F.js": "f4c411a31f211a8774a1e767579cafc5a57d5a5a841d23fca50ae8b81f1491e6",
+    "dist/client/_next/static/chunks/StudioRail-CuQ3H88F.js.br": "f4adb149559423cde5dd2b8a5020fa08a639e9951c666c5782733763838d3bcc",
+    "dist/client/_next/static/chunks/StudioRail-CuQ3H88F.js.gz": "31c6a4a156cf1fd4c99c0d5516d5d202cf0c29c16bc19e388fea8b10bf9cdb18",
+    "dist/client/_next/static/chunks/StudioRail-CuQ3H88F.js.zst": "f0f8fff8bf1e7edfcea3db41847a71c332fbabe33b0ee52a61a56a25f52d2835",
+    "dist/client/_next/static/chunks/SwarmCommanderStandalone-DCTZnr_a.js": "2d7eaf2e3f8ef6cc23157257be8c94897eb3365ddff00d60b18a5fa86e451a26",
+    "dist/client/_next/static/chunks/SwarmCommanderStandalone-DCTZnr_a.js.br": "9eb219272210a4821e01933c07f2cf9f7da7df52359d02d040cfe03435fab0d2",
+    "dist/client/_next/static/chunks/SwarmCommanderStandalone-DCTZnr_a.js.gz": "4ed26d5a888d2db55f0dafaef447c37d5ae021a4d6ed16bd9b3fe820d0a59921",
+    "dist/client/_next/static/chunks/SwarmCommanderStandalone-DCTZnr_a.js.zst": "1c37f578f5c3c20dc02c56a5b239b39cfdbfa12b56cda2ca65a07fef7a6cbc7e",
+    "dist/client/_next/static/chunks/TiltDriftStandalone-DW1fIEFD.js": "96ee77934ae673f027c4c22dd71f887c771ad261f858745c064fe8455204a3c8",
+    "dist/client/_next/static/chunks/TiltDriftStandalone-DW1fIEFD.js.br": "c8a7f49d92252c96d285c283f8acdbaf3cd0bf28509749a95a2e797139c6a4fe",
+    "dist/client/_next/static/chunks/TiltDriftStandalone-DW1fIEFD.js.gz": "6de93e8115da2603581953f93ee2f9cc6b522b58844894e8b9d92b8bf67f7a26",
+    "dist/client/_next/static/chunks/TiltDriftStandalone-DW1fIEFD.js.zst": "ab316d56d4b5551ba77bece229953ecd3ef508ccd4edaf5c6eb3bb7680e88298",
+    "dist/client/_next/static/chunks/app-elements-MmRVnLC5.js": "c27d2d55436cd6fb2904ec290ac64079a8be8a7c293e6210af1ac3e89476296f",
+    "dist/client/_next/static/chunks/app-elements-MmRVnLC5.js.br": "0baee9ff2a752ac00b0681581cc60afc239767d2383b6cf1316e704b9ee15bac",
+    "dist/client/_next/static/chunks/app-elements-MmRVnLC5.js.gz": "ce911bea63760ea56d399afa1d5f593f6266ecebe9ba2d8b7286ad67d6228e47",
+    "dist/client/_next/static/chunks/app-elements-MmRVnLC5.js.zst": "2891ca979647ae75fac2cb2c80201e71791ae97074cfcff11c0ba2737c49220f",
+    "dist/client/_next/static/chunks/app-route-prefetch-policy-HczZYzMb.js": "5f8762156b186232aee3be4e1c144eaef8f64e6a7c407bda0c99d0c42577efaf",
+    "dist/client/_next/static/chunks/app-route-prefetch-policy-HczZYzMb.js.br": "2157aa3b079809b447e42e7db096805fc75213d44344bdd1a3d528ee1c7e23b9",
+    "dist/client/_next/static/chunks/app-route-prefetch-policy-HczZYzMb.js.gz": "abd6b47642ad103c6f42c50ae40dff0d819cfaaed87f4807fd61112d2f8c1b40",
+    "dist/client/_next/static/chunks/app-route-prefetch-policy-HczZYzMb.js.zst": "5e59cda933409ee150c2c12da2f7e12d0245b0998eadcb61339ade8ccd0657ad",
+    "dist/client/_next/static/chunks/app-rsc-cache-busting-B_NEjjYr.js": "18cfc219add923441b9a10ad7f1bb8da3fa25eca3f5e58a3536da2b80c65fa62",
+    "dist/client/_next/static/chunks/app-rsc-cache-busting-B_NEjjYr.js.br": "605d0960624020ef219e5c6a9309993b6fa7f9c41af005a707c9ae0ce8a9dce2",
+    "dist/client/_next/static/chunks/app-rsc-cache-busting-B_NEjjYr.js.gz": "0d31d4201d01d5ec1c9016c16d8e6a5a0eb433e46e5e26b1cae7a773af3e7216",
+    "dist/client/_next/static/chunks/app-rsc-cache-busting-B_NEjjYr.js.zst": "c27efcf438b6d661876cbc04d5d8d39347da422d1d74f8927022c678e17373b3",
+    "dist/client/_next/static/chunks/app-rsc-render-mode-BLLBFAJ3.js": "15023818d8ea187a86148c3e5f364188e40616a08b2c6f10389a0893b7095fa5",
+    "dist/client/_next/static/chunks/browser-link-GloepUjo.js": "e0e4cc0a1e35638b1c3265c4df0c869d939447ad50c66ed4876836dfeb082bd5",
+    "dist/client/_next/static/chunks/camera-plan-DhnxYAZm.js": "37c19c76bf577abe8f6d834ee8ece9b776cc209860bfd5e6b3e9e3283c6f9f5f",
+    "dist/client/_next/static/chunks/camera-plan-DhnxYAZm.js.br": "9e9dd88eaf310709808d5656750108b36cf0c95bfefb63dfc917da47061c48d2",
+    "dist/client/_next/static/chunks/camera-plan-DhnxYAZm.js.gz": "29b29355206fc026c263a809d1b104678816190a930ab0ddf7d42efc90e48552",
+    "dist/client/_next/static/chunks/camera-plan-DhnxYAZm.js.zst": "17c8dc5129bcbcb2fd6bbbdb7414d330183ea5bf875aa0ab30dcd2cb676f8d3d",
+    "dist/client/_next/static/chunks/canvas-viewport-K0YKo5nq.js": "a4b05c1cc81f2149dbc49f8e92bc0d9365145ca93fc972ea79ecc653291fda90",
+    "dist/client/_next/static/chunks/catalog-AG6ru7de.js": "809755018f27acd432b9cceb025a9366d05fb10f94ebc7fb696f4251509828cf",
+    "dist/client/_next/static/chunks/catalog-AG6ru7de.js.br": "e3067ca782effc6be6e06d345429e0d79e5f252a84256d31f24477baefcc6503",
+    "dist/client/_next/static/chunks/catalog-AG6ru7de.js.gz": "095448d15890357185acbb95fe051e2f143ff6836a976e582bbeb29911db05e5",
+    "dist/client/_next/static/chunks/catalog-AG6ru7de.js.zst": "ef502f0d486e10e615df891ad762ad5d2bdcacc9d6fa47b1f6c2942aefefb5e0",
+    "dist/client/_next/static/chunks/deployment-id-CV2rIDEw.js": "b918a30d89d2c2846fbde2b9921e5e437e9649021a351d48bb8ee62db63717df",
+    "dist/client/_next/static/chunks/error-B7aZIVJD.js": "1357cdb74c2c87ea118e8a467ba612f1bde47b7153a80426cd34f0ffef702e1c",
+    "dist/client/_next/static/chunks/framework-JGc2HF7T.js": "51eeab1516fa74a7a401a24514cf16d409e4c478b29fc99f7bc909066afefc9a",
+    "dist/client/_next/static/chunks/framework-JGc2HF7T.js.br": "d1e63452b4e9e6be3d7aabf52f55ada13855ed57e3ffde9edb083c6f016e8f32",
+    "dist/client/_next/static/chunks/framework-JGc2HF7T.js.gz": "cf005183ffe45e61b944de886c816f2d9bd781d62857d24647c3044b4b76c65b",
+    "dist/client/_next/static/chunks/framework-JGc2HF7T.js.zst": "8fe377cb6212d6a93107a8f37b2875852cd14581bdbd5b2400f9b1d67ca5ade7",
+    "dist/client/_next/static/chunks/game-protocol-BJfGZqLL.js": "308c8b46a5c05733c9a1d3b9374e301974af5402169bfa3c86adc3a21d1b00a6",
+    "dist/client/_next/static/chunks/game-protocol-BJfGZqLL.js.br": "fc43e7f69011ca30a21d77eb25837d8882264b602b70de43ee6493f29da995db",
+    "dist/client/_next/static/chunks/game-protocol-BJfGZqLL.js.gz": "043122f7cc6b41de55b13247860e7f45014f815abbf5bf01bcc8eea56ca1ba83",
+    "dist/client/_next/static/chunks/game-protocol-BJfGZqLL.js.zst": "8ff35826acad36a92f1a18b3419857948893eb13e47de62d8e7514cae7172200",
+    "dist/client/_next/static/chunks/game-session-DRpz3gKA.js": "178b5907fa15627a55c0df899a643a0c8cf50dd0a189ea340cc053b48404a0b3",
+    "dist/client/_next/static/chunks/game-session-DRpz3gKA.js.br": "e6a9a635f69ce3eeb4e83821b8126586e501d79bacff9780ae0370a76db3e62d",
+    "dist/client/_next/static/chunks/game-session-DRpz3gKA.js.gz": "60ddb81db72baa5f2d70e25a5ffd69feff0c07305a74d2d33893c4b4418d9552",
+    "dist/client/_next/static/chunks/game-session-DRpz3gKA.js.zst": "5511e50b25fd3da8f5681869e046b9238e5652dbfe187e2232ff56b29f543d15",
+    "dist/client/_next/static/chunks/hash-B9TVtkv9.js": "fba69692645d8206561e12edf1653f0f7931d0f14f8f753ec3be5031dfd004d1",
+    "dist/client/_next/static/chunks/headers-qGdipI-Q.js": "2f98bb542090303360abfb127249b1031f0cca43db82c2ac2c1411f54a9662f7",
+    "dist/client/_next/static/chunks/headers-qGdipI-Q.js.br": "399717cc407763d95261801f9c8099e83b063c2c60b1d42ad2de69c7a92129a3",
+    "dist/client/_next/static/chunks/headers-qGdipI-Q.js.gz": "3178172eb9715caf06f8bdec0f33b2cd0cfc0b67978478f6172e9df31a639127",
+    "dist/client/_next/static/chunks/headers-qGdipI-Q.js.zst": "937cdf1719b76c7e2b35366e953ce36c5d06abda66bd686eba481fa6cd9b5ae4",
+    "dist/client/_next/static/chunks/hybrid-client-route-owner-0LVT5tKP.js": "f164280965594d4a8c15b9490a5dc03ed5efe270ae0783bde5eeb8127b35c90c",
+    "dist/client/_next/static/chunks/hybrid-client-route-owner-0LVT5tKP.js.br": "3fdcb63784ad93c9e60762244998711b9ae9b16fc60f07988b78e8a341c0eedd",
+    "dist/client/_next/static/chunks/hybrid-client-route-owner-0LVT5tKP.js.gz": "49bea6931f13c89974c64fd10b55b4f436f58d922318ab69a5b4b69a889c103d",
+    "dist/client/_next/static/chunks/hybrid-client-route-owner-0LVT5tKP.js.zst": "1a4ca4809d8801cd8b770a7e16313642352b0c7b84e33847901db9721f9782fa",
+    "dist/client/_next/static/chunks/index-D00F7PwQ.js": "f96dabeeaa9fce04e5a2dc1fe6a8ceca2b239cdbd3a5ca25e4afd7f276cc54c2",
+    "dist/client/_next/static/chunks/index-D00F7PwQ.js.br": "f6a43ff750b35b5dbee4e9a0005e2400618161b8d154e941c39ec3293d1d1f3b",
+    "dist/client/_next/static/chunks/index-D00F7PwQ.js.gz": "96b07bee15ee4269d0b84c3b5e613674c5cd60de76e22720e83874d1596b531e",
+    "dist/client/_next/static/chunks/index-D00F7PwQ.js.zst": "da30f2aba43bf1ae08c58d8856294f5526d65e6834de13769140f08517c4e682",
+    "dist/client/_next/static/chunks/input-readiness-fo6B5rNA.js": "5e23450e1cbdec4ee5f7f8e13e0d76de628dcd662603e4dc11c116b4b673a3a6",
+    "dist/client/_next/static/chunks/invitation-copy-C7CfjtBR.js": "a80e03feec0fe6497e6b138be64175b8242ca6589c8f368c51b9ef384c7008ee",
+    "dist/client/_next/static/chunks/layout-segment-context-DWeKdLqU.js": "37a93befcf00b75e9e9be6b8ed2edcd3e0c509b362f477ff2b5875f29133873c",
+    "dist/client/_next/static/chunks/link-CfOdjeau.js": "6c1bd4cf6a1cbfef4fbba1a80fe6587b338724ac03d5de3e9fb38dbce68487a2",
+    "dist/client/_next/static/chunks/link-CfOdjeau.js.br": "5a5df8d3aae71c00b63b47c2f8873a91f6a71b76d0f85b78e864ff3119bbcaef",
+    "dist/client/_next/static/chunks/link-CfOdjeau.js.gz": "557be468743b54ff0b944131d85141ca743647e9028bcbfcfcf3a2ecd965c3e5",
+    "dist/client/_next/static/chunks/link-CfOdjeau.js.zst": "51c5389fa804deb632b47a862b0f87cbe5648433aa584b2e59eadaf307f4661f",
+    "dist/client/_next/static/chunks/local-capabilities-CWUcptLR.js": "d27a578d61b1511958e3663e0531ae1dbc4ff4b1915f858172cfaac30cb0b3c9",
+    "dist/client/_next/static/chunks/local-capabilities-CWUcptLR.js.br": "32e61ee2623d696689d690dcfe5ed5b46338d9c5873bb8b056e3bb0c907c206f",
+    "dist/client/_next/static/chunks/local-capabilities-CWUcptLR.js.gz": "65a2623ee8fc6c41b4876682414e5bbe79661b46411ebcc4fe5ee045c7c7380a",
+    "dist/client/_next/static/chunks/local-capabilities-CWUcptLR.js.zst": "dc02d86a3e0561c30717b1aad456731dc34f875a56e5ac8e7e85a68dd7668f4e",
+    "dist/client/_next/static/chunks/local-capabilities-DTMaXRNn.js": "c0e473292e1089b5d3aebe696829c95e7a71cb54110a18ddc842b1d6d67cc67f",
+    "dist/client/_next/static/chunks/local-capabilities-DTMaXRNn.js.br": "056584b23988adb3135048690c796bd466bfb0c57d86a794f6bd6af922dee300",
+    "dist/client/_next/static/chunks/local-capabilities-DTMaXRNn.js.gz": "84ffe783dea4a3e073f51ba09a4180f513e37da0a0f9c2687628c1cbd1c77693",
+    "dist/client/_next/static/chunks/local-capabilities-DTMaXRNn.js.zst": "4713ea23a6da38b6f2b1dc9ea38b449ab11d69363e9e9bc8eb295aaacaac4811",
+    "dist/client/_next/static/chunks/local-input-D36c6AE5.js": "c117f07c664f7ef88a6facaf61bee6a283ecc912f52fb2d87baffb06a0fa6077",
+    "dist/client/_next/static/chunks/local-input-D36c6AE5.js.br": "44fe23714e0a5250d224e7b6550678ebb6c84f2f471e0a57ba17483e3134ab41",
+    "dist/client/_next/static/chunks/local-input-D36c6AE5.js.gz": "ecf979211f86313127b0d9de5e666d7163cfb942e45bfc03fcdd02fc1855f611",
+    "dist/client/_next/static/chunks/local-input-D36c6AE5.js.zst": "28bd9ab71d85d9af578a07823f2ab627a30c01b63e0c1dec0077f6a8d0ce12c2",
+    "dist/client/_next/static/chunks/navigation-errors-CYpSzq4O.js": "f0dd8df7af16d89ed681d5a6ece88cdd4dba9622925c570db75492f6549e04af",
+    "dist/client/_next/static/chunks/navigation-errors-CYpSzq4O.js.br": "4465216d5e472b225396a6f2b9ced7732f58ad84e2673bec7a57ceb894e2d0b2",
+    "dist/client/_next/static/chunks/navigation-errors-CYpSzq4O.js.gz": "4c039d8cb1180442b33ae31c863b0d191bb5009096b70c46b7bdf9b611fff87b",
+    "dist/client/_next/static/chunks/navigation-errors-CYpSzq4O.js.zst": "7e162031c25159a5982466a6671e2237b7c331720f154772bcd7fbd8ea20c449",
+    "dist/client/_next/static/chunks/protocol-headers-De2985Ry.js": "9b15d2c8452ddb9df5d6f2cfb3a23dd576a10dc0450fb72565d9f293abab0edd",
+    "dist/client/_next/static/chunks/query-DugiHe4Q.js": "0a1973f3c6175c2655da2d796c0b590a07352ee8c22aed1a49cd90513fa34b02",
+    "dist/client/_next/static/chunks/record-BGze3w87.js": "b9bdb7b7d0e4844d241dba61104d18111d61ef92af3f137d15749531d276f9cf",
+    "dist/client/_next/static/chunks/rolldown-runtime-QTnfLwEv.js": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+    "dist/client/_next/static/chunks/session-id-ChlzdmIQ.js": "39851262e9649e5c7782510e96388a805510fe7b8a4f699aec7b07e4148d5873",
+    "dist/client/_next/static/chunks/src-BJu23COX.js": "0e52b94dea2c451d670064e79b5df2eb087a9582f377dc92a7a285baf673755e",
+    "dist/client/_next/static/chunks/src-BJu23COX.js.br": "4f1a6aeda3a3243f300b364908444bc6c90747983d15e0079fe66b6d269dadb0",
+    "dist/client/_next/static/chunks/src-BJu23COX.js.gz": "01bcf9f7c3742dc296f62d55379a3d7def95cf3b9fc3f2af343c99407fc31c37",
+    "dist/client/_next/static/chunks/src-BJu23COX.js.zst": "e9787cc8a479dbc1f42513d4ae14d5abb1578802d0a6926ff1832abffba1fc24",
+    "dist/client/_next/static/chunks/src-BgEzFNcz.js": "8b113e9042d6dea96bbe9c18888bc70a8f585b5b877d6ceb17d2c8425449be1d",
+    "dist/client/_next/static/chunks/src-BgEzFNcz.js.br": "dcbb414cfcc4047c50f786cee633247b197f12fcd5d4537a528e1892e89356d3",
+    "dist/client/_next/static/chunks/src-BgEzFNcz.js.gz": "d2a821c84364fa6b339eecdcb39ad24cdefc19105c23933b833664f21c22a4cd",
+    "dist/client/_next/static/chunks/src-BgEzFNcz.js.zst": "90ecc109fde2ae284adebc18644cd9ce9a2266ef1aa88de614d16bfa46b20739",
+    "dist/client/_next/static/chunks/src-DJUyxDGf.js": "f608fb2abff5d913a22c87f9a824423434bf4ee79c4bc85c42deda9e5894baf6",
+    "dist/client/_next/static/chunks/src-DJUyxDGf.js.br": "c7a39b0311520a767fc03febd65dd7014eb6122f94bb18681e141e29143ba076",
+    "dist/client/_next/static/chunks/src-DJUyxDGf.js.gz": "80f50efa69786af7226dab86dc972a48277e32dce547de4f1dbe81adbdf0d4c7",
+    "dist/client/_next/static/chunks/src-DJUyxDGf.js.zst": "39f1da409baa1d558c706c9264b50284428f29b1f946e6cb237476e9292c1f5d",
+    "dist/client/_next/static/chunks/src-DiFjjA33.js": "fdfe3f1f178abf4af3399d48088781fcd26c5b4db4634499e3c2d1c3c931f2ef",
+    "dist/client/_next/static/chunks/src-DiFjjA33.js.br": "164291ae973cef7d1ccaee1fc4bfa83c2b28a8333cb6bd34349f35055bb3732d",
+    "dist/client/_next/static/chunks/src-DiFjjA33.js.gz": "e86c44c3429379290e585afb330391cd2018ec765c70c18f7ca070a6ffd816aa",
+    "dist/client/_next/static/chunks/src-DiFjjA33.js.zst": "9dd65410c8cffbdcddd48eca7805340f86c503f53c574ddad893f2fc6b305c66",
+    "dist/client/_next/static/chunks/src-w9cfmnUU.js": "53b3e1fa78ad7f97f1b7fbc4a5639bae81f6f0b2cd657f5fed3a40d2ab172328",
+    "dist/client/_next/static/chunks/src-w9cfmnUU.js.br": "2c9623927aa0ab9a07cdc3237248de174afb26e566981f02bb9dc6a4033f186f",
+    "dist/client/_next/static/chunks/src-w9cfmnUU.js.gz": "99f22b156aaa463769a6ac58488c7d1494da839abae5bb90832b9a490ac20e4e",
+    "dist/client/_next/static/chunks/src-w9cfmnUU.js.zst": "1daaeaaf6a7cbb725426cb37fd8d4a0231838d5c0517b8a7acf15226b2d4d174",
+    "dist/client/_next/static/chunks/streamed-icons-BfkstFTP.js": "5c9b8c911fea37116e8bb778a63fa13f960b2e856962bd656e754a67b7db2bfa",
+    "dist/client/_next/static/chunks/use-camera-input-DKQJJ-fm.js": "29cabac26cadb6c8d19e79f13b675455115507e91cf1b3435f0958bac003ced2",
+    "dist/client/_next/static/chunks/use-camera-input-DKQJJ-fm.js.br": "6fc9ce081d2d32bb4843678f44b8199d66578e512b135a2d0466e7559fbbdd67",
+    "dist/client/_next/static/chunks/use-camera-input-DKQJJ-fm.js.gz": "7da8ff65520bc662f070b6c5a6eb0631aaeda9213230a8e394720c9959f30396",
+    "dist/client/_next/static/chunks/use-camera-input-DKQJJ-fm.js.zst": "cb6522f17eb747f403b2740ecabe2483495eec6c790d12d72f1f1ee4bf26ec2d",
+    "dist/client/_next/static/chunks/use-game-host-B8S9A8qV.js": "aa3790e4d0b641c705720f251c3935912de64ce47bd191aba9b03796cce78d42",
+    "dist/client/_next/static/chunks/use-game-host-B8S9A8qV.js.br": "aeeaf60324d8ed93d02ddda9f4743dc4e686c17df7698460e7c5d3c304dd7d65",
+    "dist/client/_next/static/chunks/use-game-host-B8S9A8qV.js.gz": "9997b7e492393946d05a74b7f8dbb42b3a83d1dd136efdcc95099eeb4e18973c",
+    "dist/client/_next/static/chunks/use-game-host-B8S9A8qV.js.zst": "c0b3aa347b4d33bc6d01913f5e70e881aff4510209f6a59f75e681365e16c580",
+    "dist/client/_next/static/chunks/vision_bundle-DpVQojl0.js": "d982ae491b03fcb27f8432cfd1a19e52dc80ac0f2f98d3bf5d76019b7def5e46",
+    "dist/client/_next/static/chunks/vision_bundle-DpVQojl0.js.br": "887ef4ce8ede0960effc7f3d31d2897ebef6bd6db6c2d560829eb1da26a6bc75",
+    "dist/client/_next/static/chunks/vision_bundle-DpVQojl0.js.gz": "33812cdc4e323fa1a2f3620faa25107121b34cb2bc0db33e3e4f21e88c501380",
+    "dist/client/_next/static/chunks/vision_bundle-DpVQojl0.js.zst": "ecdbca2fb93ed2ae86f07b0f5e6a8ffedfdbb592e7de1c6c3669af5e7e7a0544",
+    "dist/client/_next/static/controller-shell-ec3ea00ef79be05f.html": "ec3ea00ef79be05f38512033288b0c32e95ace7c8797fbd062465c1d0018e68a",
+    "dist/client/_next/static/css/SettingsView.DMPtiQ12.css": "d6133efec93505be38d412e9cfc05d90ea46944c7c4e2a212436e41420778cea",
+    "dist/client/_next/static/css/SettingsView.DMPtiQ12.css.br": "b41bb4e97bab481630b27aacf19eabfe9f046cf7daf2740048f839ecba634553",
+    "dist/client/_next/static/css/SettingsView.DMPtiQ12.css.gz": "26be92b2e53079e60a4e80a90a318779fe7b94b4d8a59cf1fa38d1aa7efe0e20",
+    "dist/client/_next/static/css/SettingsView.DMPtiQ12.css.zst": "02f53b0a4c0a0d30d40985ab36b39a352f444e93a988383358b452ea638833db",
+    "dist/client/_next/static/css/index.CO_whMG6.css": "c948f4d7a6f88b03e4cadacf005755b1f7ae6466370adea0d37a9377e24e5f19",
+    "dist/client/_next/static/css/index.CO_whMG6.css.br": "043d165a348d43577cb5d3f52a2f177d11d33eb5dd6e46896ddab8e5e46415c6",
+    "dist/client/_next/static/css/index.CO_whMG6.css.gz": "6053c07da8624f54be2475495a95c1ca127e5bcd54fc9a62ec1e5ff77218a074",
+    "dist/client/_next/static/css/index.CO_whMG6.css.zst": "7b84beb66857a07b27d29285a4a6dbdd8b5e6820f673f7268efac368b910f574",
+    "dist/client/_next/static/css/use-game-host.Cj_yMve-.css": "c09369e27d40d310a27de29a8025e5ec6fdad949574dd4749a0d2278d8d2d5e7",
+    "dist/client/_next/static/css/use-game-host.Cj_yMve-.css.br": "ade88f688bf001f7f10723908abb45e0235303c06c1ffe24ec0b5b7acf14eed9",
+    "dist/client/_next/static/css/use-game-host.Cj_yMve-.css.gz": "c0f456562002b6cb69716a87b3c535aecae0b826c650f1b04add22b8324a1a56",
+    "dist/client/_next/static/css/use-game-host.Cj_yMve-.css.zst": "f91d16ab3a19088b700f62bf174d52f101506c90cad9f14ebf9f0e819849fc99",
+    "dist/client/_next/static/media/geist-latin-ext.Dr5IBr7O.woff2": "58a6b173d5ca1dec92166ea3c6cb1a84a4144556d10928ac14e8e6b40e4787bd",
+    "dist/client/_next/static/media/geist-latin.BGnTDqni.woff2": "9b6f5ff45b278c744b5f379a2c4ecbaf858a842b8eaf82ac8d21b699ca16c608",
+    "dist/client/_next/static/media/geist-mono-latin-ext.Dyk9XLrL.woff2": "745994b5cd950ec201b66526375f057d540847cccfc70f4f24f5f571d26d3923",
+    "dist/client/_next/static/media/geist-mono-latin.pyAoGB9p.woff2": "5f3d6ad60f29d6cb708414ec6887163d63bf197377ef5417d2483ff31ace6c3b",
+    "dist/client/connect-assets/licenses/APACHE-2.0.txt": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+    "dist/client/connect-assets/manifest.json": "5be028c5471fa7bcae726e483a2038b2186b41d2e13e4f85329c8ad9b4155358",
+    "dist/client/connect-assets/mediapipe/wasm/vision_wasm_internal.js": "e170ee67dd4e16c1a6fcd8840a206687e5a59b22c20e4a902bc445b095454d73",
+    "dist/client/connect-assets/mediapipe/wasm/vision_wasm_internal.wasm": "8da277a733926eacd0474b8704b36742d6ec3231c57a860c5b889dff8f1df886",
+    "dist/client/connect-assets/mediapipe/wasm/vision_wasm_nosimd_internal.js": "e81d715a3d42cc3373602eb2f7aff795d164934db680e32496b65dab537f9658",
+    "dist/client/connect-assets/mediapipe/wasm/vision_wasm_nosimd_internal.wasm": "a28483cd42e74e855bf5ebdb6b40d9b66a5b49e35e95020bc97669e6822a3192",
+    "dist/client/connect-assets/models/hand_landmarker.task": "fbc2a30080c3c557093b5ddfc334698132eb341044ccee322ccf8bcf3607cde1",
+    "dist/client/connect-assets/models/pose_landmarker_lite.task": "59929e1d1ee95287735ddd833b19cf4ac46d29bc7afddbbf6753c459690d574a",
+    "dist/client/icons/101-link.svg": "56cc5a90bc232427a5d8376dc8c3b2c232809c1827e71b8224edc4f9ae22f259",
+    "dist/client/link.webmanifest": "28c41c901e803c189701e2fc1fe40cdbbcc9c8ab8b681474a742acfa6bd6345b",
+    "dist/client/manifest.webmanifest": "4ac4f7b1b2b36eff64235bd21d9406fbf7de5acd992bf74957733a3403f0f654",
+    "dist/client/og.png": "f8b69a14a810055da30187e7c4db831676e53235ee32de4379df85080571f746",
+    "dist/client/sw.js": "b94110837ce03dbcd21be5c36e20a03cff5ba4ec660adade022bc790a2072c89",
+    "dist/client/vinext-client-entry-manifest.json": "f8bc8405add9f5e14cf62176544608877dc72722d662483a741f519aa458c01c",
+    "dist/server/.vite/manifest.json": "1eb38a6f0d89ff20e5fb678f943cb558e8e63d6f3328094fc494c040458a6cec",
+    "dist/server/BUILD_ID": "d2956a09a3c0dd264fcd7cd9f33e62e2abf6abf317adbf55a3e6be77f5373cec",
+    "dist/server/__vite_rsc_assets_manifest.js": "90317f2fef9394ceaae7fef6562e82c67f55b3a642691c228d351f83cbdf2488",
+    "dist/server/_next/static/Icon-DN1pEXTq.js": "5c42b8eef9a7e396773a1524c06fe762f9e3e4f90462df76af55f10b69456dc4",
+    "dist/server/_next/static/PreGame-C0-cCcxx.js": "09795b7b990ae16491502738b0fed3be265e13d95732cf73522fed59ef61f9c6",
+    "dist/server/_next/static/app-page-cache-finalizer-jgbp1KIk.js": "06b608b033dbe52192967cc58a5633149184a77eca28b2c75bcf5b42c54ae45e",
+    "dist/server/_next/static/app-page-cache-hmr9QWcp.js": "235746989be0bfe9f0f01188496f1773b3e00bbdc875d4996a65c555e45d657c",
+    "dist/server/_next/static/app-page-cache-render-COcKRA8r.js": "1953ff5b96ae342a866d1d199253c750b4977799ca1637db0c50ce3b90fb1874",
+    "dist/server/_next/static/app-page-stream-CbxqtU5G.js": "c946f8738711f6009bd4b7b0575699801ae74050df8e5f10ba34b2b6c8deb6a8",
+    "dist/server/_next/static/app-prerender-endpoints-Du1xTWYY.js": "2daa4335da6a8cee5b68ac18e7b79b721c151b76266f47f4eb11e5d5e891ebb5",
+    "dist/server/_next/static/app-prerender-static-params-pADXr-hH.js": "6a107ec456f5741b60fc120cb28fa28cd60ab964e5e07c36dc936cc923172b74",
+    "dist/server/_next/static/app-route-handler-dispatch-CUsob7cV.js": "e9acf7886a5527c671bc9a859398dfc09feb5df2f7c42a6fa9a75bc285c5d01c",
+    "dist/server/_next/static/app-segment-config-BqrO2JSE.js": "242ff0fdf8a58af88077cbb93773619434ac6ceff669a2bbdbd0ec4ce8f0d54b",
+    "dist/server/_next/static/app-static-generation-BX8cz43B.js": "71451721ae4a42108e9ed32567cd9d9861beb4952215b0fd57ffc373cd3edc01",
+    "dist/server/_next/static/cache-headers-5VhlFHW_.js": "6b151ba7fe84d82abfb3db5c644b0aa3e9d4216dc0c87f745feb1187fa0018e2",
+    "dist/server/_next/static/catalog-BcVkW-II.js": "9852a9cd2535a59770037bc066e4b0943042480a85f6e84e100ef320ddb732e2",
+    "dist/server/_next/static/config-headers-BM9bIu39.js": "c4957c72450a7c53b20b97cf4d923d0c754e92e7e689d8f69f614e4cb7a177a4",
+    "dist/server/_next/static/connect-console-C35bueKj.js": "ecfd3409b7409023bff31703d994e855e5869ffae9ee16bd32cfdc2f7a1c0d21",
+    "dist/server/_next/static/css/index.CO_whMG6.css": "c948f4d7a6f88b03e4cadacf005755b1f7ae6466370adea0d37a9377e24e5f19",
+    "dist/server/_next/static/error-DA_KUCz2.js": "13584a80c2d2eb980e037b586550dd98d49e21227e240fa87c7d890ec57c5327",
+    "dist/server/_next/static/framework~index-C63K0DAE.js": "e8ef4af0cb38c66164dc2120de6a7fa54a8efebbd1ed683c78c5a945b09a668d",
+    "dist/server/_next/static/framework~index~page~error~page~page~page~page~page~page~page~page~page~page~layout~not-fou~ff7kribi-BuKzBKGy.js": "4cd5a63e1d0743432fd985a54343fe1785449ce4250c8e0d270feb5afce4c52a",
+    "dist/server/_next/static/framework~index~page~page~page~page~page~page~page~page~page~page~page~error~page~page~page~najfaibb-D2DrRkkV.js": "2e72fdd156c669ee49ce5a333eca3c0e551d796f34a46a523c90715340eb387a",
+    "dist/server/_next/static/framework~index~page~page~page~page~page~page~page~page~page~page~page~layout~not-found~pag~g2k5z5rk-DCFLQKCY.js": "1e179c25071fd3d87d91e38a6d2e5e0449551ddd94db137557135b4b7f617b43",
+    "dist/server/_next/static/gameCatalog-DZaVUYJo.js": "6dbd9445c14ec5add7e53845d6ac60389dcd3ec90e728b8e815a2f60dd5764cf",
+    "dist/server/_next/static/headers-CIpqbgQd.js": "6bf5d71e325e6a2efc701084df7a589d5bd69753d50e26f7d507821691e0871f",
+    "dist/server/_next/static/headers-D5CRn0V2.js": "a07ddcf402d94a3861cb66c7b05df4622b32db2109a2db0fcb6e9617cf432833",
+    "dist/server/_next/static/implicit-tags-DZWGiACN.js": "ea40c5e31fb8f4c164c305482f149d05dbbb2c6cef430e249d193bcde989029e",
+    "dist/server/_next/static/isr-cache-BHUBuWG4.js": "a595723934b45edfc0792619c8ee7bef933d4a2ed5a2cc7eb19e40424998927d",
+    "dist/server/_next/static/layout-D7K18fIz.js": "19f1067b9781113b49c514d59fc1e0b723cd5e239af644727f431325cb5da314",
+    "dist/server/_next/static/manifest-B0TeWhWN.js": "abb6088c8b926e38234d458d532cb723fd173cb9bb1e7fec7c75756823906286",
+    "dist/server/_next/static/manifest-B1Gp-jQR.js": "36d75fd2d29618cac0b5475ecc0f34a915e944b12266562495fdc232b24bb6cf",
+    "dist/server/_next/static/manifest-B8ZCRS4r.js": "734e710fe391cfe00e46f9aefd25920355c253c318456b081f0af37ef38bae42",
+    "dist/server/_next/static/manifest-BVwKgGqe.js": "37050e5f98990c8c503594e6bc18b0d1447e7540013d8ec2413fa07c32e34d8e",
+    "dist/server/_next/static/manifest-CGkqU7eY.js": "d0bf6c384336bc203412927930bbc3d084743a8e8686292c1ed9abbda4498043",
+    "dist/server/_next/static/manifest-CQt7LikJ.js": "1cc169a22b4b5648c9a7b5e3a2559ffae53e347182c638ee54365e2d4000f650",
+    "dist/server/_next/static/manifest-DCB3pJFT.js": "b36c8e061dbe64e8776bb1b2e2f079544a68b5c43d343e41dfa9b5b16cde822a",
+    "dist/server/_next/static/manifest-DCM0UnLO.js": "aa8608bac129e0c951eb05eebaac0431fb5290c77772da2a2cd4d7a3c2fd750f",
+    "dist/server/_next/static/manifest-DFQx03hl.js": "99a03ab822771e9cbf10bb5228e27f9c5910b881ef48b3275ba5dc7addc1326d",
+    "dist/server/_next/static/manifest-s_GFWHT6.js": "776c37c2533636d54ccbf1cec14ede884308fccebb2a0cbb8e5a1f40357dbe7f",
+    "dist/server/_next/static/media/geist-latin-ext.Dr5IBr7O.woff2": "58a6b173d5ca1dec92166ea3c6cb1a84a4144556d10928ac14e8e6b40e4787bd",
+    "dist/server/_next/static/media/geist-latin.BGnTDqni.woff2": "9b6f5ff45b278c744b5f379a2c4ecbaf858a842b8eaf82ac8d21b699ca16c608",
+    "dist/server/_next/static/media/geist-mono-latin-ext.Dyk9XLrL.woff2": "745994b5cd950ec201b66526375f057d540847cccfc70f4f24f5f571d26d3923",
+    "dist/server/_next/static/media/geist-mono-latin.pyAoGB9p.woff2": "5f3d6ad60f29d6cb708414ec6887163d63bf197377ef5417d2483ff31ace6c3b",
+    "dist/server/_next/static/navigation-errors-Dfqr8sRj.js": "154fc2019af695745efc150bbcb7117679831559e4d65b70d1ad91a4573b8570",
+    "dist/server/_next/static/navigation-runtime-D2ZLT1_2.js": "ca646f79897b952e47f6f19698d93e5674f9a54f6f49621a99991f7d41ba56d8",
+    "dist/server/_next/static/navigation.react-server-CrGmqGB2.js": "5a07a2eaba8f301bdff753564cd7a6be92f72e31b92107a8f3fe9d10d3250277",
+    "dist/server/_next/static/page-B-Ru3CjZ2.js": "34a05b1efa21d154eec3575e791b5927c3b89ea40bc503fd7a451d3c13d5ab4b",
+    "dist/server/_next/static/page-B3lN_FMt.js": "e5a9b5c7e894167c8c7802d33f72fa0c11c4e6cfe64b2da9d2a6dbf66556dd91",
+    "dist/server/_next/static/page-B9n_9NWH.js": "7f6114e174f8728cfe2a80a2aabb4f66f2632239dd2e2cf168e6a2bce32ec923",
+    "dist/server/_next/static/page-BCduGc-4.js": "854c0fd92d81af3dd25629641ecc0c5ad24171ecacce423ccf24183adbd94dd0",
+    "dist/server/_next/static/page-BCoqOQpB.js": "e1f92cca6b1e6f5502d4d5443153a5e7a8ef1231e5f557f425a84ebb90229719",
+    "dist/server/_next/static/page-BMCe3cqw.js": "40327217359be10db208a26b4f7506ec01bfd7de5087c51bf0dd6fa4e26f412e",
+    "dist/server/_next/static/page-BP8QK7Hb.js": "1cb73bbf4dbdba867744fe4c84d8d9bd8b7171c3c393f7ee2f168030c76eaa5d",
+    "dist/server/_next/static/page-BSIZjVWb.js": "3d38cd11bd9beebd573643be4429e528c2717a85362ed537895bb6459e5a5cff",
+    "dist/server/_next/static/page-BTKdtH8Y.js": "0b2c3741985d208e08338cce1ae76dab1d7374059598d4e070d67fb9b3434f6d",
+    "dist/server/_next/static/page-BVP1Yjkx.js": "3c3052553271c1aa20c8a0c8eb08c78ce0386d8ffb6ab6778eee0d3574599779",
+    "dist/server/_next/static/page-BWELxQb9.js": "92dfe3a3e2f9ded16c23997f186e7c2713ee31ea39f85b1cb74199f2e551199a",
+    "dist/server/_next/static/page-BWG7EAfP.js": "0eaebf5d36e36daaf20d438dc85239186ad874dff8db9881319490972f7c9520",
+    "dist/server/_next/static/page-Bn30Hq-R2.js": "a75cb0b8e0e886778c52bda91b84884f082e403d52b2b3659923930265d67502",
+    "dist/server/_next/static/page-BpvYKy7G.js": "187170addd1d650fddafbcccb39f736a9d2f52eb632c2e2e7806566bb9b2113b",
+    "dist/server/_next/static/page-C1l83uNm.js": "cf6a843e30049b58b4ebabc05f9a8e786103a4651ff580f16b06436f2e169aba",
+    "dist/server/_next/static/page-C7OLVSmt.js": "b90f8dd9a0813829509fdec48e80880d8e4d61a7c8a6f3fe13c2576d4edd1a33",
+    "dist/server/_next/static/page-CIW7vU3r.js": "6fb9c8524b6aec3c7911871f814adefc0225acc26151fe9190f36df2b71b557f",
+    "dist/server/_next/static/page-CMRRQxba.js": "cd3b0648ee9c1d3812ae14698470846cff16d2c7500e3d42889887628ccfa1ff",
+    "dist/server/_next/static/page-Casma3bs.js": "859de95ae5bdda5abfbf791aceec1f25dd8f26353702b41d626e18bb18371b96",
+    "dist/server/_next/static/page-Cb7ph4fk.js": "9b96bfba57aea8e3333e375a02fae0d73ea32f4b56e59ca34c6e88daf2b3ae38",
+    "dist/server/_next/static/page-CkWgKXrd2.js": "5612d5e5f94a192f9c04b62498262798823644047095b524cef8749a89f7f910",
+    "dist/server/_next/static/page-CkbMBGCj.js": "b26de454df6ec1747adcb09d566b38e6b2546aa34a5cd344cee46401a1bb921f",
+    "dist/server/_next/static/page-ClbTvXDs.js": "30b55d3564b0428b1bb69a33ffc1f141350fea4f88539d2ef742953eaae5b0df",
+    "dist/server/_next/static/page-CxOeWxiM.js": "a08eeac807d1d551887a8ac361acbba10d5a96f7f34fb3dbcabfdd10ea028fb9",
+    "dist/server/_next/static/page-CzU7M8Ac.js": "7e2475df6a43d3ca19b9df1e1f0ed01d933fb67d7d77d7968c4948cd59acc9f8",
+    "dist/server/_next/static/page-D4rvJJg8.js": "5a6c25979988ff10a7254a9279d88033aa4f0a5e2cd9f756b7d0d669048b6e70",
+    "dist/server/_next/static/page-DAAHbtNQ.js": "319937a9f77a188d5f9c4d5beb69d373b1d99d521793b4652eb36f71371f7ca0",
+    "dist/server/_next/static/page-DI79JyDL.js": "b13711793ec155a05d7af2f84e5dad22cb752bd817700e59fbb3f9be24a41821",
+    "dist/server/_next/static/page-DIZLYxck.js": "14d08a1d4499162a2ef132b06bdb4d5d73e934be244559604c60d6445363216f",
+    "dist/server/_next/static/page-DQNojD8m.js": "e8f7522525e94b3afe49ce90facd39641e51f1921878af0852ae162b7aa3e8b2",
+    "dist/server/_next/static/page-DQVOL28W2.js": "0f06b856672c132ef1bd4a059a1acbd987b6de1339d97e3db30890feddaeaaa8",
+    "dist/server/_next/static/page-DWHMLwh0.js": "8099ab5327e83566fd3119f34d7e64b0496e5d4f0703dc6258921276bafe989b",
+    "dist/server/_next/static/page-DXhhQq1V.js": "44b1d07dff0eaccb87d87d2f9c3c3a57cbe90f60ab922bae514df2222fe675b0",
+    "dist/server/_next/static/page-DYeqEND2.js": "c3b22eb43ff42a93daa2967ec73ab144647fcbf314d74ee88e4634bb176ddf99",
+    "dist/server/_next/static/page-DdCx2CQm.js": "cbb2a5b859c6de4d8c842f629a6b52a9c796031bd54c00e598881a7f371e2f0b",
+    "dist/server/_next/static/page-FLHvvYye.js": "bcf5fec6a1697bf0a30e36624bdd4b3456a09ba6c036ac46f88044d440b2fe8d",
+    "dist/server/_next/static/page-Fn0T-tIK.js": "5060b813480814762049370ca6d8024cd9a0673e98c7b20de8313c4dd9949990",
+    "dist/server/_next/static/page-Gislj3t6.js": "9a7cb15f1ff08308a85f3083ef712628a7fb4ada33a999aee48a3c530889c996",
+    "dist/server/_next/static/page-LFYAabf42.js": "06cfff47a4bf1680e71748fe872740d60b8d33d5366fcd717b2bcde43ed60e46",
+    "dist/server/_next/static/page-ODM39qUm.js": "8c767d7cd51ada0696d8e351908dd46e8cac9366341e51c43df94763504c6d01",
+    "dist/server/_next/static/page-Q19E7-WK.js": "b938137725840b4861c2f3380c1c514f196bace0468192a29e321786c841b545",
+    "dist/server/_next/static/page-TmiSr3wa.js": "6b8767cdf6e1a8d8ff76c1bd67aa89a2ab0446de067830104cf69e46eb307fbc",
+    "dist/server/_next/static/page-YMoehRwP.js": "d843f8e4819a580d3706cc51a2deb8e8a0a1a9672e737d5f71d1662eefe11ab0",
+    "dist/server/_next/static/page-c2jcOftD.js": "8438fb5cbdf6aaf5c99ed9713ee83afb29a03bb78829e39ce20ba6bcd1c175e0",
+    "dist/server/_next/static/page-cnvwFeHe.js": "980584bd3141cd4e783f96118425cb5fdf04362fec68b90b5d4299f0e903a18c",
+    "dist/server/_next/static/page-sIdU2_tj.js": "952a352d9cd741a6462f1b25a1b78b2bb3dcace65edc32ec8fac3e27d2f931c3",
+    "dist/server/_next/static/page-wq77b7wg.js": "2b1c90cbeb73ae92c2966dad98596cc6317c2f5856f144c0be49c0df1fc512e9",
+    "dist/server/_next/static/page-zq8zl49C2.js": "3bb3c221421da187daa0e5c4f5a61bbc32edb4730d185c85c369ae1c63483754",
+    "dist/server/_next/static/parse-cookie-CejgjNFX.js": "3f6c7ad42836c0e8fb30c461a6697a3bccbaeb3c71660f447370fd2143cd2ab1",
+    "dist/server/_next/static/protocol-headers-BQZVsMI1.js": "45eca355a029c59faae91c5f976d9274033f1d268fe745aea933dc56e84d267c",
+    "dist/server/_next/static/record-BGze3w87.js": "b9bdb7b7d0e4844d241dba61104d18111d61ef92af3f137d15749531d276f9cf",
+    "dist/server/_next/static/redirect-digest-8IAkcvyn.js": "b92ec9aa7c6dcd33cfbe31e79016b8e95e069db3104601e782c0eab8aa9d331b",
+    "dist/server/_next/static/request-context-CxlLUSwC.js": "c12b87f66193a48b5d205bcbc62bcd312b4e7ddfbaad96fd134990cf32298ee1",
+    "dist/server/_next/static/rolldown-runtime-QTnfLwEv.js": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+    "dist/server/_next/static/root-params-CKlFX8j9.js": "84c5dfe28195bc582347ac45a96c36f3a2c1f22bce3eb53cf8c2e9a8696a4144",
+    "dist/server/_next/static/rsc-BSOsx4hA.js": "c95faacdcf3bc6eab1586056e0eedcaf4a268db55742d619c8a2537f28ca0eb2",
+    "dist/server/_next/static/text-stream-Ca90Vh0t.js": "8b7b1207b86928185b037130a2964cc3b15d4c2613137cc3160e544d485304fc",
+    "dist/server/index.js": "f8ccb8b7cfe8bb5a5a5878bcd4afd55fb97147ce24e1b0823936b0d1120d2834",
+    "dist/server/ssr/__vite_rsc_assets_manifest.js": "90317f2fef9394ceaae7fef6562e82c67f55b3a642691c228d351f83cbdf2488",
+    "dist/server/ssr/_next/static/AppShell-Dr4z3Dbk.js": "ec290d6e1488967a9ec425546ac0755d3e25e36132ff5eb90e4c5cc1f36025a7",
+    "dist/server/ssr/_next/static/BeatForgeStandalone-cRNRBDhv.js": "fa00da85d5f9c07299b4f968900ffe291f04ad2cdb2027939269bd5b00409b18",
+    "dist/server/ssr/_next/static/BodyDodgeStandalone-nvxIGAws.js": "b0a24dd8703cc27a804bd549412e36085c9a0468a50c150901034acba28976da",
+    "dist/server/ssr/_next/static/Controller-CSi08He9.js": "801c404e8c3fdd420e923292e7c326b93f7a28b76479f342554cb54ee96bf617",
+    "dist/server/ssr/_next/static/ControllerLab-BprjZNJP.js": "a6b4efe449dd476fd2653e496cd5df740d9c405e154d572c301b2cb8a00471f8",
+    "dist/server/ssr/_next/static/EchoMazeStandalone-DtaLtH_w.js": "460ea44acd05c61ec4ff20283192228d027aefdc1a81c5766f02e4e004125ba7",
+    "dist/server/ssr/_next/static/GravityStackStandalone-Dt5wv1KN.js": "172051d6b615eb3f741c3f02910b742f9e73203dc133c989e87aedbee14c5a66",
+    "dist/server/ssr/_next/static/Icon-DJwIfo2_.js": "720010b8fc4387f084f2710c082a7699086aaf5a18bd74001f4fc48b400459cc",
+    "dist/server/ssr/_next/static/InputLabRoute-DBvtNhYV.js": "a689c4cc72380904a1f934cd6d8fe50b5dbe5afcb9925dbb72799ea9de360baf",
+    "dist/server/ssr/_next/static/Launcher-CgdnVyX3.js": "4fe05b5ffd083a1637e9420b80a1f46dd7be6bead1cf2996b8bb9e17325e2106",
+    "dist/server/ssr/_next/static/OrbitalCrewStandalone-C2-Ysne8.js": "852c8af8f51c344615f384004ebbe6324e824f4f812bb9dba9aff2fb7675687c",
+    "dist/server/ssr/_next/static/PreGame-CEyqS__7.js": "1cae5d7237def0a90a7e503ea11434fe17d75a91c9372730a4aca229c5d99184",
+    "dist/server/ssr/_next/static/SettingsView-ChNQQYyY.js": "f1970b74dcf29e84c321a3f27703e4c76e1f566de2988e1a61a75d63167d07ec",
+    "dist/server/ssr/_next/static/ShadowArenaStandalone-BeqcuEw2.js": "046bc0c3ac8c55a3322b68c5eefd0c0c8122ce8eca8d38e301a838e7f522eaba",
+    "dist/server/ssr/_next/static/SlashstormStandalone-CMCueMlo.js": "a96f74255d20bea0d239fefc922c9cbb9d629f39160ab81180d6299ca1cb2d3d",
+    "dist/server/ssr/_next/static/SpellcasterStandalone-CkAcDjos.js": "838878ac8b093668f7b3f6c251aa57475cce2c225a45d873d6cb2a3907aecf81",
+    "dist/server/ssr/_next/static/StudioRail-BIYl6V6C.js": "e066bcacd922502b3b145198d7c224715a4df160010d88006f13c8bff70ed17c",
+    "dist/server/ssr/_next/static/SwarmCommanderStandalone-Vrpch8Wf.js": "e6bc9115818101d6ab252cdad377b61fc18fcf8da2745ad0559d1b1590cdaf54",
+    "dist/server/ssr/_next/static/TiltDriftStandalone-BwjJjskz.js": "55d21aa8d202542694b5eda4f4a81320d6437da140e768113192dc40a1277ce6",
+    "dist/server/ssr/_next/static/app-nav-failure-handler-BW2-CIfV.js": "f6a9d62fb9873f70236c9c3eb21337fa5337df87f170dcb04565daeffb5f2f62",
+    "dist/server/ssr/_next/static/app-prefetch-fetch-queue-B0TDKgg5.js": "524a3b67c8481335b1ef54056303817bab970dcf3442280360e90c0db65da744",
+    "dist/server/ssr/_next/static/app-router-scroll-BbeCDDcs.js": "28d8191db349f6583401bc0b8e77cb0efbc633337986c10d235db96a583e2fbc",
+    "dist/server/ssr/_next/static/app-router-scroll-state-DUBEP4Pc.js": "e7964c9603534ac8f5158341b5deefc94a71f5f9f803978601c93830593c30ea",
+    "dist/server/ssr/_next/static/browser-link-DVjmA1Ss.js": "a68ff2675cca6a786d85741d3ee62efde5f6d6957d0c2469aa2f8b0ba16439b9",
+    "dist/server/ssr/_next/static/camera-plan-DeIEGfd7.js": "c1f8000a3d647c00945046ce1e1d4d71b2cae13c5694a55002d912b7bc3f9112",
+    "dist/server/ssr/_next/static/canvas-viewport-K0YKo5nq.js": "a4b05c1cc81f2149dbc49f8e92bc0d9365145ca93fc972ea79ecc653291fda90",
+    "dist/server/ssr/_next/static/catalog-AG6ru7de.js": "809755018f27acd432b9cceb025a9366d05fb10f94ebc7fb696f4251509828cf",
+    "dist/server/ssr/_next/static/chunk-QTnfLwEv.js": "5db5ba82eef00d1dee7e86e663098c9427d01183a88d357437daff295aec3e75",
+    "dist/server/ssr/_next/static/css/SettingsView.DMPtiQ12.css": "d6133efec93505be38d412e9cfc05d90ea46944c7c4e2a212436e41420778cea",
+    "dist/server/ssr/_next/static/css/use-game-host.Cj_yMve-.css": "c09369e27d40d310a27de29a8025e5ec6fdad949574dd4749a0d2278d8d2d5e7",
+    "dist/server/ssr/_next/static/error-CBUaQ7TQ.js": "7c1e88d67af1ecfb20484b6851ba34367a28a5d9873e67c23ae202829ee65cb6",
+    "dist/server/ssr/_next/static/error-boundary-B5-KM5oI.js": "63daf1c3fd22abd09a4b451179fa0a18b9b16b47b8b9ea8668bacfaf441d9af4",
+    "dist/server/ssr/_next/static/game-protocol-CVRwhvGr.js": "c9c415e2767e9005deef6ea8087fa63b85e4cc403a10eb376423187067d427b5",
+    "dist/server/ssr/_next/static/game-session-D9bePxwp.js": "a35e144f5c59b661f1de4819c98920b369ae8c3f1d3203f6dc74271b1ffc1f15",
+    "dist/server/ssr/_next/static/hybrid-client-route-owner-Dgo15Sqq.js": "7b9a61a2f40b2adf6ee3f473de2a47c8ed6d1347ac7f53813f963e4ea75cb573",
+    "dist/server/ssr/_next/static/input-readiness-fo6B5rNA.js": "5e23450e1cbdec4ee5f7f8e13e0d76de628dcd662603e4dc11c116b4b673a3a6",
+    "dist/server/ssr/_next/static/invitation-copy-C7CfjtBR.js": "a80e03feec0fe6497e6b138be64175b8242ca6589c8f368c51b9ef384c7008ee",
+    "dist/server/ssr/_next/static/layout-segment-context-CpQ3p-Am.js": "59f2e1d762545eefb7b6b879e8ba94546b115919aacc29d03395f3dcc4499597",
+    "dist/server/ssr/_next/static/link-DaDraiLJ.js": "71a6de9e7716b4d5b5ddbcf4e10cc394dcbf5dccc9a260278e9fa40593e9a600",
+    "dist/server/ssr/_next/static/local-capabilities-D3edlJ3Y.js": "d5fa22f52b224e7977dec3767ec2cd45f8cc158a0ec275ba8fdfc7db6409dba6",
+    "dist/server/ssr/_next/static/local-capabilities-DadrsCxM.js": "982107f7f5946e018696644e23dfcf87ba57ff609f45939d800e75d612396029",
+    "dist/server/ssr/_next/static/local-input-51HB-sbt.js": "d3952957fbf596e4ae538b20bc4648616866e6b15c5a59699b59c6336cb4af45",
+    "dist/server/ssr/_next/static/navigation-JcMHW7OO.js": "a98823613be679cf55497a6ac57df8026fceb5d09f4a3c2c432f18b8af2c25ac",
+    "dist/server/ssr/_next/static/navigation-errors-C8V4jFz2.js": "48a999a9e3736e608f37bfb00b9b4ef308392872ae50dae127b2a03d8185a13f",
+    "dist/server/ssr/_next/static/query-BjYJsa_t.js": "64abf6fde819d39344c044923b54e1c95e72d24fe2d767cc40bb8cc182aea6c8",
+    "dist/server/ssr/_next/static/react-B-wlweYZ.js": "a10b1982d51fbc43b7de6f9bea29c43f4591b560f316554fd38834b141230045",
+    "dist/server/ssr/_next/static/route-matching-BXMFwbaa.js": "8fd0f5939d26ea705082f0f4b25d806d7ae4148f1bf695dabf2d75f59f1af5e5",
+    "dist/server/ssr/_next/static/session-id-DHAd8h0a.js": "4fd94c13c392dcd438f2d88b00890f7661d98b5f846050e93b9cc797fa44bb89",
+    "dist/server/ssr/_next/static/src-CBE7j0Lu.js": "272b5312b74f0951caae85c18ac42cd86f851b7b93c8bfb96d1c270c9dd57cb6",
+    "dist/server/ssr/_next/static/src-CIut1tTC.js": "705c3acca9eef1f4d901a61e601b0f1849caede02028561e6a95cae07b1dc6df",
+    "dist/server/ssr/_next/static/src-CzjXKxej.js": "abf264069fb156a9a09bac2a29f73e97257037c4961e4d9043519f88de2957c6",
+    "dist/server/ssr/_next/static/src-D3lEY5Lu.js": "7f0eb4609634a338610efcef8b1959a5ca6567f0e3ff2b6b5d03c2a1b5d6506a",
+    "dist/server/ssr/_next/static/src-ZoWp6fXD.js": "c74231f18207df9d6ae4932d680cb188dabd71f9f436eab009009c36323a0894",
+    "dist/server/ssr/_next/static/static.edge-e6VriD9p.js": "f67ea2a2f49e07dbcc330f686f29baaf6d439dcca72631b69a77e39a5ad05a67",
+    "dist/server/ssr/_next/static/streamed-icons-CqOaq7AA.js": "2e31a4df3ab63c6aa92cb4d81e37b5a2531dc5949dbc6464684b6f2c02bd987a",
+    "dist/server/ssr/_next/static/use-camera-input-A7TUcC0a.js": "0e914c8c27315f4f3746d6a38a0c32484df8b35e83fe905d38b90d8a31c8ca66",
+    "dist/server/ssr/_next/static/use-game-host-DeduS_Zv.js": "ffb0156d8354ef8de6add6069466246456ed71f14e2ba22ccbebf36af2e2ce92",
+    "dist/server/ssr/_next/static/vision_bundle-DuSRfGA9.js": "0868e32a5eb760b177184a1482b946a969f07b8de771e6cc3ae6d9b0a73a2d93",
+    "dist/server/ssr/index.js": "a087cf6bf89bfcaddee55513dc8ccc418c60a6651b758b867d2dc301ff3c86dd",
+    "dist/server/ssr/vinext-client-assets.js": "2c0fadbf770ced01a00c74f0d3fb0ceb0f4f48acaf48491a80eff75d83edd4f2",
+    "dist/server/ssr/vinext-server.json": "8934d2719e6c9e2046799360e2a4932045b937a8e3b16960fd49798061cc8d62",
+    "dist/server/vinext-client-assets.js": "2c0fadbf770ced01a00c74f0d3fb0ceb0f4f48acaf48491a80eff75d83edd4f2",
+    "dist/server/vinext-externals.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "dist/server/vinext-server.json": "8934d2719e6c9e2046799360e2a4932045b937a8e3b16960fd49798061cc8d62",
+    "dist/server/wrangler.json": "f7b7c590ec96dd5858d6fba361603c9ab1c1ae605aceb426a8ba4c8421d94e1c"
+  },
+  "scope": "One desktop 1280x800 dark real-time native-RAF journey per game in Chromium and WebKit. Actual keyboard and local role controls; natural game end, result semantics/focus, Space restart and fresh-run input effects. No clock/game-state/render overrides, retries, camera, physical controller, phone or assistive-technology qualification.",
+  "boundsMs": {
+    "ordinaryGame": 180000,
+    "swarmcommander": 300000,
+    "echomaze": 480000,
+    "browser": 2100000
+  },
+  "results": [
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.55",
+      "game": "bodydodge",
+      "startedAt": "2026-10-20T12:44:29.537Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "body.move",
+          "via": "keyboard ArrowLeft; fresh LEFT gate",
+          "consumerEffectObserved": true,
+          "observation": {
+            "event": "LEFT CLEAR",
+            "comboBefore": 1,
+            "comboAfter": "×2"
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 13352.885708,
+      "resultSummary": "Run complete\n\n361\nFinal score",
+      "restartControls": [
+        {
+          "action": "body.move",
+          "via": "keyboard ArrowRight; fresh RIGHT gate",
+          "consumerEffectObserved": true,
+          "observation": {
+            "event": "RIGHT CLEAR",
+            "comboBefore": 0,
+            "comboAfter": "×1"
+          }
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 15735.967208
+    },
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.55",
+      "game": "tiltdrift",
+      "startedAt": "2026-10-20T12:44:45.452Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "boost",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "BOOST BURN"
+        },
+        {
+          "action": "brake",
+          "via": "local Driver BRAKE native range held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "speedBefore": 164,
+            "speedAfter": 68
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 56151.872459,
+      "resultSummary": "Vehicle offline\n\n99\nFinal score",
+      "restartControls": [
+        {
+          "action": "boost",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "BOOST BURN"
+        },
+        {
+          "action": "brake",
+          "via": "local Driver BRAKE native range held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "speedBefore": 164,
+            "speedAfter": 68
+          }
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 57608.545625000006
+    },
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.55",
+      "game": "orbitalcrew",
+      "startedAt": "2026-10-20T12:45:43.215Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "emergency",
+          "via": "keyboard KeyR (also requests power1)",
+          "consumerEffectObserved": true,
+          "observation": "SHIP STATUS\nEMERGENCY RECALL DEPLOYED"
+        },
+        {
+          "action": "overdrive",
+          "via": "local role reactor/OVERDRIVE, held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "heatBefore": 12,
+            "heatAfter": 14
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "endEvidence": {
+        "via": "ordinary held keyboard F+Space heat/hull loss; combined fire not independently attributed",
+        "vitals": "SHIP VITALS\nHULL\n0%\nSHIELDS\n80%\nENERGY\n100%\nHEAT\n100%"
+      },
+      "naturalEndMs": 132284.78449999998,
+      "resultSummary": "Ship lost\n\n827\nFinal crew score",
+      "restartControls": [
+        {
+          "action": "emergency",
+          "via": "keyboard KeyR (also requests power1)",
+          "consumerEffectObserved": true,
+          "observation": "SHIP STATUS\nEMERGENCY RECALL DEPLOYED"
+        },
+        {
+          "action": "overdrive",
+          "via": "local role reactor/OVERDRIVE, held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "heatBefore": 12,
+            "heatAfter": 14
+          }
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 133629.44533299998
+    },
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.55",
+      "game": "shadowarena",
+      "startedAt": "2026-10-20T12:47:57.005Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "combat.punchLeft",
+          "via": "keyboard KeyJ",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nLEFT PUNCH CUT THE AIR\nLEFT PUNCH"
+        },
+        {
+          "action": "combat.punchRight",
+          "via": "local role fighter/RIGHT PUNCH, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nRIGHT PUNCH CUT THE AIR\nRIGHT PUNCH"
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 17887.737374999997,
+      "resultSummary": "Your shadow fell\n\n0\nFinal arena score",
+      "restartControls": [
+        {
+          "action": "combat.punchLeft",
+          "via": "keyboard KeyJ",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nLEFT PUNCH CUT THE AIR\nLEFT PUNCH"
+        },
+        {
+          "action": "combat.punchRight",
+          "via": "local role fighter/RIGHT PUNCH, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nRIGHT PUNCH CUT THE AIR\nRIGHT PUNCH"
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 18658.789749999996
+    },
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.55",
+      "game": "spellcaster",
+      "startedAt": "2026-10-20T12:48:15.892Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "spell.cast.charge",
+          "via": "keyboard KeyC",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 1/3\nLAST CAST · CHARGE"
+        },
+        {
+          "action": "spell.cast.charge",
+          "via": "local role sorcerer/CHARGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 2/3\nLAST CAST · CHARGE"
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 37188.693457999994,
+      "resultSummary": "The circle fell\n\n0\nFinal arcane score",
+      "restartControls": [
+        {
+          "action": "spell.cast.charge",
+          "via": "keyboard KeyC",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 1/3\nLAST CAST · CHARGE"
+        },
+        {
+          "action": "spell.cast.charge",
+          "via": "local role sorcerer/CHARGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 2/3\nLAST CAST · CHARGE"
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 37924.457083000016
+    },
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.55",
+      "game": "swarmcommander",
+      "startedAt": "2026-10-20T12:48:54.016Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "swarm.formation.line",
+          "via": "keyboard Digit2",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nLINE FORMATION LOCKED\nLINE · ALL ASSIGNED"
+        },
+        {
+          "action": "swarm.formation.wedge",
+          "via": "local role tactician/WEDGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nWEDGE FORMATION LOCKED\nWEDGE · ALL ASSIGNED"
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 72689.50029200001,
+      "resultSummary": "Collective dispersed\n\n9,305\nFinal command score",
+      "restartControls": [
+        {
+          "action": "swarm.formation.line",
+          "via": "keyboard Digit2",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nLINE FORMATION LOCKED\nLINE · ALL ASSIGNED"
+        },
+        {
+          "action": "swarm.formation.wedge",
+          "via": "local role tactician/WEDGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nWEDGE FORMATION LOCKED\nWEDGE · ALL ASSIGNED"
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 73825.989833
+    },
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.55",
+      "game": "beatforge",
+      "startedAt": "2026-10-20T12:50:07.989Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "beat.punch",
+          "via": "keyboard Space timed to visible native countdown",
+          "consumerEffectObserved": true,
+          "observation": {
+            "scoreBefore": 0,
+            "scoreAfter": 80
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 8511.709541999968,
+      "resultSummary": "Forge cooled\n\n80\n6.8% accuracy",
+      "restartControls": [
+        {
+          "action": "beat.punch",
+          "via": "keyboard Space timed to visible native countdown",
+          "consumerEffectObserved": true,
+          "observation": {
+            "scoreBefore": 0,
+            "scoreAfter": 106
+          }
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 11759.404958
+    },
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.55",
+      "game": "slashstorm",
+      "startedAt": "2026-10-20T12:50:19.922Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "pause",
+          "via": "keyboard Escape",
+          "consumerEffectObserved": true,
+          "observation": "Resume and Paused status visible"
+        },
+        {
+          "action": "pause",
+          "via": "local role sword-one/Pause / resume, Space",
+          "consumerEffectObserved": true,
+          "observation": "Pause button visible after resume"
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 6188.517209000012,
+      "resultSummary": "Run complete\n\n0\nFinal score",
+      "restartControls": [
+        {
+          "action": "pause",
+          "via": "keyboard Escape",
+          "consumerEffectObserved": true,
+          "observation": "Resume and Paused status visible"
+        },
+        {
+          "action": "pause",
+          "via": "local role sword-one/Pause / resume, Space",
+          "consumerEffectObserved": true,
+          "observation": "Pause button visible after resume"
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 6531.015874999983
+    },
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.55",
+      "game": "gravitystack",
+      "startedAt": "2026-10-20T12:50:26.633Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "placeX",
+          "via": "keyboard KeyD",
+          "consumerEffectObserved": true,
+          "observation": {
+            "beforeGuide": "left: 50%;",
+            "afterGuide": "left: 89.0465%;"
+          }
+        },
+        {
+          "action": "drop",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES1 and actual dropped event"
+        },
+        {
+          "action": "drop",
+          "via": "local role builder/DROP SHAPE, Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES2"
+        },
+        {
+          "action": "gravity",
+          "via": "keyboard ArrowRight",
+          "consumerEffectObserved": true,
+          "observation": {
+            "vectorBefore": "transform: rotate(0deg);",
+            "vectorAfter": "transform: rotate(-81.7074deg);"
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "endEvidence": "STRUCTURE\nSTABILITY\n0%\nINTEGRITY\n0%",
+      "naturalEndMs": 6120.836833999958,
+      "resultSummary": "Tower lost\n\n2,178\n11.3 m peak",
+      "restartControls": [
+        {
+          "action": "placeX",
+          "via": "keyboard KeyD",
+          "consumerEffectObserved": true,
+          "observation": {
+            "beforeGuide": "left: 50%;",
+            "afterGuide": "left: 82.4119%;"
+          }
+        },
+        {
+          "action": "drop",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES1 and actual dropped event"
+        },
+        {
+          "action": "drop",
+          "via": "local role builder/DROP SHAPE, Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES2"
+        },
+        {
+          "action": "gravity",
+          "via": "keyboard ArrowRight",
+          "consumerEffectObserved": true,
+          "observation": {
+            "vectorBefore": "transform: rotate(0deg);",
+            "vectorAfter": "transform: rotate(-80.3876deg);"
+          }
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 8961.672083999962
+    },
+    {
+      "browser": "chromium",
+      "version": "149.0.7827.55",
+      "game": "echomaze",
+      "startedAt": "2026-10-20T12:50:35.767Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "maze.flashlight",
+          "via": "keyboard KeyF",
+          "consumerEffectObserved": true,
+          "observation": "FLASHLIGHT CLOSED"
+        },
+        {
+          "action": "maze.mark",
+          "via": "local role scanner/MARK, Space",
+          "consumerEffectObserved": true,
+          "observation": "FIELD LOG\nPLACE MARKED\n1 place marked"
+        },
+        {
+          "action": "maze.move",
+          "via": "actual keyboard walking; source model route plan/public clue verified after each step",
+          "consumerEffectObserved": true,
+          "observation": {
+            "steps": 561,
+            "floorNumber": 6,
+            "health": "0%"
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "echoFloors": [
+        {
+          "floor": 1,
+          "steps": 61,
+          "healthAtStart": "100%",
+          "reachedEchoes": [
+            {
+              "x": 4,
+              "y": 2,
+              "health": "84%"
+            }
+          ],
+          "healthAtEnd": "94%"
+        },
+        {
+          "floor": 2,
+          "steps": 47,
+          "healthAtStart": "94%",
+          "reachedEchoes": [
+            {
+              "x": 3,
+              "y": 2,
+              "health": "78%"
+            }
+          ],
+          "healthAtEnd": "88%"
+        },
+        {
+          "floor": 3,
+          "steps": 84,
+          "healthAtStart": "88%",
+          "reachedEchoes": [
+            {
+              "x": 4,
+              "y": 6,
+              "health": "72%"
+            },
+            {
+              "x": 0,
+              "y": 6,
+              "health": "56%"
+            }
+          ],
+          "healthAtEnd": "66%"
+        },
+        {
+          "floor": 4,
+          "steps": 183,
+          "healthAtStart": "66%",
+          "reachedEchoes": [
+            {
+              "x": 3,
+              "y": 0,
+              "health": "48%"
+            },
+            {
+              "x": 6,
+              "y": 8,
+              "health": "30%"
+            }
+          ],
+          "healthAtEnd": "40%"
+        },
+        {
+          "floor": 5,
+          "steps": 160,
+          "healthAtStart": "40%",
+          "reachedEchoes": [
+            {
+              "x": 1,
+              "y": 2,
+              "health": "24%"
+            },
+            {
+              "x": 10,
+              "y": 0,
+              "health": "8%"
+            }
+          ],
+          "healthAtEnd": "18%"
+        },
+        {
+          "floor": 6,
+          "steps": 26,
+          "healthAtStart": "18%",
+          "reachedEchoes": [
+            {
+              "x": 5,
+              "y": 7,
+              "health": "2%"
+            },
+            {
+              "x": 1,
+              "y": 7,
+              "health": "0%"
+            }
+          ],
+          "healthAtEnd": "0%"
+        }
+      ],
+      "endEvidence": {
+        "steps": 561,
+        "floorNumber": 6,
+        "health": "0%"
+      },
+      "naturalEndMs": 130459.18883299996,
+      "resultSummary": "Your echo remains\n\n42,088\nFinal expedition score",
+      "restartControls": [
+        {
+          "action": "maze.flashlight",
+          "via": "keyboard KeyF",
+          "consumerEffectObserved": true,
+          "observation": "FLASHLIGHT CLOSED"
+        },
+        {
+          "action": "maze.mark",
+          "via": "local role scanner/MARK, Space",
+          "consumerEffectObserved": true,
+          "observation": "FIELD LOG\nPLACE MARKED\n1 place marked"
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 131329.65074999997
+    },
+    {
+      "browser": "webkit",
+      "version": "26.5",
+      "game": "bodydodge",
+      "startedAt": "2026-10-20T12:52:48.775Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "body.move",
+          "via": "keyboard ArrowLeft; fresh LEFT gate",
+          "consumerEffectObserved": true,
+          "observation": {
+            "event": "LEFT CLEAR",
+            "comboBefore": 1,
+            "comboAfter": "×2"
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 12952.954625000013,
+      "resultSummary": "Run complete\n\n361\nFinal score",
+      "restartControls": [
+        {
+          "action": "body.move",
+          "via": "keyboard ArrowRight; fresh RIGHT gate",
+          "consumerEffectObserved": true,
+          "observation": {
+            "event": "RIGHT CLEAR",
+            "comboBefore": 0,
+            "comboAfter": "×1"
+          }
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 14994.421708000009
+    },
+    {
+      "browser": "webkit",
+      "version": "26.5",
+      "game": "tiltdrift",
+      "startedAt": "2026-10-20T12:53:04.692Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "boost",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "BOOST BURN"
+        },
+        {
+          "action": "brake",
+          "via": "local Driver BRAKE native range held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "speedBefore": 159,
+            "speedAfter": 69
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 56577.406875000044,
+      "resultSummary": "Vehicle offline\n\n3,266\nFinal score",
+      "restartControls": [
+        {
+          "action": "boost",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "BOOST BURN"
+        },
+        {
+          "action": "brake",
+          "via": "local Driver BRAKE native range held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "speedBefore": 156,
+            "speedAfter": 68
+          }
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 57884.47937500005
+    },
+    {
+      "browser": "webkit",
+      "version": "26.5",
+      "game": "orbitalcrew",
+      "startedAt": "2026-10-20T12:54:02.868Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "emergency",
+          "via": "keyboard KeyR (also requests power1)",
+          "consumerEffectObserved": true,
+          "observation": "SHIP STATUS\nEMERGENCY RECALL DEPLOYED"
+        },
+        {
+          "action": "overdrive",
+          "via": "local role reactor/OVERDRIVE, held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "heatBefore": 12,
+            "heatAfter": 14
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "endEvidence": {
+        "via": "ordinary held keyboard F+Space heat/hull loss; combined fire not independently attributed",
+        "vitals": "SHIP VITALS\nHULL\n0%\nSHIELDS\n80%\nENERGY\n100%\nHEAT\n100%"
+      },
+      "naturalEndMs": 132684.2031670001,
+      "resultSummary": "Ship lost\n\n819\nFinal crew score",
+      "restartControls": [
+        {
+          "action": "emergency",
+          "via": "keyboard KeyR (also requests power1)",
+          "consumerEffectObserved": true,
+          "observation": "SHIP STATUS\nEMERGENCY RECALL DEPLOYED"
+        },
+        {
+          "action": "overdrive",
+          "via": "local role reactor/OVERDRIVE, held Space",
+          "consumerEffectObserved": true,
+          "observation": {
+            "heatBefore": 12,
+            "heatAfter": 14
+          }
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 134106.4044580001
+    },
+    {
+      "browser": "webkit",
+      "version": "26.5",
+      "game": "shadowarena",
+      "startedAt": "2026-10-20T12:56:17.371Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "combat.punchLeft",
+          "via": "keyboard KeyJ",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nLEFT PUNCH CUT THE AIR\nLEFT PUNCH"
+        },
+        {
+          "action": "combat.punchRight",
+          "via": "local role fighter/RIGHT PUNCH, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nRIGHT PUNCH CUT THE AIR\nRIGHT PUNCH"
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 17585.24475000007,
+      "resultSummary": "Your shadow fell\n\n0\nFinal arena score",
+      "restartControls": [
+        {
+          "action": "combat.punchLeft",
+          "via": "keyboard KeyJ",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nLEFT PUNCH CUT THE AIR\nLEFT PUNCH"
+        },
+        {
+          "action": "combat.punchRight",
+          "via": "local role fighter/RIGHT PUNCH, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARENA FEED\nRIGHT PUNCH CUT THE AIR\nRIGHT PUNCH"
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 18022.73408299999
+    },
+    {
+      "browser": "webkit",
+      "version": "26.5",
+      "game": "spellcaster",
+      "startedAt": "2026-10-20T12:56:35.774Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "spell.cast.charge",
+          "via": "keyboard KeyC",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 1/3\nLAST CAST · CHARGE"
+        },
+        {
+          "action": "spell.cast.charge",
+          "via": "local role sorcerer/CHARGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 2/3\nLAST CAST · CHARGE"
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 37144.005999999936,
+      "resultSummary": "The circle fell\n\n0\nFinal arcane score",
+      "restartControls": [
+        {
+          "action": "spell.cast.charge",
+          "via": "keyboard KeyC",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 1/3\nLAST CAST · CHARGE"
+        },
+        {
+          "action": "spell.cast.charge",
+          "via": "local role sorcerer/CHARGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "ARCANE FEED\nARCANE CHARGE 2/3\nLAST CAST · CHARGE"
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 37592.46875
+    },
+    {
+      "browser": "webkit",
+      "version": "26.5",
+      "game": "swarmcommander",
+      "startedAt": "2026-10-20T12:57:13.683Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "swarm.formation.line",
+          "via": "keyboard Digit2",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nLINE FORMATION LOCKED\nLINE · ALL ASSIGNED"
+        },
+        {
+          "action": "swarm.formation.wedge",
+          "via": "local role tactician/WEDGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nWEDGE FORMATION LOCKED\nWEDGE · ALL ASSIGNED"
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 73444.94029199996,
+      "resultSummary": "Collective dispersed\n\n9,613\nFinal command score",
+      "restartControls": [
+        {
+          "action": "swarm.formation.line",
+          "via": "keyboard Digit2",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nLINE FORMATION LOCKED\nLINE · ALL ASSIGNED"
+        },
+        {
+          "action": "swarm.formation.wedge",
+          "via": "local role tactician/WEDGE, Space",
+          "consumerEffectObserved": true,
+          "observation": "COMMAND FEED\nWEDGE FORMATION LOCKED\nWEDGE · ALL ASSIGNED"
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 73918.47808399994
+    },
+    {
+      "browser": "webkit",
+      "version": "26.5",
+      "game": "beatforge",
+      "startedAt": "2026-10-20T12:58:27.900Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "beat.punch",
+          "via": "keyboard Space timed to visible native countdown",
+          "consumerEffectObserved": true,
+          "observation": {
+            "scoreBefore": 0,
+            "scoreAfter": 80
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 8430.503792000003,
+      "resultSummary": "Forge cooled\n\n80\n6.8% accuracy",
+      "restartControls": [
+        {
+          "action": "beat.punch",
+          "via": "keyboard Space timed to visible native countdown",
+          "consumerEffectObserved": true,
+          "observation": {
+            "scoreBefore": 0,
+            "scoreAfter": 80
+          }
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 11525.594083999982
+    },
+    {
+      "browser": "webkit",
+      "version": "26.5",
+      "game": "slashstorm",
+      "startedAt": "2026-10-20T12:58:39.734Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "pause",
+          "via": "keyboard Escape",
+          "consumerEffectObserved": true,
+          "observation": "Resume and Paused status visible"
+        },
+        {
+          "action": "pause",
+          "via": "local role sword-one/Pause / resume, Space",
+          "consumerEffectObserved": true,
+          "observation": "Pause button visible after resume"
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "naturalEndMs": 6306.080959000043,
+      "resultSummary": "Run complete\n\n0\nFinal score",
+      "restartControls": [
+        {
+          "action": "pause",
+          "via": "keyboard Escape",
+          "consumerEffectObserved": true,
+          "observation": "Resume and Paused status visible"
+        },
+        {
+          "action": "pause",
+          "via": "local role sword-one/Pause / resume, Space",
+          "consumerEffectObserved": true,
+          "observation": "Pause button visible after resume"
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 6716.035666999989
+    },
+    {
+      "browser": "webkit",
+      "version": "26.5",
+      "game": "gravitystack",
+      "startedAt": "2026-10-20T12:58:46.722Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "placeX",
+          "via": "keyboard KeyD",
+          "consumerEffectObserved": true,
+          "observation": {
+            "beforeGuide": "left: 50%;",
+            "afterGuide": "left: 89.976449%;"
+          }
+        },
+        {
+          "action": "drop",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES1 and actual dropped event"
+        },
+        {
+          "action": "drop",
+          "via": "local role builder/DROP SHAPE, Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES2"
+        },
+        {
+          "action": "gravity",
+          "via": "keyboard ArrowRight",
+          "consumerEffectObserved": true,
+          "observation": {
+            "vectorBefore": "transform: rotate(0deg);",
+            "vectorAfter": "transform: rotate(-81.435178deg);"
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "endEvidence": "STRUCTURE\nSTABILITY\n0%\nINTEGRITY\n0%",
+      "naturalEndMs": 5562.884874999989,
+      "resultSummary": "Tower lost\n\n2,213\n11.3 m peak",
+      "restartControls": [
+        {
+          "action": "placeX",
+          "via": "keyboard KeyD",
+          "consumerEffectObserved": true,
+          "observation": {
+            "beforeGuide": "left: 50%;",
+            "afterGuide": "left: 89.951589%;"
+          }
+        },
+        {
+          "action": "drop",
+          "via": "keyboard Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES1 and actual dropped event"
+        },
+        {
+          "action": "drop",
+          "via": "local role builder/DROP SHAPE, Space",
+          "consumerEffectObserved": true,
+          "observation": "PIECES2"
+        },
+        {
+          "action": "gravity",
+          "via": "keyboard ArrowRight",
+          "consumerEffectObserved": true,
+          "observation": {
+            "vectorBefore": "transform: rotate(0deg);",
+            "vectorAfter": "transform: rotate(-82.218295deg);"
+          }
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 7773.216584000038
+    },
+    {
+      "browser": "webkit",
+      "version": "26.5",
+      "game": "echomaze",
+      "startedAt": "2026-10-20T12:58:54.797Z",
+      "checks": [
+        "chooser keyboard Enter starts focused conventional field",
+        "natural run end",
+        "named result region and focused restart describe actual score",
+        "native Space restarts and returns field focus",
+        "fresh-run actual declared input effects",
+        "Back returns to chooser"
+      ],
+      "controls": [
+        {
+          "action": "maze.flashlight",
+          "via": "keyboard KeyF",
+          "consumerEffectObserved": true,
+          "observation": "FLASHLIGHT CLOSED"
+        },
+        {
+          "action": "maze.mark",
+          "via": "local role scanner/MARK, Space",
+          "consumerEffectObserved": true,
+          "observation": "FIELD LOG\nPLACE MARKED\n1 place marked"
+        },
+        {
+          "action": "maze.move",
+          "via": "actual keyboard walking; source model route plan/public clue verified after each step",
+          "consumerEffectObserved": true,
+          "observation": {
+            "steps": 561,
+            "floorNumber": 6,
+            "health": "0%"
+          }
+        }
+      ],
+      "errors": [],
+      "status": "pass",
+      "echoFloors": [
+        {
+          "floor": 1,
+          "steps": 61,
+          "healthAtStart": "100%",
+          "reachedEchoes": [
+            {
+              "x": 4,
+              "y": 2,
+              "health": "84%"
+            }
+          ],
+          "healthAtEnd": "94%"
+        },
+        {
+          "floor": 2,
+          "steps": 47,
+          "healthAtStart": "94%",
+          "reachedEchoes": [
+            {
+              "x": 3,
+              "y": 2,
+              "health": "78%"
+            }
+          ],
+          "healthAtEnd": "88%"
+        },
+        {
+          "floor": 3,
+          "steps": 84,
+          "healthAtStart": "88%",
+          "reachedEchoes": [
+            {
+              "x": 4,
+              "y": 6,
+              "health": "72%"
+            },
+            {
+              "x": 0,
+              "y": 6,
+              "health": "56%"
+            }
+          ],
+          "healthAtEnd": "66%"
+        },
+        {
+          "floor": 4,
+          "steps": 183,
+          "healthAtStart": "66%",
+          "reachedEchoes": [
+            {
+              "x": 3,
+              "y": 0,
+              "health": "48%"
+            },
+            {
+              "x": 6,
+              "y": 8,
+              "health": "30%"
+            }
+          ],
+          "healthAtEnd": "40%"
+        },
+        {
+          "floor": 5,
+          "steps": 160,
+          "healthAtStart": "40%",
+          "reachedEchoes": [
+            {
+              "x": 1,
+              "y": 2,
+              "health": "24%"
+            },
+            {
+              "x": 10,
+              "y": 0,
+              "health": "8%"
+            }
+          ],
+          "healthAtEnd": "18%"
+        },
+        {
+          "floor": 6,
+          "steps": 26,
+          "healthAtStart": "18%",
+          "reachedEchoes": [
+            {
+              "x": 5,
+              "y": 7,
+              "health": "2%"
+            },
+            {
+              "x": 1,
+              "y": 7,
+              "health": "0%"
+            }
+          ],
+          "healthAtEnd": "0%"
+        }
+      ],
+      "endEvidence": {
+        "steps": 561,
+        "floorNumber": 6,
+        "health": "0%"
+      },
+      "naturalEndMs": 131575.6823750001,
+      "resultSummary": "Your echo remains\n\n42,061\nFinal expedition score",
+      "restartControls": [
+        {
+          "action": "maze.flashlight",
+          "via": "keyboard KeyF",
+          "consumerEffectObserved": true,
+          "observation": "FLASHLIGHT CLOSED"
+        },
+        {
+          "action": "maze.mark",
+          "via": "local role scanner/MARK, Space",
+          "consumerEffectObserved": true,
+          "observation": "FIELD LOG\nPLACE MARKED\n1 place marked"
+        }
+      ],
+      "contextClosed": true,
+      "elapsedMs": 132035.719375
+    }
+  ],
+  "priorComplementaryEvidence": "outputs/controllers/2026-10-16-game-control-repair/browser-final.json covers54 selected Echo/Beat controls on prior combined build6de; not substituted for current journey results.",
+  "cleanup": {
+    "contextsClosed": true,
+    "browsersClosed": true,
+    "serverClosed": true
+  },
+  "origin": "http://127.0.0.1:58542",
+  "finishedAt": "2026-10-20T13:01:07.125Z",
+  "interrupted": false,
+  "sourcePinsUnchanged": true,
+  "buildPinsUnchanged": true,
+  "journeysPassed": 20,
+  "allTenJourneysBothEnginesPassed": true,
+  "allDeclaredControlsQualified": false,
+  "initialAndFreshInputPairs": 20,
+  "unobservedControls": {
+    "bodydodge": [
+      "duck",
+      "jump",
+      "armsRaised",
+      "dodgeX",
+      "lean"
+    ],
+    "tiltdrift": [
+      "drift",
+      "steer"
+    ],
+    "orbitalcrew": [
+      "fire",
+      "fortify",
+      "vent",
+      "shield",
+      "power",
+      "flight",
+      "target"
+    ],
+    "shadowarena": [
+      "combat.block",
+      "combat.duck",
+      "combat.jump",
+      "combat.special",
+      "combat.move"
+    ],
+    "spellcaster": [
+      "spell.cast.shield",
+      "spell.cast.grab",
+      "spell.cast.projectile",
+      "spell.cast.blade",
+      "spell.cast.vortex",
+      "spell.aim"
+    ],
+    "swarmcommander": [
+      "swarm.select",
+      "swarm.formation.cluster",
+      "swarm.formation.ring",
+      "swarm.formation.grid",
+      "swarm.ability.pulse",
+      "swarm.ability.shield",
+      "swarm.ability.recall",
+      "swarm.direction",
+      "swarm.command"
+    ],
+    "beatforge": [
+      "beat.left",
+      "beat.right",
+      "beat.raise",
+      "beat.duck",
+      "beat.swing",
+      "gesture"
+    ],
+    "slashstorm": [
+      "slash",
+      "trigger",
+      "aim",
+      "move"
+    ],
+    "gravitystack": [],
+    "echomaze": [
+      "maze.scan",
+      "maze.scanDirection"
+    ]
+  },
+  "pass": true
+}

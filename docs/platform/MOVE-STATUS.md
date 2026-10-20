@@ -79,7 +79,7 @@ named moved files against original Git blobs and recorded SHA-256 values; unknow
 missing files and changed ledger documents fail. This is historical custody, not
 current product qualification. No support row is marked accepted.
 
-The current GitHub workflow needs read access to the private Connect repository
+The current GitHub workflow needs read access to the private Connect and shared kit repositories
 through `CONNECT_READ_TOKEN`. That external integration is not configured or
 claimed by local verification; missing access fails the workflow explicitly.
 Native target jobs are no longer Games jobs. Real-device/target-OS qualification,
@@ -97,3 +97,11 @@ shell, files, processes and screen; device ownership through kit login; OTA.
 The kit's actual inspected usage/audit/keys implementations and missing login/files
 interfaces are recorded in Connect `docs/KIT-REQUESTS.md`. No kit edits, new
 accounts, administrator capture, native qualification or release claims occurred.
+
+## First post-move wave
+
+Connect commit `3a8b43f9fc846a9a5590cb8032f4d31c5d6abd46` adds the recorded-permissions service foundation, public HTTP client and current package provenance. Its build, root/agent types, lint, 3,354 unit tests, 13 rendered checks and independent installed SDK consumer pass. It uses the kit's existing transactional audit, usage and tenant helpers. Kit files remain untouched. The kit connector inputs match revision `4e2446293a495813e53cd89c0844a5bd071c114f`; the kit owner's subsequent documentation-only commit leaves those bytes unchanged.
+
+Games CI pins both revisions. The new SDK client is additive and does not enable a default listener or replace the existing game mapping layer. Verified host identity and device-management authority are mandatory. Full inherited control-caller coverage, capability classes, kit-login ownership and OTA remain open; no historical acceptance ID is closed by this foundation.
+
+The [Games follow-through](2026-10-20-game-follow-through/README.md) adds 20 natural-end/restart journeys on the cutover artifact and keeps the G06/N11 coverage gaps explicit. It changes the QA harness and preserves compact durable evidence, without modifying game runtime behavior.

@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "scope": "Games harness/evidence and pinned sibling dependencies after the first Connect permissions wave",
+  "baseCommit": "ce61deca513263936040f5b0caea1c80adbf9126",
+  "connectCommit": "3a8b43f9fc846a9a5590cb8032f4d31c5d6abd46",
+  "kitInputRevision": "4e2446293a495813e53cd89c0844a5bd071c114f",
+  "gates": {
+    "build": {
+      "command": "npm run build",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/follow-through-build.txt",
+      "sha256": "dd18d23b8df2f64003ff3f95857a276dc3bb2818fd0ee5dccc19e2266fe2d6bd",
+      "summaryTail": [
+        "  ? Unknown",
+        "",
+        "  ? Some routes could not be classified. vinext currently uses static analysis",
+        "    and cannot detect dynamic API usage (headers(), cookies(), etc.) at build time.",
+        "    Automatic classification will be improved in a future release.",
+        "",
+        "  Build complete. Run `vinext start` to start the production server.",
+        "",
+        "Stamped dist/client/sw.js with build 0002ff1d36f827dc and 35 controller assets."
+      ]
+    },
+    "types": {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/follow-through-types.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "summaryTail": []
+    },
+    "lint": {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/follow-through-lint.txt",
+      "sha256": "92e73763c35fc53cc7ce2374c0080e6e19fc752e7df94d35179de2652279c93f",
+      "summaryTail": [
+        "",
+        "> 101-games@0.1.0 lint",
+        "> eslint . --ignore-pattern dist --ignore-pattern .next",
+        ""
+      ]
+    },
+    "unit": {
+      "command": "npm run test:unit",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/follow-through-unit.txt",
+      "sha256": "4e57e07d8d7297075f4a94f1a89b42e5b4c81738df243d0db345923cdea0f3e6",
+      "summaryTail": [
+        "\u2714 newly selected UNLICENSE sources reject unsafe bytes before replacing the prior CLI output (549.027708ms)",
+        "\u2139 tests 459",
+        "\u2139 suites 0",
+        "\u2139 pass 459",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 99990.136208"
+      ]
+    },
+    "rendered": {
+      "command": "node --test tests/rendered-html.test.mjs",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/follow-through-rendered.txt",
+      "sha256": "1ac1b1c5d3a698f42f6c902029d976ed476c9e6ea861400a2cc8cd36ecd3742f",
+      "summaryTail": [
+        "\u2714 moved device surfaces lead to the Connect console (197.166917ms)",
+        "\u2139 tests 29",
+        "\u2139 suites 0",
+        "\u2139 pass 29",
+        "\u2139 fail 0",
+        "\u2139 cancelled 0",
+        "\u2139 skipped 0",
+        "\u2139 todo 0",
+        "\u2139 duration_ms 5763.620625"
+      ]
+    },
+    "ledger": {
+      "command": "node tools/audit-platform-records.mjs",
+      "exitCode": 0,
+      "log": "outputs/migration/2026-10-20/follow-through-ledger.txt",
+      "sha256": "00829008474b25c63620785845ca640a599a1753c2d81ff2c786dc33d350eddb",
+      "summaryTail": [
+        "Frozen pre-split ledger relationships and historical source custody agree. This does not qualify current Connect or Games support."
+      ]
+    }
+  },
+  "candidateFiles": {
+    ".github/workflows/checks.yml": "98e103128901af9a790b00c225427710f47dfd3f6a5110dcb500b22fb2fb3eb4",
+    "tools/qa-conventional-game-journeys.mjs": "549e51a9580c4da484a8029edc93c3c3d12fcce0f6239a742203279fa32cadac",
+    "package.json": "07505acf784c3fc8530032b2adba90e0520cec24b6e1613221c7ede12850ef02",
+    "package-lock.json": "f3af356c40357376dccfad1f0efb11a15672fcb42653df7978bf865e26f7c0d5"
+  },
+  "journeyScope": "20/20 natural-end/restart and initial/fresh input pairs were verified on the earlier unchanged cutover artifact preserved in journeys.json. They are not relabelled as a fresh run of the later additive HTTP client. No Games runtime code changed in this wave.",
+  "open": [
+    "G06 offered mode/action combinations remain as listed in the coverage matrix.",
+    "N11 installed Windows/Xbox and physical target qualification remain deferred.",
+    "CONNECT_READ_TOKEN needs read permission for Connect and kit; external configuration and hosted CI success are not claimed.",
+    "No acceptance ID or release gate closed."
+  ]
+}

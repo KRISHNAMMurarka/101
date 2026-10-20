@@ -1,0 +1,190 @@
+{
+  "scope": "Post-move Games G06/N11 conventional journey follow-through",
+  "headAtCompletion": "ce61deca513263936040f5b0caea1c80adbf9126",
+  "runtimeModified": false,
+  "trackedFilesChanged": [
+    "tools/qa-conventional-game-journeys.mjs"
+  ],
+  "sourcePinsUnchanged": true,
+  "sourcePinsCount": 469,
+  "buildPinsUnchanged": true,
+  "buildPinsCount": 405,
+  "expectedServerSha256": "f8ccb8b7cfe8bb5a5a5878bcd4afd55fb97147ce24e1b0823936b0d1120d2834",
+  "checks": {
+    "conventionalJourneyExitCode": 0,
+    "allTwentySelectedJourneysPass": true,
+    "initialAndFreshInputPairs": 20,
+    "scopedEslintExitCode": 0,
+    "gitDiffCheckExitCode": 0
+  },
+  "cleanup": {
+    "contextsClosed": true,
+    "browsersClosed": true,
+    "serverClosed": true
+  },
+  "coverageCounts": {
+    "attempted": 20,
+    "fullSelectedJourneys": 20,
+    "lifecycleWithControlGaps": 0,
+    "failed": 0,
+    "running": 0,
+    "observedCells": 82,
+    "listedCells": 512,
+    "offeredCells": 488,
+    "unobservedOfferedCells": 406
+  },
+  "perGame": [
+    {
+      "game": "bodydodge",
+      "observedCells": 4,
+      "unobservedOfferedCells": 36,
+      "notOfferedCells": 8,
+      "observedKeyboard": [
+        "body.move"
+      ],
+      "observedLocalRole": [],
+      "phaseException": null
+    },
+    {
+      "game": "tiltdrift",
+      "observedCells": 8,
+      "unobservedOfferedCells": 24,
+      "notOfferedCells": 0,
+      "observedKeyboard": [
+        "boost"
+      ],
+      "observedLocalRole": [
+        "brake"
+      ],
+      "phaseException": null
+    },
+    {
+      "game": "orbitalcrew",
+      "observedCells": 8,
+      "unobservedOfferedCells": 64,
+      "notOfferedCells": 0,
+      "observedKeyboard": [
+        "emergency"
+      ],
+      "observedLocalRole": [
+        "overdrive"
+      ],
+      "phaseException": null
+    },
+    {
+      "game": "shadowarena",
+      "observedCells": 8,
+      "unobservedOfferedCells": 48,
+      "notOfferedCells": 0,
+      "observedKeyboard": [
+        "combat.punchLeft"
+      ],
+      "observedLocalRole": [
+        "combat.punchRight"
+      ],
+      "phaseException": null
+    },
+    {
+      "game": "spellcaster",
+      "observedCells": 8,
+      "unobservedOfferedCells": 48,
+      "notOfferedCells": 0,
+      "observedKeyboard": [
+        "spell.cast.charge"
+      ],
+      "observedLocalRole": [
+        "spell.cast.charge"
+      ],
+      "phaseException": null
+    },
+    {
+      "game": "swarmcommander",
+      "observedCells": 8,
+      "unobservedOfferedCells": 80,
+      "notOfferedCells": 0,
+      "observedKeyboard": [
+        "swarm.formation.line"
+      ],
+      "observedLocalRole": [
+        "swarm.formation.wedge"
+      ],
+      "phaseException": null
+    },
+    {
+      "game": "beatforge",
+      "observedCells": 4,
+      "unobservedOfferedCells": 48,
+      "notOfferedCells": 4,
+      "observedKeyboard": [
+        "beat.punch"
+      ],
+      "observedLocalRole": [],
+      "phaseException": null
+    },
+    {
+      "game": "slashstorm",
+      "observedCells": 8,
+      "unobservedOfferedCells": 20,
+      "notOfferedCells": 12,
+      "observedKeyboard": [
+        "pause"
+      ],
+      "observedLocalRole": [
+        "pause"
+      ],
+      "phaseException": null
+    },
+    {
+      "game": "gravitystack",
+      "observedCells": 16,
+      "unobservedOfferedCells": 8,
+      "notOfferedCells": 0,
+      "observedKeyboard": [
+        "drop",
+        "gravity",
+        "placeX"
+      ],
+      "observedLocalRole": [
+        "drop"
+      ],
+      "phaseException": null
+    },
+    {
+      "game": "echomaze",
+      "observedCells": 10,
+      "unobservedOfferedCells": 30,
+      "notOfferedCells": 0,
+      "observedKeyboard": [
+        "maze.flashlight",
+        "maze.move"
+      ],
+      "observedLocalRole": [
+        "maze.mark"
+      ],
+      "phaseException": "maze.move observed during initial natural-end route only"
+    }
+  ],
+  "N11": {
+    "reusedBrowserChecks": 32,
+    "sourcePinsCompared": 20,
+    "bundlePinsCompared": 3,
+    "mismatches": 0,
+    "wholeTaskClosed": false
+  },
+  "G06WholeTaskClosed": false,
+  "files": {
+    "outputs/controllers/conventional-game-journeys-2026-10-20T12-44-29.228Z/report.json": "58a29d20faa257efd5ad067de1e6721375f5c97dd52167113023fb57a03f9f06",
+    "outputs/controllers/2026-10-20-g06-n11/G06-coverage.json": "6d516941cbd0c59d4cd975312a702ce14d198464aee1486ce68caf7904076ead",
+    "outputs/controllers/2026-10-20-g06-n11/G06-coverage.csv": "cca3d77f95662987610203bc7a42746db6fd0436bf432da7340dee8ccdd5a804",
+    "outputs/controllers/2026-10-20-g06-n11/N11-reuse.json": "cab6c00cd3a629fb831ad989eb2440e2a447ad2acf964711690f80031da3a7b2",
+    "outputs/controllers/2026-10-20-g06-n11/spellcaster-prior-evidence.json": "de8f142e0cd9222f83c4c51537dcf3d5bbe2f5247fa04549beb5fc172abc4bcf",
+    "outputs/controllers/2026-10-20-g06-n11/declared-roles.json": "879b2aef8d515551b786b4e251c83dafc3f895fa1b0add371840fabc7e199d6b",
+    "outputs/controllers/2026-10-20-g06-n11/summarize.py": "27d50c971c0de4c859689331574b30693ac232aeabe22200749a9d914303d60c",
+    "tools/qa-conventional-game-journeys.mjs": "549e51a9580c4da484a8029edc93c3c3d12fcce0f6239a742203279fa32cadac"
+  },
+  "remaining": [
+    "Remaining keyboard/local-role cells listed explicitly in G06-coverage.csv; all phases/modes have separate evidence cells.",
+    "Other input modes, physical gamepad/phone, full neutral-release qualification and heard assistive-technology announcements remain separate.",
+    "Windows UWP build execution/compilation, installed WebView2, activated Xbox, native lifecycle/navigation and physical target qualification remain deferred."
+  ]
+}

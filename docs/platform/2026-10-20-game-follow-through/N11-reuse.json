@@ -1,0 +1,78 @@
+{
+  "task": "N11",
+  "state": "local public SDK consumer implemented and locally verified; target qualification deferred",
+  "reusedReceipt": "outputs/migration/2026-10-20/journeys-console-2026-10-20T12-30-34-470Z/receipt.json",
+  "receiptSha256": "67e084690a3e092a8ef1b5242ee32bc86529f844e73d3b256bc19d15d04c9640",
+  "sourcePinComparison": {
+    "total": 20,
+    "changed": [],
+    "missing": []
+  },
+  "desktop": [
+    {
+      "engine": "chromium",
+      "version": "149.0.7827.55",
+      "status": "pass",
+      "checks": [
+        "inert-before-invitation",
+        "stale-identity-result-cancelled",
+        "actual-native-RTC-offer-answer",
+        "exact-application-session-review",
+        "both-owner-comparison",
+        "separate-resource-denial-and-grant",
+        "actual-owned-DOM-pointer-contact",
+        "keyboard-approval",
+        "responsive-layout",
+        "stop-closes-native-peers-and-clears-held-input",
+        "hidden-stop-and-no-auto-reconnect",
+        "source-disconnect-releases-held-input",
+        "connection-one-minute-expiry",
+        "invalid-offer-denied",
+        "cancel-clears-request",
+        "invitation-expiry"
+      ]
+    },
+    {
+      "engine": "webkit",
+      "version": "26.5",
+      "status": "pass",
+      "checks": [
+        "inert-before-invitation",
+        "stale-identity-result-cancelled",
+        "actual-native-RTC-offer-answer",
+        "exact-application-session-review",
+        "both-owner-comparison",
+        "separate-resource-denial-and-grant",
+        "actual-owned-DOM-pointer-contact",
+        "keyboard-approval",
+        "responsive-layout",
+        "stop-closes-native-peers-and-clears-held-input",
+        "hidden-stop-and-no-auto-reconnect",
+        "source-disconnect-releases-held-input",
+        "connection-one-minute-expiry",
+        "invalid-offer-denied",
+        "cancel-clears-request",
+        "invitation-expiry"
+      ]
+    }
+  ],
+  "methods": {
+    "expiry": "Playwright clock fastForward",
+    "visibility": "document.hidden shadow plus synthetic visibilitychange event"
+  },
+  "scope": "Actual local desktop browser WebRTC, cryptography and application-only pointer effects; expiry clock and synthetic visibility-handler checks. No natural-time expiry observation, native OS suspension, Windows UWP compilation, Xbox runtime, console controller navigation, LAN or physical qualification.",
+  "deferred": [
+    "Permitted Windows build script execution and compilation",
+    "Installed WebView2 and activated Xbox target",
+    "Native lifecycle/navigation on permitted target",
+    "Physical controller and target qualification"
+  ],
+  "wholeTaskClosed": false,
+  "platformBoundary": "Games receiver and QA source consume public @uynis-connect/connect; SDK owns transport, auth, resource grant/lifetime.",
+  "artifactPinComparison": {
+    "total": 3,
+    "changed": [],
+    "missing": []
+  },
+  "dependencyProofLimit": "The reused browser receipt pins bundled output bytes and Games sources; it does not separately enumerate compiled SDK dependency module hashes."
+}
